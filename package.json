@@ -1,12 +1,17 @@
 {
   "name": "firetrain-schedule",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "_prebuild": "npm --no-git-tag-version version major",
     "build": "ng build",
+    "build:prod": "bash build-version.sh && ng build  --configuration production --aot",
+    "build:major": " npm --no-git-tag-version version major && bash build-version.sh && ng build  --configuration production --aot",
+    "build:minor": "npm --no-git-tag-version version minor && bash build-version.sh && ng build  --configuration production --aot",
+    "build:patch": "npm --no-git-tag-version version patch && bash build-version.sh && ng build  --configuration production --aot",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
@@ -17,6 +22,7 @@
     "@angular/common": "^18.0.0",
     "@angular/compiler": "^18.0.0",
     "@angular/core": "^18.0.0",
+    "@angular/fire": "^18.0.1",
     "@angular/forms": "^18.0.0",
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
