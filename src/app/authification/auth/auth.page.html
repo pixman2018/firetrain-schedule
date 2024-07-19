@@ -1,0 +1,50 @@
+<ion-content [fullscreen]="true" class="">
+  <ion-grid>
+    <!--
+    ****************************************
+    header
+    ****************************************
+    -->
+    <ion-row>
+      <ion-col size="12">
+        <div class="form-wrapper">
+          <div class="form-container">
+            <div class="icon-container">
+              <ion-icon
+                name="person-outline"
+                size="large"
+                color="danger"
+                class="icon-big"
+                *ngIf="isLogin"
+              ></ion-icon>
+              <ion-label *ngIf="isLogin">
+                <h2>Login</h2>
+              </ion-label>
+
+              <ion-icon
+                name="create-outline"
+                size="large"
+                color="danger"
+                class="icon-big"
+                *ngIf="!isLogin"
+              ></ion-icon>
+              <ion-label *ngIf="!isLogin">
+                <h2>Registrieren</h2>
+              </ion-label>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <form
+              (ngSubmit)="isLogin ? onLogin() : onRegister()"
+              [formGroup]="credentialsForm"
+            >
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

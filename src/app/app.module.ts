@@ -18,22 +18,16 @@ import { getPerformance, providePerformance } from '@angular/fire/performance';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getRemoteConfig, provideRemoteConfig } from '@angular/fire/remote-config';
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment.prod';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
-  providers: [{
-    provide: RouteReuseStrategy, useClass: IonicRouteStrategy
-  },
-  provideFirebaseApp(() => initializeApp({ 
-    "projectId": "workout-plan-faeb9", 
-    "appId": "1:173899062442:web:f1a3ca25f01eac329c44d3", 
-    "databaseURL": "https://workout-plan-faeb9-default-rtdb.europe-west1.firebasedatabase.app", 
-    "storageBucket": "workout-plan-faeb9.appspot.com", 
-    "apiKey": "AIzaSyCfnHRZZh1lGG5Yg7KN13hvZuQliyp9CP8", 
-    "authDomain": "workout-plan-faeb9.firebaseapp.com", 
-    "messagingSenderId": "173899062442" 
-  })),
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+  provideFirebaseApp(() => initializeApp(environment.firebase)),
   provideAuth(() => getAuth()),
   // provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
