@@ -1,0 +1,25 @@
+@if(translucent) {
+  <ion-header [translucent]="true" class="main-header">
+    <ion-toolbar color="danger" >
+      <ion-title size="large"   color="light">{{ headline | titlecase }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+}
+
+
+
+      <ion-content [fullscreen]="true">
+        @if(!translucent) {
+        <ion-header class="main-header">
+          <ion-toolbar color="danger">
+            <ion-title size="large"   color="light">{{ headline | titlecase }} </ion-title>
+          </ion-toolbar>
+        </ion-header>
+        }
+        <ng-content></ng-content>
+      </ion-content>
+
+
+
+  <app-footer></app-footer>
