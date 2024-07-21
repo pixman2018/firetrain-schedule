@@ -25,9 +25,19 @@ const routes: Routes = [
       import('./authification/auth/auth.module').then((m) => m.AuthPageModule),
   },
   {
+    path: 'change-password',
+    loadChildren: () => import('./authification/change-password/change-password.module').then( m => m.ChangePasswordPageModule)
+  },
+    /*
+    ****************************************
+    Workout
+    ****************************************
+  */
+  {
     path: 'workout-list',
     loadChildren: () => import('./pages/workout/workout-list/workout-list.module').then( m => m.WorkoutListPageModule)
   },
+
 ];
 
 @NgModule({

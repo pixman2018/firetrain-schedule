@@ -9,6 +9,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
 } from '@angular/fire/auth';
@@ -17,6 +18,8 @@ import { doc, Firestore, setDoc } from '@angular/fire/firestore';
 // interfaces
 import { UserI } from '../interfaces/UserI';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +34,9 @@ export class AuthService {
     private _afs: AngularFirestore,
     private _router: Router,
     private _auth: Auth,
-    private _firestore: Firestore
+    private _firestore: Firestore,
+    private _alertCtrl: AlertController,
+    private _alertService: AlertService
   ) {}
 
   /**
@@ -133,6 +138,24 @@ export class AuthService {
     window.sessionStorage.removeItem('uid');
     this._router.navigateByUrl('/login', { replaceUrl: true });
     return signOut(this._auth);
+  }
+
+  /**
+   *
+   * Send the user a email by forgotten password
+   * and redirect to the login page
+   *
+   * @param email
+   *
+   */
+  public forgottenPassword(email: string) {
+    sendPasswordResetEmail(this._auth, email).then(async () => {
+      this._alertService.showAlert(
+        'Passwort vergessen',
+        'Wir haben Dir soeben den Link zum Zurücksetzen des Passworts zugeschickt, bitte prüfe Deinw E-Mails.',
+        'success'
+      );
+    });
   }
 
   /**
