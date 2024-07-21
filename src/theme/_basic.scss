@@ -1,0 +1,36 @@
+.c-pointer {
+  cursor: pointer;
+}
+
+.d-inline {
+  display: inline !important;
+}
+
+/*
+********************************************************************************
+*****
+***
+* Border
+***
+*****
+********************************************************************************
+*/
+.border {
+  border: 2px solid;
+}
+
+.warning-border {
+  border-color: var(--ion-color-warning);
+}
+
+.danger-border {
+  border-color: var(--ion-color-danger);
+}
+
+.success-border {
+  border-color: var(--ion-color-danger);
+}
+
+.no-border {
+  border: none;
+}

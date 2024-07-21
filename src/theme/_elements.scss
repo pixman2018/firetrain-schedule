@@ -1,0 +1,64 @@
+/*
+********************************************************************************
+*****
+***
+* Form
+***
+*****
+********************************************************************************
+*/
+form,
+.result-output {
+  ion-item:not(header ion-item) {
+    --background: var(--ion-color-light);
+  }
+}
+
+form {
+  ion-item:not(:last-child),
+  ion-button:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
+
+.error-msg {
+  margin: .5rem 0 1rem 0;
+  padding-left: 1rem;
+}
+/*
+********************************************************************************
+*****
+***
+* alert confirm
+***
+*****
+********************************************************************************
+*/
+.alert .alert-message{
+  margin-top: 1rem;
+  padding-bottom: 0;
+}
+
+.alert-success .alert-head {
+      background: var(--ion-color-success);
+    }
+
+  .alert-danger .alert-head {
+      background: var(--ion-color-danger);
+      h2 {
+        color: #fff;
+      }
+
+    }
+  .alert-warning .alert-head {
+    background: var(--ion-color-warning);
+  }
+
+
+.toast {
+  text-align: center;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  &.toast-success {
+    color: #000;
+  }
+}
