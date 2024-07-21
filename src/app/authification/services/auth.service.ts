@@ -1,27 +1,35 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { first, map, Observable } from 'rxjs';
+import { BehaviorSubject, first, map, Observable } from 'rxjs';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {
   Auth,
   UserCredential,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   sendEmailVerification,
+  signInWithEmailAndPassword,
+  signOut,
 } from '@angular/fire/auth';
 import { doc, Firestore, setDoc } from '@angular/fire/firestore';
 
 // interfaces
 import { UserI } from '../interfaces/UserI';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private _dbPath: string = '/users';
+  private _currentUser$: BehaviorSubject<UserI> = new BehaviorSubject(
+    this._setDefaultUserObj()
+  );
 
   constructor(
     private _afs: AngularFirestore,
+    private _router: Router,
     private _auth: Auth,
     private _firestore: Firestore
   ) {}
@@ -62,6 +70,82 @@ export class AuthService {
       return null;
     }
   }
+
+  /**
+   *
+   * Log in a user with his email and password.
+   * The 'userId' and 'isLogged' are saved in the session.
+   * The user's data is loaded from the database and stored in the BejourSubject '_currentUser$'
+   *
+   * @param { email, password}
+   * @returns Promise<UserCredential | null>
+   *
+   */
+  public async login({
+    email,
+    password,
+  }: {
+    [key: string]: string;
+  }): Promise<UserCredential | null> {
+    try {
+      const user = signInWithEmailAndPassword(this._auth, email, password)
+        .then((userCredential: UserCredential) => {
+          if (userCredential.user.emailVerified) {
+            // set the 'uid' and 'isLoged in the session storage'
+            this._setCurrentUserSettings();
+            // fetch the user data and set this in the Bejoursubject '_currentUser$'
+            this.fetchUserByEmail(email).subscribe((user: UserI[]) => {
+              if (user.length == 1) {
+                this._currentUser$.next(user[0]);
+                window.sessionStorage.setItem('isLogged', 'true');
+                window.sessionStorage.setItem('uid', userCredential.user.uid);
+              }
+            });
+          }
+          return userCredential;
+        })
+        // catch a error from 'signInWithEmailAndPassword()'
+        .catch((e: any) => {
+          this._currentUser$.next(this._setDefaultUserObj());
+          window.sessionStorage.removeItem('isLogged');
+          window.sessionStorage.removeItem('uid');
+          return null;
+        });
+      return user;
+    } catch (e) {
+      // catch a error from try
+      this._currentUser$.next(this._setDefaultUserObj());
+      window.sessionStorage.removeItem('isLogged');
+      window.sessionStorage.removeItem('uid');
+      return null;
+    }
+  }
+
+  /**
+   *
+   * Logout the user
+   *
+   * @returns
+   */
+  public logout(): Promise<void> {
+    this._currentUser$.next(this._setDefaultUserObj());
+    window.sessionStorage.removeItem('isLogged');
+    window.sessionStorage.removeItem('uid');
+    this._router.navigateByUrl('/login', { replaceUrl: true });
+    return signOut(this._auth);
+  }
+
+  /**
+   *
+   * fetch the current user from the BejourSubject '_currentUser$'
+   * and return this as Observable
+   *
+   * @returns Observable<UserI>
+   */
+  public fetchCurrentUser(): Observable<UserI> {
+    return this._currentUser$.asObservable();
+  }
+
   /**
    *
    * fetch a user by email
@@ -88,6 +172,21 @@ export class AuthService {
   }
 
   /**
+   * set the 'uid' and the 'isLogged' in the session
+   */
+  private _setCurrentUserSettings(): void {
+    onAuthStateChanged(this._auth, (user) => {
+      if (user) {
+        window.sessionStorage.setItem('uid', user.uid);
+        window.sessionStorage.setItem('isLogged', 'true');
+      } else {
+        window.sessionStorage.removeItem('uid');
+        window.sessionStorage.removeItem('isLogged');
+      }
+    });
+  }
+
+  /**
    * set the 'userObj' and return this
    *
    * @param userCredential
@@ -110,5 +209,26 @@ export class AuthService {
       updated: Date.now(),
     };
     return userObj;
+  }
+
+  /**
+   * fetch the standart UserI
+   *
+   * @returns UserI
+   */
+  private _setDefaultUserObj(): UserI {
+    return {
+      namespace: '',
+      uid: '',
+      key: '',
+      email: '',
+      isAdmin: false,
+      isActive: false,
+      isProVersion: false,
+      isVerification: false,
+      verificationEmailTstamp: 0,
+      created: 0,
+      updated: 0,
+    };
   }
 }

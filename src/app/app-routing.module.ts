@@ -1,27 +1,39 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { CanActivateGuard } from './authification/services/can-activate.guard';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
   },
+  {
+    path: 'home',
+    loadChildren: () =>
+      import('./home/home.module').then((m) => m.HomePageModule),
+    canActivate: [CanActivateGuard],
+  },
+  /*
+  ****************************************
+  Auth
+  ****************************************
+  */
   {
     path: 'auth',
-    loadChildren: () => import('./authification/auth/auth.module').then( m => m.AuthPageModule)
+    loadChildren: () =>
+      import('./authification/auth/auth.module').then((m) => m.AuthPageModule),
   },
   {
-    path: '',
-    redirectTo: 'auth',
-    pathMatch: 'full'
+    path: 'workout-list',
+    loadChildren: () => import('./pages/workout/workout-list/workout-list.module').then( m => m.WorkoutListPageModule)
   },
-
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

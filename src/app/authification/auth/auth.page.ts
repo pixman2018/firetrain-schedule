@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 // validators
 import { MustMatch } from 'src/app/shared/validators/MustMatchValidator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -35,6 +36,7 @@ export class AuthPage implements OnInit {
 
   constructor(
     private readonly _fb: FormBuilder,
+    private readonly _router: Router,
     private readonly _loadingCtrl: LoadingController,
     private readonly _authService: AuthService,
     private readonly _alertService: AlertService,
@@ -43,7 +45,41 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
-  protected onLogin() { }
+  /**
+   *
+   * Login  User
+   *
+   */
+  protected async onLogin() {
+    const loading = await this._loadingCtrl.create();
+    await loading.present();
+
+    const user = await this._authService.login(this.credentialsForm.value);
+    console.log('user', user)
+    if (user && user.user.emailVerified) {
+      this._alertService.showToast(
+        'Du hast Dich angemeldet.',
+        'middle',
+        'success'
+      );
+      this._router.navigateByUrl('/workout-list', { replaceUrl: true });
+    } else if (!user){
+      this._alertService.showAlert(
+        'Login fehlgeschlagen.',
+        'Bitte versuche es nocheinmal',
+        'danger'
+      );
+    } else if (user && !user.user.emailVerified) {
+      console.error('email not Verified');
+    } else {
+      this._alertService.showAlert(
+        'Login fehlgeschlagen.',
+        'Bitte versuche es nocheinmal',
+        'danger'
+      );
+  }
+  await loading.dismiss();
+}
 
   /**
    *
