@@ -33,7 +33,10 @@ const routes: Routes = [
     Workout
     ****************************************
   */
-
+    {
+      path: 'workout-list',
+      loadChildren: () => import('./pages/workout/workout-list/workout-list.module').then( m => m.WorkoutListPageModule)
+    },
 
 ];
 
