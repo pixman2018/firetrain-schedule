@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, UrlTree } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
@@ -11,5 +11,14 @@ export class FooterComponent  implements OnInit {
   constructor(private _router: Router,) { }
 
   ngOnInit() {}
+
+  // /**
+  //  *
+  //  * fo to the transferred page
+  //  *
+  //  */
+  // protected onGotTO(page: UrlTree | string): void {
+  //   this._router.navigateByUrl('/page');
+  // }
 
 }
