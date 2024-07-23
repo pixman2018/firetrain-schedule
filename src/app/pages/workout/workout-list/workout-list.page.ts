@@ -17,6 +17,6 @@ export class WorkoutListPage implements OnInit {
    *
    */
   protected onGoToAdd(): void {
-    this._router.navigateByUrl('/addWorkout', { replaceUrl: true });
+    this._router.navigateByUrl('/workout-form', { replaceUrl: true });
   }
 }
