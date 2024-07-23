@@ -28,6 +28,19 @@ const routes: Routes = [
     path: 'change-password',
     loadChildren: () => import('./authification/change-password/change-password.module').then( m => m.ChangePasswordPageModule)
   },
+  /*
+    ****************************************
+    Training
+    ****************************************
+  */
+    {
+      path: 'training-list',
+      loadChildren: () => import('./pages/training/training-list/training-list.module').then( m => m.TrainingListPageModule)
+    },
+    {
+      path: 'training-form',
+      loadChildren: () => import('./pages/training/training-form/training-form.module').then( m => m.TrainingFormPageModule)
+    },
     /*
     ****************************************
     Workout
@@ -41,6 +54,7 @@ const routes: Routes = [
     path: 'workout-form',
     loadChildren: () => import('./pages/workout/workout-form/workout-form.module').then( m => m.WorkoutFormPageModule)
   },
+
 
 ];
 
