@@ -37,6 +37,10 @@ const routes: Routes = [
       path: 'workout-list',
       loadChildren: () => import('./pages/workout/workout-list/workout-list.module').then( m => m.WorkoutListPageModule)
     },
+  {
+    path: 'workout-form',
+    loadChildren: () => import('./pages/workout/workout-form/workout-form.module').then( m => m.WorkoutFormPageModule)
+  },
 
 ];
 
