@@ -1,13 +1,103 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>training-form</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-basis-layout headline="Training Form">
+  <ion-row>
+    <ion-col size="12">
+      <div class="form-container">
+        <form class="form" (ngSubmit)="onSubmit()" [formGroup]="trainForm">
+          <!--
+          ****************************************
+          training
+          ****************************************
+          -->
+          <ion-row>
+            <ion-col>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">training-form</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+
+              <ion-item fill="fill">
+                <ion-input type="text" label="Training" formControlName="trainingCtrl" aria-label="Training"
+                  [clearInput]="true" labelPlacement="floating">
+                </ion-input>
+              </ion-item>
+              <!--
+                Error Message
+              -->
+              <div class="error-msg" *ngIf="trainingCtrl?.invalid  &&  isSubmit">
+                <ion-text color="danger" *ngIf="trainingCtrl?.hasError('required')">
+                  Bitte trage Dein Training ein.
+                </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+          <!--
+          ****************************************
+          category
+          ****************************************
+          -->
+          <ion-row>
+            <ion-col size="5">
+              <ion-item fill="fill">
+                <ion-select aria-label="Categories" label="Kategorie" labelPlacement="floating"
+                  formControlName="categoryId">
+                  @for( category of categories; track category; let index =
+                  $index) { @if (index !== 0) {
+                  <ion-select-option [value]="index">
+                    {{ category.de | titlecase}}
+                  </ion-select-option>
+                  }
+                  }
+                </ion-select>
+              </ion-item>
+               <!--
+                Error Message
+              -->
+              <div class="error-msg" *ngIf="categoryCtrl?.invalid  &&  isSubmit">
+                <ion-text color="danger" *ngIf="categoryCtrl?.hasError('required')">
+                  Bitte trage die Kategorie ein.
+                </ion-text>
+              </div>
+            </ion-col>
+
+            <ion-col size="5" offset="2">
+              <ion-item fill="fill">
+                <ion-select [multiple]="true" aria-label="Device" label="Gerät" labelPlacement="floating"
+                  formControlName="devices">
+                  @for( device of devices; track device; let index =
+                  $index) { @if (index !== 0) {
+                  <ion-select-option [value]="index">
+                    {{ device.de | titlecase}}
+                  </ion-select-option>
+                  }
+                  }
+                </ion-select>
+              </ion-item>
+               <!--
+                Error Message
+              -->
+              <div class="error-msg" *ngIf="categoryCtrl?.invalid  &&  isSubmit">
+                <ion-text color="danger" *ngIf="categoryCtrl?.hasError('required')">
+                  Bitte trage das Gerät ein.
+                </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <div class="elem-right submit-btn-container">
+                <ion-button
+                  type="submit"
+                  expand=""
+                  color="danger"
+                  fill="outline"
+                >
+                  Anlegen
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+
+
+        </form>
+      </div>
+    </ion-col>
+  </ion-row>
+</app-basis-layout>
