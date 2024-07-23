@@ -1,0 +1,27 @@
+<app-basis-layout [headline]="isEdit ? 'Workout bearbeiten' : 'Workout anlegen' ">
+  <ion-row>
+    <ion-col>
+      <ion-item lines="none">
+        <ion-button size="" fill="clear" color="danger"   (click)="onClickBack()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+          Workouts
+        </ion-button>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <div class="form-container">
+        <form
+          class="form"
+          (ngSubmit)="onSubmitWorkout()"
+          [formGroup]="workoutForm"
+        >
+        </form>
+      </div>
+    </ion-col>
+  </ion-row>
+</app-basis-layout>
+
+
