@@ -54,6 +54,15 @@ const routes: Routes = [
     path: 'workout-form',
     loadChildren: () => import('./pages/workout/workout-form/workout-form.module').then( m => m.WorkoutFormPageModule)
   },
+   /*
+    ****************************************
+    Example
+    ****************************************
+  */
+  {
+    path: 'example',
+    loadChildren: () => import('./example/ionic/home/home.module').then( m => m.HomePageModule)
+  },
 
 
 ];

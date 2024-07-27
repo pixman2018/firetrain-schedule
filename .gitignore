@@ -73,3 +73,8 @@ Thumbs.db
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+/ios
+/android
+
+/src/app/example/*

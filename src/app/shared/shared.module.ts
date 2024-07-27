@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 // components
 import { BasisLayoutComponent } from './content/basis-layout/basis-layout.component';
-import { FooterComponent } from './content/footer/footer.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 

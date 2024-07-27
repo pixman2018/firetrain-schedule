@@ -1,24 +1,21 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { AppRoutingModule } from './app-routing.module';
+import { provideHttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.prod';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+// ionic
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+// fireabse
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import {
-  getAnalytics,
-  provideAnalytics,
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import {
-  initializeAppCheck,
-  ReCaptchaEnterpriseProvider,
-  provideAppCheck,
-} from '@angular/fire/app-check';
+
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
@@ -31,7 +28,9 @@ import {
 } from '@angular/fire/remote-config';
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
-import { environment } from 'src/environments/environment.prod';
+
+
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,7 +40,8 @@ import { environment } from 'src/environments/environment.prod';
     AppRoutingModule,
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideHttpClient(),
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
