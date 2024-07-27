@@ -54,6 +54,10 @@ const routes: Routes = [
     path: 'workout-form',
     loadChildren: () => import('./pages/workout/workout-form/workout-form.module').then( m => m.WorkoutFormPageModule)
   },
+  {
+    path: 'training-in-workout-form/:key',
+    loadChildren: () => import('./pages/workout/training-in-workout-form/training-in-workout-form.module').then( m => m.TrainingInWorkoutFormPageModule)
+  },
    /*
     ****************************************
     Example
@@ -63,6 +67,7 @@ const routes: Routes = [
     path: 'example',
     loadChildren: () => import('./example/ionic/home/home.module').then( m => m.HomePageModule)
   },
+
 
 
 ];
