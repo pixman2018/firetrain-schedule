@@ -72,7 +72,7 @@ export class WorkoutFormPage implements OnInit {
     const newWorkoutId = this._workoutService.create(workout);
     if (newWorkoutId) {
       this._alertService.showToast('Neues Workout angelegt.', 'middle', 'success');
-      this._router.navigateByUrl(`/trainingsInWorkoutForm/${newWorkoutId}?workoutName=${workout.name}`, {
+      this._router.navigateByUrl(`/training-in-workout-form/${newWorkoutId}?workoutName=${workout.name}`, {
         replaceUrl: true,
       });
     } else {
@@ -100,7 +100,7 @@ export class WorkoutFormPage implements OnInit {
    * @return  AbstractControl<any, any> | null
    *
    */
-    protected get name(): AbstractControl<any, any> | null {
+    protected get nameCtrl(): AbstractControl<any, any> | null {
       return this.workoutForm.get('name');
     }
 
@@ -114,11 +114,11 @@ export class WorkoutFormPage implements OnInit {
   private _createWorkoutObj(): WorkoutI {
     const workout: WorkoutI = {
       namespace: 'workout',
-      name: this.name?.value,
+      name: this.nameCtrl?.value,
       userId: window.sessionStorage.getItem('uid')!,
       count: 0,
       trainings: [],
-      datesTstamps: [],
+      trainingsdayTstamps: [],
       isArchiv: false,
       folder: '',
       LengthOfTrainings: [],

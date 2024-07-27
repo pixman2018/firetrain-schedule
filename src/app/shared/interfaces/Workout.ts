@@ -8,7 +8,7 @@ export interface WorkoutI {
   count: number;
   // WorkoutI: number[];
   trainings?: [];
-  datesTstamps: number[];
+  trainingsdayTstamps: number[];
   isArchiv: boolean;
   folder: string;
   LengthOfTrainings: [];

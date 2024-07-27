@@ -2,7 +2,7 @@
   <ion-row>
     <ion-col>
       <ion-item lines="none">
-        <ion-button size="" fill="clear" color="danger"   (click)="onClickBack()">
+        <ion-button size="" fill="clear" color="danger" (click)="onClickBack()">
           <ion-icon name="chevron-back-outline"></ion-icon>
           Workouts
         </ion-button>
@@ -13,15 +13,45 @@
   <ion-row>
     <ion-col>
       <div class="form-container">
-        <form
-          class="form"
-          (ngSubmit)="onSubmitWorkout()"
-          [formGroup]="workoutForm"
-        >
+        <form class="form" (ngSubmit)="onSubmitWorkout()" [formGroup]="workoutForm">
+          <!--
+          ****************************************
+          Name
+          ****************************************
+          -->
+          <ion-row>
+            <ion-col>
+              <ion-item fill="fill">
+                <ion-input type="text" label="Name" aria-label="Name" labelPlacement="floating" formControlName="name"
+                  [clearInput]="true">
+                </ion-input>
+              </ion-item>
+              <!--
+                  Error Message
+                -->
+              <div class="error-msg" *ngIf="nameCtrl?.invalid  &&  isSubmit">
+                <ion-text color="danger" *ngIf="nameCtrl?.hasError('required')">
+                  Bitte gebe dein Workout einen Namen.
+                </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+           <!--
+          ****************************************
+          Submit
+          ****************************************
+          -->
+          <ion-row>
+            <ion-col>
+              <div class="elem-right submit-btn-container">
+                <ion-button type="submit" expand="" color="danger" fill="outline">
+                  @if (isEdit) { Ändern } @else { Anlegen }
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
         </form>
       </div>
     </ion-col>
   </ion-row>
 </app-basis-layout>
-
-
