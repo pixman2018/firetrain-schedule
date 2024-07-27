@@ -1,0 +1,18 @@
+ion-toolbar.search-in-toolbar {
+  margin: 1rem 0;
+  --border-width: 1px;
+  --border-color: var(--ion-color-danger);
+  ion-searchbar {
+    --icon-color: var(--ion-color-danger);
+    --clear-button-color: var(--ion-color-danger);
+    --box-shadow: none;
+  }
+}
+
+.filter-container {
+  display: flex;
+  .filter-select-container {
+    width: 6rem;
+    margin-right: 1rem;
+  }
+}

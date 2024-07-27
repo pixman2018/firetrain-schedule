@@ -1,12 +1,52 @@
 <app-basis-layout headline="Training-List">
+
+  <ion-toolbar class="search-in-toolbar" color="">
+    <ion-searchbar
+      show-clear-button="always"
+      clear-icon="trash-bin"
+      placeholder="Suche..."
+      [debounce]="1000"
+      (ionInput)="onHandleInput($event)">
+    </ion-searchbar>
+  </ion-toolbar>
+
+  <ion-toolbar color="">
+    <ion-item class="filter-container">
+      <div class="filter-select-container">
+        <ion-select aria-label="Categories" label="Filter" [multiple]="true" (ionChange)="onSelected()"
+          (ionCancel)="onCancel()" [formControl]="selected" cancelText="Löschen" okText="Setzen">
+          @for( category of categories; track category; let index =
+          $index) { @if (index !== 0) {
+          <ion-select-option [value]="category.de">
+            {{ category.de | titlecase}}
+          </ion-select-option>
+          }
+          }
+        </ion-select>
+
+      </div>
+      <div class="filter-select-result">
+        @for (selected of selectedCtrl; track selected; let last = $last) {
+        <ion-chip>{{ selected }}{{ last ? '' : ', ' }}</ion-chip>
+        }
+      </div>
+    </ion-item>
+  </ion-toolbar>
+
   <ion-row>
     <ion-col size="12">
       <ion-item lines="none">
-        <ion-button size="" fill="clear" color="danger"  class="m-hc" [routerLink]="'/training-form'">
-          <ion-icon slot="start" name="add-circle-outline" color="danger" ></ion-icon>
+        <ion-button size="" fill="clear" color="danger" class="m-hc" [routerLink]="'/training-form'">
+          <ion-icon slot="start" name="add-circle-outline" color="danger"></ion-icon>
           Training hinzufügen
         </ion-button>
       </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+
     </ion-col>
   </ion-row>
 </app-basis-layout>
