@@ -1,0 +1,117 @@
+<app-basis-layout [headline]="'Training in Workout: &quot;' + workoutName +  '&quot; einfügen'">
+  <ion-row>
+    <ion-col>
+      <ion-item lines="none">
+        <ion-button size="" fill="clear" color="danger" (click)="onClickBack()" class="back-btn">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+          Workouts
+        </ion-button>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <!--
+  ********************************************************************************
+  *****
+  ***
+  * training in workout list
+  ***
+  *****
+  ********************************************************************************
+  -->
+  <div class="training-list-container">
+    <ion-row>
+      @if (trainings['length']) {
+        <ion-col size="12">
+          <ion-text>
+            <h3>Trainings</h3>
+          </ion-text>
+        </ion-col>
+      <ion-col size="12">
+        <ion-list>
+          @for (training of trainings;  track training; let indexTrain = $index; let lastTrain = $last) {
+          <ion-item>
+            <ion-label  slot="start">
+              {{ training.name }}
+            </ion-label>
+            <ion-button size="" fill="clear" color="danger" class="m-hc cursor" slot="end" [id]="'trigger' + indexTrain">
+              <ion-icon slot="start" name="ellipsis-vertical-outline" color="danger"></ion-icon>
+            </ion-button>
+            <!--
+            ****************************************
+            show contextmenu
+            ****************************************
+            -->
+            <ion-popover
+                  [trigger]="'trigger' + indexTrain"
+                  [dismissOnSelect]="true"
+                  triggerAction="click"
+                >
+                  <ng-template>
+                    <ion-content>
+                      <ion-list>
+                        @if (indexTrain > 0) {
+                        <!-- <ion-item
+                          [button]="true"
+                          [detail]="false"
+                          (click)="onChanceOrder('up', indexTrain)"
+                        >
+                          <ion-text color="danger">Position hoch</ion-text>
+                        </ion-item> -->
+                        } @if (!lastTrain) {
+                        <!-- <ion-item
+                          [button]="true"
+                          [detail]="false"
+                          (click)="onChanceOrder('down', indexTrain)"
+                        >
+                          <ion-text color="danger">Position runter</ion-text>
+                        </ion-item> -->
+                        }
+                        <ion-item [button]="true" [detail]="false" (click)="onEditTraining(training)">
+                          <ion-text color="danger">Bearbeiten</ion-text>
+                        </ion-item>
+                        <ion-item [button]="true" [detail]="false" (click)="onDelTraining(training.key, training.name)">
+                          <ion-text color="danger">Löschen</ion-text>
+                        </ion-item>
+                      </ion-list>
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-col>
+      }
+      @else {
+      <ion-col size="12" >
+       <ion-item lines="none">
+        <ion-text color="" class="m-hc ">
+          Bitte füge ein oder mehrere Übungen hinzu.
+        </ion-text>
+       </ion-item>
+      </ion-col>
+      }
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-button size="" fill="clear" color="danger" class="m-hc" (click)="onTrainingForm()">
+            <ion-icon slot="start" name="add-circle-outline" color="danger"></ion-icon>
+            Training einfügen
+          </ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    @if (trainings['length']) {
+    <ion-row>
+      <ion-col>
+        <div class="submit-btn-container">
+          <ion-button type="submit" expand="block" color="danger" fill="outline">
+            Start Workout
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+    }
+  </div>
+</app-basis-layout>

@@ -26,50 +26,85 @@ const routes: Routes = [
   },
   {
     path: 'change-password',
-    loadChildren: () => import('./authification/change-password/change-password.module').then( m => m.ChangePasswordPageModule)
+    loadChildren: () =>
+      import('./authification/change-password/change-password.module').then(
+        (m) => m.ChangePasswordPageModule
+      ),
   },
   /*
     ****************************************
     Training
     ****************************************
   */
-    {
-      path: 'training-list',
-      loadChildren: () => import('./pages/training/training-list/training-list.module').then( m => m.TrainingListPageModule)
-    },
-    {
-      path: 'training-form',
-      loadChildren: () => import('./pages/training/training-form/training-form.module').then( m => m.TrainingFormPageModule)
-    },
-    /*
+  {
+    path: 'training-list',
+    loadChildren: () =>
+      import('./pages/training/training-list/training-list.module').then(
+        (m) => m.TrainingListPageModule
+      ),
+  },
+  {
+    path: 'training-form',
+    loadChildren: () =>
+      import('./pages/training/training-form/training-form.module').then(
+        (m) => m.TrainingFormPageModule
+      ),
+  },
+  /*
     ****************************************
     Workout
     ****************************************
   */
-    {
-      path: 'workout-list',
-      loadChildren: () => import('./pages/workout/workout-list/workout-list.module').then( m => m.WorkoutListPageModule)
-    },
+  {
+    path: 'workout-list',
+    loadChildren: () =>
+      import('./pages/workout/workout-list/workout-list.module').then(
+        (m) => m.WorkoutListPageModule
+      ),
+  },
   {
     path: 'workout-form',
-    loadChildren: () => import('./pages/workout/workout-form/workout-form.module').then( m => m.WorkoutFormPageModule)
+    loadChildren: () =>
+      import('./pages/workout/workout-form/workout-form.module').then(
+        (m) => m.WorkoutFormPageModule
+      ),
+  },
+  /*
+    ****************************************
+    training-in-workou
+    ****************************************
+  */
+  {
+    path: 'trainings-in-workout-list/:key',
+    loadChildren: () =>
+      import(
+        './pages/trainingsInWorkout/trainings-in-workout-list/trainings-in-workout-list.module'
+      ).then((m) => m.TrainingsInWorkoutListPageModule),
   },
   {
     path: 'training-in-workout-form/:key',
-    loadChildren: () => import('./pages/workout/training-in-workout-form/training-in-workout-form.module').then( m => m.TrainingInWorkoutFormPageModule)
+    loadChildren: () =>
+      import(
+        './pages/trainingsInWorkout/training-in-workout-form/training-in-workout-form.module'
+      ).then((m) => m.TrainingInWorkoutFormPageModule),
   },
-   /*
+  /*
     ****************************************
     Example
     ****************************************
   */
   {
     path: 'example',
-    loadChildren: () => import('./example/ionic/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () =>
+      import('./example/ionic/home/home.module').then((m) => m.HomePageModule),
   },
-
-
-
+  {
+    path: 'style-guide',
+    loadChildren: () =>
+      import('./example/style-guide/style-guide.module').then(
+        (m) => m.StyleGuidePageModule
+      ),
+  },
 ];
 
 @NgModule({

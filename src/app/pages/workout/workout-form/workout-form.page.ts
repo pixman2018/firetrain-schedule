@@ -72,7 +72,7 @@ export class WorkoutFormPage implements OnInit {
     const newWorkoutId = this._workoutService.create(workout);
     if (newWorkoutId) {
       this._alertService.showToast('Neues Workout angelegt.', 'middle', 'success');
-      this._router.navigateByUrl(`/training-in-workout-form/${newWorkoutId}?workoutName=${workout.name}`, {
+      this._router.navigateByUrl(`/trainings-in-workout-list/${newWorkoutId}?workoutName=${workout.name}`, {
         replaceUrl: true,
       });
       // this._workoutService.createTrainingInWorkout(newWorkoutId);

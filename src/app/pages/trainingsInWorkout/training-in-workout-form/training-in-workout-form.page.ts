@@ -5,12 +5,16 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
-import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI';
-import { WorkoutI } from 'src/app/shared/interfaces/Workout';
+import {  ActivatedRoute, Router } from '@angular/router';
+
+// services
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
+// interfaces
+import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI';
+import { WorkoutI } from 'src/app/shared/interfaces/Workout';
+import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-training-in-workout-form',
@@ -18,12 +22,15 @@ import { WorkoutService } from 'src/app/shared/services/workoutService/workout.s
   styleUrls: ['./training-in-workout-form.page.scss'],
 })
 export class TrainingInWorkoutFormPage implements OnInit {
+
   protected workoutName: string = '';
   protected workout: WorkoutI | undefined;
   private _workoutKey: string = '-1';
-  protected trainings: any[] = []; // TrainingInWorkoutI
+  private training: TrainingInWorkoutI | undefined;
+  protected headline: string = '';
+
   private _userId: string = window.sessionStorage.getItem('uid') ?? '-1';
-  protected highestOrder: number = -1;
+  private _highestOrder: number = 0;
 
   // form
   protected trainingsInWorkoutFrom: FormGroup = this._trainingsInWorkoutForm();
@@ -34,28 +41,16 @@ export class TrainingInWorkoutFormPage implements OnInit {
   protected isEdit: boolean = false;
 
   constructor(
-    private readonly _router: Router,
-    private readonly _route: ActivatedRoute,
     private readonly _fb: FormBuilder,
+    private readonly _route: ActivatedRoute,
+    private readonly _router: Router,
     private readonly _alertService: AlertService,
-    private readonly _workoutService: WorkoutService
+    private readonly _workoutService: WorkoutService,
+    private readonly _trainingInWorkoutService: TrainingInWorkoutService,
   ) {}
 
   ngOnInit() {
     this._initComponent();
-
-    this._workoutService.fetchByKey(this._workoutKey).subscribe((res) => {
-      console.log('workout', res);
-    });
-  }
-
-  /**
-   *
-   * show the form for training
-   *
-   */
-  protected onShowForm(): void {
-    this.isShowForm = true;
   }
 
   /**
@@ -64,27 +59,39 @@ export class TrainingInWorkoutFormPage implements OnInit {
    *
    */
   private _fetchWorkoutByKey(): void {
-    this._workoutService.fetchByKey(this._workoutKey).subscribe((workout) => {
-      this.workout = workout;
-    });
+    this._workoutService.fetchByKey(this._workoutKey)
+      .pipe(
+        take(1)
+      ).subscribe({
+        next: (workout => {
+          this.workout = workout;
+        }),
+        error: (error => {
+          console.error('ERROR by fetchWorkoutByKey', error);
+        }),
+        complete: () => {
+          if (this.workout && this.workout.name) {
+            this.workoutName = this.workout?.name;
+            this.headline = `Training in Workout: "${this.workoutName}" ${this.isEdit ? 'bearbeiten' : 'einfügen'}`;
+          }
+        }
+      })
+
   }
 
-  /**
-   *
-   * fetch all trainings from workout
-   *
-   */
-  private _fetchTrainings(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let result = [];
-      this._workoutService
-        .fetchAllTrainingInWorkout(this._workoutKey)
-        .subscribe((training) => {
-          this.trainings = training;
-        });
-
-    });
+  private _fetchTrainingByKey(trainingKey: string) {
+    this._trainingInWorkoutService.fetchTrainingByKey(this._workoutKey, trainingKey)
+      .pipe(
+        take(1)
+      )
+      .subscribe(training => {
+        this.training = training[0];
+        this.trainingCtrl?.setValue(this.training.name);
+        this.goalRepsStartCtrl?.setValue(this.training.goalRepsStart);
+        this.goalRepsEndCtrl?.setValue(this.training.goalRepsEnd);
+      });
   }
+
 
   /**
    *
@@ -101,7 +108,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
       workoutName: this.workoutName,
       isNegativeWeight: false,
       name: this.trainingCtrl?.value,
-      order: ++this.highestOrder,
+      order: ++this._highestOrder,
       goalRepsStart: this.goalRepsStartCtrl?.value,
       goalRepsEnd: this.goalRepsEndCtrl?.value,
       count: 1,
@@ -135,6 +142,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
     this.isSubmit = true;
     if (this.trainingsInWorkoutFrom.valid) {
       if (this.isEdit) {
+        this._editTrainingInWorkout();
       } else {
         this._addTrainingsInWorkout();
       }
@@ -147,20 +155,49 @@ export class TrainingInWorkoutFormPage implements OnInit {
    *
    */
   private _addTrainingsInWorkout(): void {
-    console.log(this.trainingsInWorkoutFrom.value);
+
     const training = this._createTrainingInWorkout();
-    if (this._workoutService.createTrainingInWorkout(training)) {
-      this._alertService.showAlert(
-        'Training hinzugefügt',
-        `${training.name} wurde hinzugefügt.`,
+    if (this._trainingInWorkoutService.createTrainingInWorkout(training)) {
+      this._alertService.showToast(
+        `Training "${training.name}" wurde hinzugefügt.`,
+        'top',
         'success'
       );
+      this._router.navigateByUrl(`trainings-in-workout-list/${this._workoutKey}`, {
+        replaceUrl: true,
+      });
     } else {
       this._alertService.showAlert(
         'Error',
         `Training konnte nicht hinzugefügt werden`,
         'danger'
       );
+    }
+  }
+
+  protected _editTrainingInWorkout() {
+    if (this.training) {
+      this.training['name'] = this.trainingCtrl?.value;
+      this.training['goalRepsStart'] = this.goalRepsStartCtrl?.value;
+      this.training['goalRepsEnd'] = this.goalRepsEndCtrl?.value;
+      this._trainingInWorkoutService.editTrainingInWorkout(this.training)
+        .then(() => {
+          this._alertService.showToast(
+            `Training "${this.training?.name}" wurde geändert.`,
+            'top',
+            'success'
+          );
+          this._router.navigateByUrl(`trainings-in-workout-list/${this._workoutKey}`, {
+            replaceUrl: true,
+          });
+        })
+        .catch(() => {
+          this._alertService.showAlert(
+            'Error',
+            `Training konnte nicht geändert werden`,
+            'danger'
+          );
+        });
     }
   }
 
@@ -212,22 +249,11 @@ export class TrainingInWorkoutFormPage implements OnInit {
   }
 
   private _initComponent(): void {
-    /*
-    ****************************************
-    read the query params and params
-    ****************************************
-    */
-    this.workoutName = this._route.snapshot.queryParams['workoutName'] ?? null;
-    this._workoutKey = this._route.snapshot.paramMap.get('key') ?? '-1';
-    if (!this.workoutName || !this._workoutKey) {
-      // TODO: Error Logger https://www.codemag.com/article/1711021/Logging-in-Angular-Applications
-      console.error(
-        'ERROR: ',
-        this.workoutName + ' or ' + this._workoutKey + ' not exsist.'
-      );
-      this._router.navigateByUrl(`/'workout-list}`, {
-        replaceUrl: true,
-      });
+    this._workoutKey = this._route.snapshot.params['key'] ?? null;
+    this._highestOrder = this._route.snapshot.queryParams['trainingsLenth'];
+    if (this._route.snapshot.queryParamMap.has('isEdit')) {
+      this.isEdit = true;
+      this._fetchTrainingByKey(this._route.snapshot.queryParams['trainingKey']);
     }
     /*
     ****************************************
@@ -240,7 +266,6 @@ export class TrainingInWorkoutFormPage implements OnInit {
       });
     } else {
       this._fetchWorkoutByKey();
-      this._fetchTrainings();
     }
   }
 }

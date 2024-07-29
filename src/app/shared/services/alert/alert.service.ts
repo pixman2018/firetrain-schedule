@@ -81,6 +81,8 @@ export class AlertService {
   }
 
   public getConfirmResult(): Observable<boolean> {
-    return this._confirmResult$.asObservable();
+    const result$ = this._confirmResult$.asObservable();
+    this._confirmResult$.next(false);
+    return result$;
   }
 }

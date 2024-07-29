@@ -1,64 +1,5 @@
-<app-basis-layout [headline]="'Training in Workout: &quot;' + workoutName +  '&quot; einfügen'">
-  <!--
-  ********************************************************************************
-  *****
-  ***
-  * training in workout list
-  ***
-  *****
-  ********************************************************************************
-  -->
-  <div class="training-list-container">
-    <ion-row>
-      @if (trainings['length']) {
-        <ion-col size="12">
-          <ion-text>
-            <h3>Trainings</h3>
-          </ion-text>
-        </ion-col>
-      <ion-col size="12">
-        <ion-list>
-          @for (training of trainings;  track training) {
-          <ion-item>
-            {{ training.name }}
-          </ion-item>
-          }
-        </ion-list>
-      </ion-col>
-      }
-      @else {
-      <ion-col size="12" >
-       <ion-item line="none">
-        <ion-text color="danger" class="m-hc ">
-          Bitte füge ein oder mehrere Übungen hinzu.
-        </ion-text>
-       </ion-item>
-      </ion-col>
-      }
-    </ion-row>
+<app-basis-layout [headline]="headline">
 
-    <ion-row>
-      <ion-col>
-        <ion-item lines="none">
-          <ion-button size="" fill="clear" color="danger" class="m-hc" (click)="onShowForm()">
-            <ion-icon slot="start" name="add-circle-outline" color="danger"></ion-icon>
-            Training einfügen
-          </ion-button>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </div>
-
-  <!--
-  ********************************************************************************
-  *****
-  ***
-  * Training in workout form
-  ***
-  *****
-  ********************************************************************************
-  -->
-  @if (isShowForm) {
   <div class="form-container">
     <form class="form" [formGroup]="trainingsInWorkoutFrom" (ngSubmit)="onSubmitTrainingsInWorkout()">
       <!--
@@ -143,5 +84,7 @@
       </ion-row>
     </form>
   </div>
-  }
+
 </app-basis-layout>
+
+

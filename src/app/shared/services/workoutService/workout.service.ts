@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 
 import { Observable, take } from 'rxjs';
 
-import { AngularFirestore, AngularFirestoreCollection, DocumentData } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 // interfcae
 import { WorkoutI } from '../../interfaces/Workout';
-import { TrainingInWorkoutI } from '../../interfaces/TrainingInWorkoutI';
+
 
 
 @Injectable({
@@ -20,7 +20,7 @@ export class WorkoutService {
 
   constructor(
     private readonly _router: Router,
-    private _afs: AngularFirestore,
+    private readonly _afs: AngularFirestore,
   ) {
     this._workoutCollection = _afs.collection(this._dbPath);
     this._constructComponent();
@@ -47,40 +47,6 @@ export class WorkoutService {
     this._workoutCollection.doc(key).set(workout);
     return key;
   }
-
-  /*
-  ********************************************************************************
-  *****
-  ***
-  * Training in Workout
-  ***
-  *****
-  ********************************************************************************
-  */
- public fetchAllTrainingInWorkout(workoutkey: string): Observable<DocumentData[]> {
-  return this._workoutCollection
-    .doc(workoutkey)
-    .collection('trainings')
-    .valueChanges();
- }
-
- public createTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI): string {
-  const key = this._afs.createId();
-  trainingInWorkout['key'] = key;
-  this._workoutCollection
-    .doc(trainingInWorkout.workoutkey)
-    .collection('trainings')
-    .add(trainingInWorkout)
-    return key;
- }
-
- public updateTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI): Promise<void> {
-  return this._workoutCollection
-    .doc(trainingInWorkout.workoutkey)
-    .collection('trainings')
-    .doc(trainingInWorkout.key)
-    .update(trainingInWorkout)
- }
 
   private async _constructComponent() {
     const userId =  sessionStorage.getItem('uid') ;
