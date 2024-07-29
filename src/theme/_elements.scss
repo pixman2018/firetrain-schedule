@@ -7,6 +7,8 @@
 *****
 ********************************************************************************
 */
+
+
 form,
 .result-output {
   ion-item:not(header ion-item) {
@@ -15,8 +17,7 @@ form,
 }
 
 form {
-  ion-item:not(:last-child),
-  ion-button:not(:last-child) {
+  ion-row:not(:last-child) {
     margin-bottom: 1rem;
   }
 }
@@ -103,5 +104,26 @@ ion-accordion {
     ion-item {
       border: none;
     }
+  }
+}
+
+/*
+********************************************************************************
+*****
+***
+* list
+***
+*****
+********************************************************************************
+*/
+[class^="training-list"] {
+  ion-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }

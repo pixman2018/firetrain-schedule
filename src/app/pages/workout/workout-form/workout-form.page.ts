@@ -75,6 +75,7 @@ export class WorkoutFormPage implements OnInit {
       this._router.navigateByUrl(`/training-in-workout-form/${newWorkoutId}?workoutName=${workout.name}`, {
         replaceUrl: true,
       });
+      // this._workoutService.createTrainingInWorkout(newWorkoutId);
     } else {
       this._alertService.showToast('Workout konnt nicht angelegt werden.', 'middle', 'danger');
     }
@@ -117,7 +118,7 @@ export class WorkoutFormPage implements OnInit {
       name: this.nameCtrl?.value,
       userId: window.sessionStorage.getItem('uid')!,
       count: 0,
-      trainings: [],
+      // trainings: [],
       trainingsdayTstamps: [],
       isArchiv: false,
       folder: '',
