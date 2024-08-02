@@ -63,7 +63,14 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'workout-form',
+    path: 'workout-add',
+    loadChildren: () =>
+      import('./pages/workout/workout-form/workout-form.module').then(
+        (m) => m.WorkoutFormPageModule
+      ),
+  },
+  {
+    path: 'workout-edit/:key',
     loadChildren: () =>
       import('./pages/workout/workout-form/workout-form.module').then(
         (m) => m.WorkoutFormPageModule

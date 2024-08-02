@@ -1,0 +1,62 @@
+<ion-list>
+  @for (training of trainings; track training; let index = $index; let last = $last) {
+  <ion-item lines="">
+    <ion-label>
+      {{ training.name | titlecase}}
+    </ion-label>
+    <ion-text>
+      @if (training.goalRepsStart) {
+      {{ training.goalRepsStart}} - {{ training.goalRepsEnd}}
+      }
+      @else {
+      {{ training.goalRepsEnd}}
+      }
+    </ion-text>
+    <ion-button size="" fill="clear" color="" class="cursor" slot="" [id]="'triggerTraining' + countAccordion + index">
+      <ion-icon slot="" name="ellipsis-vertical-outline" color="danger"></ion-icon>
+    </ion-button>
+
+    <!--
+            ****************************************
+            show contextmenu
+            ****************************************
+            -->
+    <ion-popover [trigger]="'triggerTraining' + countAccordion + index" [dismissOnSelect]="true" triggerAction="click">
+      <ng-template>
+        <ion-content>
+          <ion-list>
+            @if (index > 0) {
+            <!-- <ion-item
+                          [button]="true"
+                          [detail]="false"
+                          (click)="onChanceOrder('up', indexTrain)"
+                        >
+                          <ion-text color="danger">Position hoch</ion-text>
+                        </ion-item> -->
+            } @if (!last) {
+            <!-- <ion-item
+                          [button]="true"
+                          [detail]="false"
+                          (click)="onChanceOrder('down', indexTrain)"
+                        >
+                          <ion-text color="danger">Position runter</ion-text>
+                        </ion-item> -->
+            }
+            <ion-item [button]="true" [detail]="false" (click)="onEditTraining(training)">
+              <ion-text color="danger">Bearbeiten</ion-text>
+            </ion-item>
+            <ion-item [button]="true" [detail]="false" (click)="onDeleteTraining(training)">
+              <ion-text color="danger">Löschen</ion-text>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
+  </ion-item>
+
+
+  }
+</ion-list>
+<!-- <pre>
+  {{ trainings | json}}
+</pre> -->
