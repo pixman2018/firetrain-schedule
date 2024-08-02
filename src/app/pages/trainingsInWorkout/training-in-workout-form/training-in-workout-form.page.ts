@@ -15,6 +15,7 @@ import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI
 import { WorkoutI } from 'src/app/shared/interfaces/Workout';
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
 import { take } from 'rxjs';
+import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
 
 @Component({
   selector: 'app-training-in-workout-form',
@@ -31,6 +32,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
 
   private _userId: string = window.sessionStorage.getItem('uid') ?? '-1';
   private _highestOrder: number = 0;
+  protected _backUrl: string = 'trainings-in-workout-list'
 
   // form
   protected trainingsInWorkoutFrom: FormGroup = this._trainingsInWorkoutForm();
@@ -72,7 +74,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
         complete: () => {
           if (this.workout && this.workout.name) {
             this.workoutName = this.workout?.name;
-            this.headline = `Training in Workout: "${this.workoutName}" ${this.isEdit ? 'bearbeiten' : 'einfügen'}`;
+            this.headline = `Training in "${this.workoutName}" ${this.isEdit ? 'bearbeiten' : 'einfügen'}`;
           }
         }
       })
@@ -92,6 +94,18 @@ export class TrainingInWorkoutFormPage implements OnInit {
       });
   }
 
+  private _getTrainingsByWorkoutKey() {
+    if (this._workoutKey) {
+      this._trainingInWorkoutService.fetchAllTrainingInWorkout(this._workoutKey)
+        .subscribe((training) => {
+          const trainingArr = training;
+          this._highestOrder = trainingArr.length;
+          console.log('_highestOrder', this._highestOrder);
+        });
+
+    }
+  }
+
 
   /**
    *
@@ -101,13 +115,14 @@ export class TrainingInWorkoutFormPage implements OnInit {
    *
    */
   private _createTrainingInWorkout(): TrainingInWorkoutI {
+    const ucFirst = new UcfirstPipe();
     return {
       namespace: 'trainingInWorkout',
       key: '',
       workoutkey: this._workoutKey,
       workoutName: this.workoutName,
       isNegativeWeight: false,
-      name: this.trainingCtrl?.value,
+      name: ucFirst.transform(this.trainingCtrl?.value),
       order: ++this._highestOrder,
       goalRepsStart: this.goalRepsStartCtrl?.value,
       goalRepsEnd: this.goalRepsEndCtrl?.value,
@@ -160,10 +175,10 @@ export class TrainingInWorkoutFormPage implements OnInit {
     if (this._trainingInWorkoutService.createTrainingInWorkout(training)) {
       this._alertService.showToast(
         `Training "${training.name}" wurde hinzugefügt.`,
-        'top',
+        'middle',
         'success'
       );
-      this._router.navigateByUrl(`trainings-in-workout-list/${this._workoutKey}`, {
+      this._router.navigateByUrl(`${this._backUrl}/${this._workoutKey}?workoutName=${this.workoutName}`, {
         replaceUrl: true,
       });
     } else {
@@ -184,12 +199,19 @@ export class TrainingInWorkoutFormPage implements OnInit {
         .then(() => {
           this._alertService.showToast(
             `Training "${this.training?.name}" wurde geändert.`,
-            'top',
+            'middle',
             'success'
           );
-          this._router.navigateByUrl(`trainings-in-workout-list/${this._workoutKey}`, {
-            replaceUrl: true,
-          });
+          if (this._route.snapshot.queryParamMap.has('url') && this._route.snapshot.queryParamMap.get('url') == 'workoutList') {
+            const accordion = 'workout' + this._route.snapshot.queryParamMap.get('index');
+            this._router.navigateByUrl(`workout-list?accordion=${accordion}`, {
+              replaceUrl: true,
+            });
+          } else {
+            this._router.navigateByUrl(`${this._backUrl}/${this._workoutKey}?workoutName=${this.workoutName}`, {
+              replaceUrl: true,
+            });
+          }
         })
         .catch(() => {
           this._alertService.showAlert(
@@ -250,7 +272,12 @@ export class TrainingInWorkoutFormPage implements OnInit {
 
   private _initComponent(): void {
     this._workoutKey = this._route.snapshot.params['key'] ?? null;
-    this._highestOrder = this._route.snapshot.queryParams['trainingsLenth'];
+    if (this._route.snapshot.queryParamMap.has('trainingsLenth')) {
+      this._highestOrder = this._route.snapshot.queryParams['trainingsLenth'];
+    } else {
+      this._getTrainingsByWorkoutKey();
+    }
+
     if (this._route.snapshot.queryParamMap.has('isEdit')) {
       this.isEdit = true;
       this._fetchTrainingByKey(this._route.snapshot.queryParams['trainingKey']);

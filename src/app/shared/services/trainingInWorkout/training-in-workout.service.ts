@@ -64,8 +64,8 @@ export class TrainingInWorkoutService {
       .update(trainingInWorkout)
    }
 
-   public delTrainingInWorkout(workoutKey: string, trainingKey: string): Promise<void>  {
-    return this._workoutCollection
+   public delTrainingInWorkout(workoutKey: string, trainingKey: string): Promise<void>   {
+      return this._workoutCollection
       .doc(workoutKey)
       .collection<TrainingInWorkoutI>('trainings')
       .doc(trainingKey)

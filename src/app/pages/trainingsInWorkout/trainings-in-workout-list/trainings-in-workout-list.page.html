@@ -1,8 +1,8 @@
-<app-basis-layout [headline]="'Training in Workout: &quot;' + workoutName +  '&quot; einfügen'">
+<app-basis-layout [headline]="'Trainings in &quot;' + workoutName +  '&quot; '">
   <ion-row>
     <ion-col>
       <ion-item lines="none">
-        <ion-button size="" fill="clear" color="danger" (click)="onClickBack()" class="back-btn">
+        <ion-button size="" fill="clear" color="danger" (click)="onToWorkout()" class="back-btn">
           <ion-icon name="chevron-back-outline"></ion-icon>
           Workouts
         </ion-button>
@@ -30,10 +30,10 @@
         <ion-list>
           @for (training of trainings;  track training; let indexTrain = $index; let lastTrain = $last) {
           <ion-item>
-            <ion-label  slot="start">
+            <ion-label  >
               {{ training.name }}
             </ion-label>
-            <ion-button size="" fill="clear" color="danger" class="m-hc cursor" slot="end" [id]="'trigger' + indexTrain">
+            <ion-button size="" fill="clear" color="danger" class="m-hc cursor" slot="" [id]="'trigger' + indexTrain" >
               <ion-icon slot="start" name="ellipsis-vertical-outline" color="danger"></ion-icon>
             </ion-button>
             <!--
@@ -102,16 +102,6 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    @if (trainings['length']) {
-    <ion-row>
-      <ion-col>
-        <div class="submit-btn-container">
-          <ion-button type="submit" expand="block" color="danger" fill="outline">
-            Start Workout
-          </ion-button>
-        </div>
-      </ion-col>
-    </ion-row>
-    }
+
   </div>
 </app-basis-layout>

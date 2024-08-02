@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, IonicSafeString } from '@ionic/angular';
 
 // service
-import { HelperService } from 'src/app/shared/services/helper/helper.service';
-import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
 // interface
 import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trainings-in-workout-list',
@@ -28,9 +26,7 @@ export class TrainingsInWorkoutListPage implements OnInit {
     private readonly _route: ActivatedRoute,
     private readonly _router: Router,
     private readonly _alertService: AlertService,
-    private readonly _workoutService: WorkoutService,
     private readonly _trainingInWorkoutService: TrainingInWorkoutService,
-    private readonly _helperService: HelperService
   ) {}
 
   ngOnInit() {
@@ -39,11 +35,16 @@ export class TrainingsInWorkoutListPage implements OnInit {
 
   /**
    *
-   * Go to the prev page
+   * Go to the workout-list
    *
    */
-  protected onClickBack(): void {
-    this._helperService.backBtn();
+  protected onToWorkout(): void {
+    this._router.navigateByUrl(
+      `workout-list`,
+      {
+        replaceUrl: true,
+      }
+    );
   }
 
   protected onEditTraining(training: TrainingInWorkoutI) {
@@ -63,6 +64,13 @@ export class TrainingsInWorkoutListPage implements OnInit {
       `Möchtest du das Training "${name}" wirklich löschen?`,
       'warning'
     );
+    const trainingConfirm: Subscription = this._alertService.getConfirmResult()
+    .subscribe(res => {
+      if (res) {
+        trainingConfirm.unsubscribe();
+        this._delTraining();
+      }
+    });
   }
 
   private _delTraining() {
@@ -72,7 +80,7 @@ export class TrainingsInWorkoutListPage implements OnInit {
           `Training "${this._trainingName}" gelöscht.`,
           'top',
           'success'
-        )
+        );
       })
       .catch((error) => {
         console.error('Error', 'Training konnte nicht gelöscht werden');
@@ -101,6 +109,8 @@ export class TrainingsInWorkoutListPage implements OnInit {
       });
   }
 
+
+
   private _initComponent(): void {
     /*
     ****************************************
@@ -121,13 +131,6 @@ export class TrainingsInWorkoutListPage implements OnInit {
       });
     } else {
       this._fetchTrainings();
-
-      this._alertService.getConfirmResult()
-        .subscribe(res => {
-          if (res) {
-            this._delTraining();
-          }
-        });
     }
   }
 }

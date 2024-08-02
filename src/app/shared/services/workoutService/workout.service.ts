@@ -26,6 +26,12 @@ export class WorkoutService {
     this._constructComponent();
   }
 
+  public fetchAll():Observable<WorkoutI[] | undefined>  {
+    return this._afs.collection<WorkoutI>(this._dbPath, ref => ref
+      .where('isArchiv', '==', false)
+    ).valueChanges();
+  }
+
   /**
    *
    *
@@ -46,6 +52,14 @@ export class WorkoutService {
     workout['key'] = key;
     this._workoutCollection.doc(key).set(workout);
     return key;
+  }
+
+  public edit(workout: WorkoutI): Promise<void> {
+    return this._workoutCollection.doc(workout.key).update(workout);
+  }
+
+  public del(key: string): Promise<void> {
+    return this._workoutCollection.doc(key).delete();
   }
 
   private async _constructComponent() {
