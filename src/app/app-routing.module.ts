@@ -95,6 +95,23 @@ const routes: Routes = [
         './pages/trainingsInWorkout/training-in-workout-form/training-in-workout-form.module'
       ).then((m) => m.TrainingInWorkoutFormPageModule),
   },
+    /*
+    ****************************************
+    Training start
+    ****************************************
+  */
+    {
+      path: 'training-start-list',
+      loadChildren: () => import('./pages/training-start/training-start-list/training-start-list.module').then( m => m.TrainingStartListPageModule)
+    },
+  {
+    path: 'training-start-add',
+    loadChildren: () => import('./pages/training-start/training-start-add/training-start-add.module').then( m => m.TrainingStartAddPageModule)
+  },
+  {
+    path: 'training-start-analysis',
+    loadChildren: () => import('./pages/training-start/training-start-analysis/training-start-analysis.module').then( m => m.TrainingStartAnalysisPageModule)
+  },
   /*
     ****************************************
     Example
