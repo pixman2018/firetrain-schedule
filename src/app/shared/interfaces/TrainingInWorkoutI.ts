@@ -10,23 +10,35 @@ export interface TrainingInWorkoutI {
   order: number;
   goalRepsStart: number;
   goalRepsEnd: number;
+  globalSets: number;
   count: number;
   userKey: string;
   isWarmUp: boolean;
-  trainingResults: TrainingResultsI[] | [];
+  trainingResults: TrainingResultsI[];
   lessTrainingResults: TrainingResultsI[] | [];
   created: number;
   updated: number;
 }
 
 export interface TrainingResultsI {
-  isRoot?: boolean;
-  date: number;
+  // isRoot?: boolean;
+  trainingsdayTstamp: number;
   sets: number;
-  goalReps: number[];
+  goalRepsStart: number;
+  goalRepsEnd: number;
   weights: number [];
   negativeReps: number[];
   reps: number[];
   note: string;
 }
 
+export interface TrainingFormResultI {
+  negativeReps: number;
+  reps: number;
+  weights: number;
+}
+
+export interface ActionSetsCountI {
+  action: string | null;
+  setsCount: number;
+}

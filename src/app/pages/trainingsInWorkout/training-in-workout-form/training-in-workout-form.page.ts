@@ -126,6 +126,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
       order: ++this._highestOrder,
       goalRepsStart: this.goalRepsStartCtrl?.value,
       goalRepsEnd: this.goalRepsEndCtrl?.value,
+      globalSets: 3,
       count: 1,
       userKey: this._userId,
       isWarmUp: false,

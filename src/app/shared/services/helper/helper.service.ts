@@ -12,18 +12,6 @@ export class HelperService {
 
   /**
    *
-   * get a now timestamp by year month and day
-   *
-   * @returns number timestamp
-   */
-  public getNowDatAsTstamp(): number {
-    const dateTime: Date = new Date();
-    let date: number | Date = new Date(`${dateTime.getFullYear()}-${dateTime.getMonth() +1}-${dateTime.getDate()}`);
-    return date.getTime();
-  }
-
-  /**
-   *
    * return new Array(number);
    *
    * @param number
@@ -54,7 +42,7 @@ export class HelperService {
       setTimeout(() => {
         this.isItemExist(item);
       }, 300);
-    } 
+    }
   }
 
   public setTimeOut(): void | true {

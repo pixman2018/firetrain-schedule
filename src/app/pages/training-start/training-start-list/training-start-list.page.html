@@ -1,13 +1,55 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>training-start-list</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-basis-layout [headline]="'Training Start: '+ 'workout?.name' ">
+  <ion-row>
+    <ion-col size="12">
+      <!--
+      ********************************************************************************
+      *****
+      ***
+      * training
+      ***
+      *****
+      ********************************************************************************
+      -->
+      <ion-accordion-group>
+        @for (training of trainings; track training.name; let index = $index; let isFirst = $first) {
+          <ion-accordion [value]="'training' + index">
+            <ion-item slot="header">
+              <ion-label slot="start">
+                {{ training.name }}
+              </ion-label>
+            </ion-item>
+            <div slot="content">
+              <ion-toolbar color="danger" color="danger">
+                <ion-row>
+                  <ion-col>
+                    <ion-label>
+                      Reps:
+                      @if (training.goalRepsStart) {
+                        {{ training.goalRepsStart }} - {{ training.goalRepsEnd }}
+                      } @else {
+                        {{ training.goalRepsEnd }}
+                      }
+                    </ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-toolbar>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">training-start-list</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+              <app-training-start-add [trainingKey]="training?.key" [workoutKey]="workout?.key" [isFirst]="isFirst"  ></app-training-start-add>
+            </div>
+
+          </ion-accordion>
+        }
+      </ion-accordion-group>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <div class="submit-btn-container ion-margin-vertical">
+        <ion-button  expand="block" color="danger" fill="outline">
+          Workout beenden
+        </ion-button>
+      </div>
+    </ion-col>
+  </ion-row>
+</app-basis-layout>

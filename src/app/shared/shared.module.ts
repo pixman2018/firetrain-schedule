@@ -7,7 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { BasisLayoutComponent } from './content/basis-layout/basis-layout.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { TrainigInWorkoutComponent } from './components/trainig-in-workout/trainig-in-workout.component';
+import { TrainingStartAddComponent } from './components/training-start-add/training-start-add.component';
+// pipe
 import { UcfirstPipe } from './pipes/ucFirst/ucfirst.pipe';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const content = [
   BasisLayoutComponent,
@@ -15,6 +18,7 @@ const content = [
 const component = [
   FooterComponent,
   TrainigInWorkoutComponent,
+  TrainingStartAddComponent,
 ];
 
 const pipes = [
@@ -27,6 +31,7 @@ const pipes = [
   imports: [
     CommonModule,
     RouterModule,
+    ReactiveFormsModule,
     IonicModule,
   ]
 })

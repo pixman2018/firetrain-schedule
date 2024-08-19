@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { first, Observable } from 'rxjs';
 
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
@@ -17,15 +17,25 @@ export class TrainingInWorkoutService {
   private _workoutCollection: AngularFirestoreCollection<WorkoutI>;
   private _userId: string = '-1';
 
+  // private trainingCollection: AngularFirestoreCollection<TrainingInWorkoutI>;
+
   constructor(
     private readonly _router: Router,
     private readonly _afs: AngularFirestore,
   ) {
     this._constructComponent();
     this._workoutCollection = _afs.collection<WorkoutI>(this._dbPath);
+    // this.trainingCollection = _afs.collection<TrainingInWorkoutI>('trainingInWorkout');
   }
 
   public fetchAllTrainingInWorkout(workoutkey: string): Observable<TrainingInWorkoutI[]> {
+    // return this._afs.collection<TrainingInWorkoutI>('trainingInWorkout', ref => ref
+    //   .where('userKey', '==', this._userId)
+    //   .orderBy('order', 'desc')
+    // )
+    // .valueChanges();
+
+    //
     return this._workoutCollection
       .doc(workoutkey)
       .collection<TrainingInWorkoutI>('trainings', ref => ref
@@ -36,18 +46,30 @@ export class TrainingInWorkoutService {
    }
 
    public fetchTrainingByKey(workoutkey: string, trainingKey: string): Observable<TrainingInWorkoutI[]> {
-    return this._workoutCollection
+    // return this._afs.collection<TrainingInWorkoutI>('trainingInWorkout', ref => ref
+    //   .where('userKey', '==', this._userId)
+    //   .where('key', '==', trainingKey)
+    // )
+    // .valueChanges();
+
+    const collection = this._workoutCollection
       .doc(workoutkey)
       .collection<TrainingInWorkoutI>('trainings', ref => ref
         .where('userKey', '==', this._userId)
         .where('key', '==', trainingKey)
       )
-      .valueChanges();
+      .valueChanges()
+
+      return collection;
    }
 
-   public createTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI): string {
+   public createTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI ): string {
     const key = this._afs.createId();
     trainingInWorkout['key'] = key;
+    //   this.trainingCollection
+    //     .doc(key).set(trainingInWorkout);
+    // return key;
+
     this._workoutCollection
       .doc(trainingInWorkout.workoutkey)
       .collection<TrainingInWorkoutI>('trainings')
@@ -57,6 +79,9 @@ export class TrainingInWorkoutService {
    }
 
    public editTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI): Promise<void> {
+    // return this.trainingCollection
+    //   .doc(trainingInWorkout.key)
+    //   .update(trainingInWorkout);
     return this._workoutCollection
       .doc(trainingInWorkout.workoutkey)
       .collection<TrainingInWorkoutI>('trainings')

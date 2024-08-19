@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { CanActivateGuard } from './authification/services/can-activate.guard';
+import { PageoneComponent } from './example/angular/extends/pageone/pageone.component';
+import { PagetwoComponent } from './example/angular/extends/pagetwo/pagetwo.component';
+import { PagethreeComponent } from './example/angular/extends/pagethree/pagethree.component';
+import { BaseComponent } from './example/angular/extends/base/base.component';
 
 const routes: Routes = [
   {
@@ -101,15 +105,11 @@ const routes: Routes = [
     ****************************************
   */
     {
-      path: 'training-start-list',
+      path: 'training-start-list/:key',
       loadChildren: () => import('./pages/training-start/training-start-list/training-start-list.module').then( m => m.TrainingStartListPageModule)
     },
   {
-    path: 'training-start-add',
-    loadChildren: () => import('./pages/training-start/training-start-add/training-start-add.module').then( m => m.TrainingStartAddPageModule)
-  },
-  {
-    path: 'training-start-analysis',
+    path: 'training-start-analysis/:key',
     loadChildren: () => import('./pages/training-start/training-start-analysis/training-start-analysis.module').then( m => m.TrainingStartAnalysisPageModule)
   },
   /*
@@ -129,6 +129,18 @@ const routes: Routes = [
         (m) => m.StyleGuidePageModule
       ),
   },
+  {
+    path: 'base', component: BaseComponent,
+  },
+  {
+    path: 'pageone', component: PageoneComponent,
+  },
+  {
+    path: 'pagetwo', component: PagetwoComponent,
+  },
+  {
+    path: 'pagethree', component: PagethreeComponent,
+  }
 ];
 
 @NgModule({

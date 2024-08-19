@@ -28,6 +28,7 @@ import {
 } from '@angular/fire/remote-config';
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { ExampleModule } from './example/example.module';
 
 
 
@@ -38,6 +39,7 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
     BrowserModule,
     IonicModule.forRoot({ innerHTMLTemplatesEnabled: true }),
     AppRoutingModule,
+    ExampleModule,
   ],
   providers: [
     provideHttpClient(),
