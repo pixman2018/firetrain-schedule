@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { dateObj, datetimeObj, ObjType, timeObj } from '../../interfaces/IDateTime';
+import { E_ObjType, I_DateObj, I_DatetimeObj, I_TimeObj } from '../../interfaces/I_DateTime';
 
 
 
@@ -21,18 +21,18 @@ export class DateService {
    * @param objType is date, time oor datetime
    * @returns
    */
-  public getDatetimeObjFromtstamp(tstamp: number, objType: ObjType): dateObj | timeObj | datetimeObj | {} {
-    let datetimeObj: {} | dateObj | timeObj | datetimeObj= {};
+  public getDatetimeObjFromtstamp(tstamp: number, objType: E_ObjType): I_DateObj | I_TimeObj | I_DatetimeObj | {} {
+    let datetimeObj: {} | I_DateObj | I_TimeObj | I_DatetimeObj= {};
     const date = new Date(tstamp);
     switch (objType) {
-      case ObjType.date:
+      case E_ObjType.date:
         datetimeObj = {
           day: date.getDate().toString().padStart(2, '0'),
           month: Math.floor(date.getMonth() + 1).toString().padStart(2, '0'),
           year: date.getFullYear().toString(),
         }
         break;
-      case ObjType.time:
+      case E_ObjType.time:
         datetimeObj = {
           hours: date.getHours().toString().padStart(2, '0'),
           minutes:  date.getMinutes().toString().padStart(2, '0'),
@@ -40,7 +40,7 @@ export class DateService {
           milliseconds: date.getMilliseconds().toString().padStart(2, '0'),
         }
         break;
-      case ObjType.datetime:
+      case E_ObjType.datetime:
         datetimeObj = {
           day: date.getDate().toString().padStart(2, '0'),
           month: Math.floor(date.getUTCMonth() + 1).toString().padStart(2, '0'),
@@ -64,7 +64,7 @@ export class DateService {
    * @param tstamp
    * @returns
    */
-  public getDatetimeFromTstamp(tstamp: number): timeObj {
+  public getDatetimeFromTstamp(tstamp: number): I_TimeObj {
     // example https://blog.axxg.de/zeitdifferenz-konvertieren-mit-modulo/
     const hours: number = Math.floor(tstamp / (1000*60*60));
     tstamp = tstamp % (1000*60*60);

@@ -5,8 +5,8 @@ import { first, Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 // interface
-import { TrainingInWorkoutI } from '../../interfaces/TrainingInWorkoutI';
-import { WorkoutI } from '../../interfaces/Workout';
+import { I_TrainingInWorkout } from '../../interfaces/I_TrainingInWorkout';
+import { I_Workout } from '../../interfaces/I_Workout';
 
 @Injectable({
   providedIn: 'root'
@@ -14,47 +14,32 @@ import { WorkoutI } from '../../interfaces/Workout';
 export class TrainingInWorkoutService {
 
   private _dbPath: string = '/workouts';
-  private _workoutCollection: AngularFirestoreCollection<WorkoutI>;
+  private _workoutCollection: AngularFirestoreCollection<I_Workout>;
   private _userId: string = '-1';
-
-  // private trainingCollection: AngularFirestoreCollection<TrainingInWorkoutI>;
 
   constructor(
     private readonly _router: Router,
     private readonly _afs: AngularFirestore,
   ) {
     this._constructComponent();
-    this._workoutCollection = _afs.collection<WorkoutI>(this._dbPath);
-    // this.trainingCollection = _afs.collection<TrainingInWorkoutI>('trainingInWorkout');
+    this._workoutCollection = _afs.collection<I_Workout>(this._dbPath);
   }
 
-  public fetchAllTrainingInWorkout(workoutkey: string): Observable<TrainingInWorkoutI[]> {
-    // return this._afs.collection<TrainingInWorkoutI>('trainingInWorkout', ref => ref
-    //   .where('userKey', '==', this._userId)
-    //   .orderBy('order', 'desc')
-    // )
-    // .valueChanges();
-
-    //
+  public fetchAllTrainingInWorkout(workoutkey: string): Observable<I_TrainingInWorkout[]> {
     return this._workoutCollection
       .doc(workoutkey)
-      .collection<TrainingInWorkoutI>('trainings', ref => ref
+      .collection<I_TrainingInWorkout>('trainings', ref => ref
         .where('userKey', '==', this._userId)
-        .orderBy('order', 'desc')
+        .orderBy('created')
       )
       .valueChanges();
    }
 
-   public fetchTrainingByKey(workoutkey: string, trainingKey: string): Observable<TrainingInWorkoutI[]> {
-    // return this._afs.collection<TrainingInWorkoutI>('trainingInWorkout', ref => ref
-    //   .where('userKey', '==', this._userId)
-    //   .where('key', '==', trainingKey)
-    // )
-    // .valueChanges();
+   public fetchTrainingByKey(workoutkey: string, trainingKey: string): Observable<I_TrainingInWorkout[]> {
 
     const collection = this._workoutCollection
       .doc(workoutkey)
-      .collection<TrainingInWorkoutI>('trainings', ref => ref
+      .collection<I_TrainingInWorkout>('trainings', ref => ref
         .where('userKey', '==', this._userId)
         .where('key', '==', trainingKey)
       )
@@ -63,28 +48,22 @@ export class TrainingInWorkoutService {
       return collection;
    }
 
-   public createTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI ): string {
+   public createTrainingInWorkout(trainingInWorkout: I_TrainingInWorkout ): string {
     const key = this._afs.createId();
     trainingInWorkout['key'] = key;
-    //   this.trainingCollection
-    //     .doc(key).set(trainingInWorkout);
-    // return key;
 
     this._workoutCollection
       .doc(trainingInWorkout.workoutkey)
-      .collection<TrainingInWorkoutI>('trainings')
+      .collection<I_TrainingInWorkout>('trainings')
       .doc(key)
       .set(trainingInWorkout)
       return key;
    }
 
-   public editTrainingInWorkout(trainingInWorkout: TrainingInWorkoutI): Promise<void> {
-    // return this.trainingCollection
-    //   .doc(trainingInWorkout.key)
-    //   .update(trainingInWorkout);
+   public editTrainingInWorkout(trainingInWorkout: I_TrainingInWorkout): Promise<void> {
     return this._workoutCollection
       .doc(trainingInWorkout.workoutkey)
-      .collection<TrainingInWorkoutI>('trainings')
+      .collection<I_TrainingInWorkout>('trainings')
       .doc(trainingInWorkout.key)
       .update(trainingInWorkout)
    }
@@ -92,7 +71,7 @@ export class TrainingInWorkoutService {
    public delTrainingInWorkout(workoutKey: string, trainingKey: string): Promise<void>   {
       return this._workoutCollection
       .doc(workoutKey)
-      .collection<TrainingInWorkoutI>('trainings')
+      .collection<I_TrainingInWorkout>('trainings')
       .doc(trainingKey)
       .delete();
    }

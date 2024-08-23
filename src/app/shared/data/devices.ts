@@ -1,6 +1,6 @@
-import { DataI } from "../interfaces/DataI";
+import { I_Data } from "../interfaces/I_Data";
 
-export  const DevicesArr: DataI[] = [
+export  const DevicesArr: I_Data[] = [
   {
     de: 'Body Weight',
     en: 'Body Weight',

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 // services
-import { TrainingI } from '../../interfaces/TrainingI';
+import { I_Training } from '../../interfaces/I_Training';
 
 
 @Injectable({
@@ -11,7 +11,7 @@ import { TrainingI } from '../../interfaces/TrainingI';
 export class TrainingService {
 
   private _dbPath: string = '/trainings';
-  private trainsCollection: AngularFirestoreCollection<TrainingI>;
+  private trainsCollection: AngularFirestoreCollection<I_Training>;
 
   constructor(
     private _afs: AngularFirestore,
@@ -19,7 +19,7 @@ export class TrainingService {
     this.trainsCollection = _afs.collection(this._dbPath);
   }
 
-  public create(train: TrainingI):  string  {
+  public create(train: I_Training):  string  {
     const id = this._afs.createId();
     train['key'] = id;
     this.trainsCollection.doc(id).set(train);

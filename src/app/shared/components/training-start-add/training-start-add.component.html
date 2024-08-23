@@ -1,6 +1,6 @@
-@if (isFirst) {
-<ion-row class="set-acion-container">
-  <ion-col size="7">
+<!-- @if (isFirst) { -->
+<ion-row>
+  <ion-col size="7" class="set-acion-container">
     <ion-text class="reps-action-title d-inline"> Sets: </ion-text>
     <ion-button fill="none" (click)="addTrainingGoal()">
       <ion-icon color="primary" name="add-circle-outline"> </ion-icon></ion-button>
@@ -10,7 +10,7 @@
   </ion-col>
 
 </ion-row>
-}
+<!-- } -->
 <ion-row>
   <ion-col>
     <form class="form" [formGroup]="resultForm">
@@ -21,7 +21,7 @@
           <ion-row>
             <ion-col size="3">
               <ion-item fill="fill">
-                <ion-input type="number" label="G" aria-label="Gewicht" labelPlacement="floating" [clearInput]="true"
+                <ion-input type="number" label="G" aria-label="Gewicht" labelPlacement="floating" [clearInput]="false"
                   formControlName="weight" (ionChange)="onChanceValue(index)"
                   [readonly]="getDoneCtrl(index)?.value && getWeightCtrl(index)?.valid && getRepsCtrl(index)?.valid ? true : false">
                 </ion-input>
@@ -29,7 +29,7 @@
             </ion-col>
             <ion-col size="3">
               <ion-item fill="fill">
-                <ion-input type="number" label="R" aria-label="Reps" labelPlacement="floating" [clearInput]="true"
+                <ion-input type="number" label="R" aria-label="Reps" labelPlacement="floating" [clearInput]="false"
                   formControlName="reps" (ionChange)="onChanceValue(index)"
                   [readonly]="getDoneCtrl(index)?.value && getWeightCtrl(index)?.valid && getRepsCtrl(index)?.valid ? true : false">
                 </ion-input>
@@ -38,7 +38,7 @@
             <ion-col size="3">
               <ion-item fill="fill">
                 <ion-input type="number" label="N-R" aria-label="Negative Reps" labelPlacement="floating"
-                  [clearInput]="true" formControlName="nreps" (ionChange)="onChanceValue(index)"
+                  [clearInput]="false" formControlName="nreps" (ionChange)="onChanceValue(index)"
                   [readonly]="getDoneCtrl(index)?.value && getWeightCtrl(index)?.valid && getRepsCtrl(index)?.valid ? true : false">
                 </ion-input>
               </ion-item>

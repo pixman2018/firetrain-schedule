@@ -6,7 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { TrainingFormResultI, TrainingInWorkoutI, TrainingResultsI } from '../../interfaces/TrainingInWorkoutI';
+import { I_TrainingInWorkout, I_TrainingResults } from '../../interfaces/I_TrainingInWorkout';
 import { BehaviorSubject, first, firstValueFrom, map, Observable, Subscription } from 'rxjs';
 import { TrainingInWorkoutService } from '../../services/trainingInWorkout/training-in-workout.service';
 import { TrainingsInWorkoutListPageRoutingModule } from 'src/app/pages/trainingsInWorkout/trainings-in-workout-list/trainings-in-workout-list-routing.module';
@@ -18,11 +18,11 @@ import { Router } from '@angular/router';
   templateUrl: './training-start-add.component.html',
   styleUrls: ['./training-start-add.component.scss'],
 })
-export class TrainingStartAddComponent implements OnInit, OnDestroy {
+export class TrainingStartAddComponent implements OnInit {
   @Input() trainingKey: string | undefined;
   @Input() workoutKey: string  | undefined;
-  @Input() isFirst: boolean = false;
-  protected training: TrainingInWorkoutI | null = null;
+  // @Input() isFirst: boolean = false;
+  protected training: I_TrainingInWorkout | null = null;
   private actionCtrlObs$: Subscription | undefined;
 
   // form
@@ -40,11 +40,6 @@ export class TrainingStartAddComponent implements OnInit, OnDestroy {
     this._initComponent();
   }
 
-  ngOnDestroy(): void {
-    // if (this.actionCtrlObs$) {
-    //   this.actionCtrlObs$.unsubscribe();
-    // }
-  }
 
     /**
    *
@@ -86,13 +81,11 @@ export class TrainingStartAddComponent implements OnInit, OnDestroy {
 
     if (this.getWeightCtrl(index)?.valid && this.getRepsCtrl(index)?.valid) {
       this._updateResult(index);
-    } else {
-      this.getDoneCtrl(index)?.setValue(false);
     }
   }
 
   protected onInsertResult(event: any, index: number) {
-    if (this.resultForm.valid) {
+    if (this.itemControls.at(index).valid) {
       this._updateResult(index);
     } else {
       this.getDoneCtrl(index)?.setValue(false);
@@ -105,7 +98,12 @@ export class TrainingStartAddComponent implements OnInit, OnDestroy {
         replaceUrl: true,
       });
     }
-    const resultObj: TrainingResultsI = {
+    for (let i=0; i < this.itemControls.length; i++){
+      console.log('value', this.getWeightCtrl(i)?.value)
+    }
+
+
+    const resultObj: I_TrainingResults = {
       trainingsdayTstamp: this._dateService.getNowDatAsTstamp(),
       sets: this.sets, // change by finish workout
       goalRepsStart: this.training?.goalRepsStart ?? 8, // goalRepsStart default 8
@@ -125,17 +123,16 @@ export class TrainingStartAddComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.training?.trainingResults?.length ) {
-      if (this.training?.trainingResults[0].trainingsdayTstamp == this._dateService.getNowDatAsTstamp()) {
-        console.log('ist vorhaden')
+    if (this.training?.trainingResults ) {
+      if (this.training?.trainingResults.length && this.training?.trainingResults[0].trainingsdayTstamp == this._dateService.getNowDatAsTstamp()) {
         this.training.trainingResults[0] = resultObj;
       } else {
-        console.log('ist new')
         this.training?.trainingResults.unshift(resultObj);
       }
     }
 
     if (this.training) {
+      console.log('training', this.training);
       this._trainingInWorkout.editTrainingInWorkout(this.training)
       .then(() => {
           console.log(this.training?.trainingResults);
@@ -269,16 +266,6 @@ export class TrainingStartAddComponent implements OnInit, OnDestroy {
    *
    */
   private _initComponent() {
-    // this.actionCtrlObs$ = this._getActionCtrlAsObservable().subscribe(
-    //   (actionCtrl) => {
-    //     if (actionCtrl == 'add') {
-    //       this._addTrainingGoal();
-    //     } else if (actionCtrl == 'remove') {
-    //       this._removeTrainingGoal();
-    //     }
-    //   }
-    // );
-
     this._fetchTrainingInWorkout()
 
     for (let i = 0; i < this.sets; i++) {

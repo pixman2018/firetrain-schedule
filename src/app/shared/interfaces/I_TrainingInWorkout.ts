@@ -1,6 +1,4 @@
-import { DataI } from "./DataI";
-
-export interface TrainingInWorkoutI {
+export interface I_TrainingInWorkout {
   namespace: string;
   key: string;
   workoutkey: string;
@@ -14,13 +12,21 @@ export interface TrainingInWorkoutI {
   count: number;
   userKey: string;
   isWarmUp: boolean;
-  trainingResults: TrainingResultsI[];
-  lessTrainingResults: TrainingResultsI[] | [];
+  trainingResults: I_TrainingResults[];
+  lessTrainingResults: I_TrainingResults[];
+  comparisonResults: I_ComparisonResults[];
   created: number;
   updated: number;
 }
 
-export interface TrainingResultsI {
+export interface I_ComparisonResults {
+  currentRepsAndWeights: number;
+  prevRepsAndWeights: number;
+  percentAndWeights: number;
+  trainingTmp: number;
+}
+
+export interface I_TrainingResults {
   // isRoot?: boolean;
   trainingsdayTstamp: number;
   sets: number;
@@ -32,13 +38,14 @@ export interface TrainingResultsI {
   note: string;
 }
 
-export interface TrainingFormResultI {
+export interface I_TrainingFormResult {
   negativeReps: number;
   reps: number;
   weights: number;
 }
 
-export interface ActionSetsCountI {
+export interface I_ActionSetsCount {
   action: string | null;
   setsCount: number;
 }
+

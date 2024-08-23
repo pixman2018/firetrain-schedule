@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // service
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
 // interface
-import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI';
+import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { Subscription } from 'rxjs';
 
@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 export class TrainingsInWorkoutListPage implements OnInit {
   protected workoutName: string = '';
   private _workoutKey: string = '-1';
-  protected trainings: TrainingInWorkoutI[] = [];
+  protected trainings: I_TrainingInWorkout[] = [];
   private _userId: string = window.sessionStorage.getItem('uid') ?? '-1';
 
   private _trainingKey: string = '';
@@ -47,7 +47,7 @@ export class TrainingsInWorkoutListPage implements OnInit {
     );
   }
 
-  protected onEditTraining(training: TrainingInWorkoutI) {
+  protected onEditTraining(training: I_TrainingInWorkout) {
     this._router.navigateByUrl(
       `training-in-workout-form/${this._workoutKey}?isEdit=1&trainingKey=${training.key}`,
       {

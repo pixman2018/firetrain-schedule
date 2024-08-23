@@ -8,8 +8,8 @@ import { DevicesArr } from 'src/app/shared/data/devices';
 // services
 import { TrainingService } from 'src/app/shared/services/trainingService/training.service';
 // interface
-import { DataI } from 'src/app/shared/interfaces/DataI';
-import { TrainingI } from 'src/app/shared/interfaces/TrainingI';
+import { I_Data } from 'src/app/shared/interfaces/I_Data';
+import { I_Training } from 'src/app/shared/interfaces/I_Training';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 
 
@@ -24,8 +24,8 @@ export class TrainingFormPage implements OnInit {
   // flag
   protected isSubmit: boolean = false;
   // data
-  protected categories: DataI[] = CategoryArr;
-  protected devices: DataI[] = DevicesArr;
+  protected categories: I_Data[] = CategoryArr;
+  protected devices: I_Data[] = DevicesArr;
 
   constructor(
     private _fb: FormBuilder,
@@ -52,7 +52,7 @@ export class TrainingFormPage implements OnInit {
   protected onSubmit(): void {
     this.isSubmit = true;
     if (this.trainForm.valid) {
-      const trainOnj: TrainingI = this._createTrainObj();
+      const trainOnj: I_Training = this._createTrainObj();
       const newTrainId =  this._trainingService.create(trainOnj);
       this.resetForm();
       if (newTrainId) {
@@ -81,7 +81,7 @@ export class TrainingFormPage implements OnInit {
     });
   }
 
-  private _createTrainObj(): TrainingI {
+  private _createTrainObj(): I_Training {
     const trainObj: any = {};
     trainObj['categoryId'] = this.trainForm.get('categoryId')?.value;
     trainObj['devices'] = [];

@@ -48,8 +48,8 @@ import { ExampleModule } from './example/example.module';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     // provideAnalytics(() => getAnalytics()),
-    ScreenTrackingService,
-    UserTrackingService,
+    // ScreenTrackingService,
+    // UserTrackingService,
     //     provideAppCheck(() => {
     //   // TODO get a reCAPTCHA Enterprise here https://console.cloud.google.com/security/recaptcha?project=_
     //   const provider = new ReCaptchaEnterpriseProvider(/* reCAPTCHA Enterprise site key */);
@@ -57,12 +57,12 @@ import { ExampleModule } from './example/example.module';
     // }),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
-    provideFunctions(() => getFunctions()),
-    provideMessaging(() => getMessaging()),
-    providePerformance(() => getPerformance()),
+    // provideFunctions(() => getFunctions()),
+    // provideMessaging(() => getMessaging()),
+    // providePerformance(() => getPerformance()),
     provideStorage(() => getStorage()),
-    provideRemoteConfig(() => getRemoteConfig()),
-    provideVertexAI(() => getVertexAI()),
+    // provideRemoteConfig(() => getRemoteConfig()),
+    // provideVertexAI(() => getVertexAI()),
   ],
   bootstrap: [AppComponent],
 })

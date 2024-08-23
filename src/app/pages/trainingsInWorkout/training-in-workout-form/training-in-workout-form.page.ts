@@ -11,8 +11,8 @@ import {  ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
 // interfaces
-import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI';
-import { WorkoutI } from 'src/app/shared/interfaces/Workout';
+import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout'
+import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
 import { take } from 'rxjs';
 import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
@@ -25,9 +25,9 @@ import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
 export class TrainingInWorkoutFormPage implements OnInit {
 
   protected workoutName: string = '';
-  protected workout: WorkoutI | undefined;
+  protected workout: I_Workout | undefined;
   private _workoutKey: string = '-1';
-  private training: TrainingInWorkoutI | undefined;
+  private training: I_TrainingInWorkout | undefined;
   protected headline: string = '';
 
   private _userId: string = window.sessionStorage.getItem('uid') ?? '-1';
@@ -114,7 +114,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
    * @returns training obj
    *
    */
-  private _createTrainingInWorkout(): TrainingInWorkoutI {
+  private _createTrainingInWorkout(): I_TrainingInWorkout {
     const ucFirst = new UcfirstPipe();
     return {
       namespace: 'trainingInWorkout',
@@ -132,6 +132,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
       isWarmUp: false,
       trainingResults: [],
       lessTrainingResults: [],
+      comparisonResults: [],
       created: Date.now(),
       updated: Date.now(),
     };

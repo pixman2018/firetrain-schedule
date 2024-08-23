@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 // service
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
 // interface
-import { WorkoutI } from 'src/app/shared/interfaces/Workout';
+import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
-import { TrainingInWorkoutI } from 'src/app/shared/interfaces/TrainingInWorkoutI';
+import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { IonAccordionGroup } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -20,7 +20,7 @@ export class WorkoutListPage implements OnInit {
   @ViewChild('accordionGroup', { static: true })
   accordionGroup!: IonAccordionGroup;
 
-  protected workouts: WorkoutI[] | undefined;
+  protected workouts: I_Workout[] | undefined;
   private _workoutKey: string = '';
   private _workoutName: string = '';
   private _isDelWorkout: boolean = false; // Was delete workout pressed
@@ -42,19 +42,19 @@ export class WorkoutListPage implements OnInit {
     });
   }
 
-  protected onInsertTraining(workout: WorkoutI) {
+  protected onInsertTraining(workout: I_Workout) {
     this._router.navigateByUrl(`training-in-workout-form/${workout.key}`, {
       replaceUrl: true,
     });
   }
 
-  protected onEdit(workout: WorkoutI) {
+  protected onEdit(workout: I_Workout) {
     this._router.navigateByUrl(`workout-edit/${workout.key}?isEdit=true`, {
       replaceUrl: true,
     });
   }
 
-  protected onDeleteWorkout(workout: WorkoutI) {
+  protected onDeleteWorkout(workout: I_Workout) {
     if (workout.key) {
       this._workoutKey = workout.key;
       this._workoutName = workout.name;

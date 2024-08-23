@@ -7,7 +7,7 @@ import { CategoryArr } from 'src/app/shared/data/category';
 // services
 import { TrainingService } from 'src/app/shared/services/trainingService/training.service';
 // Interfcaes
-import { DataI } from 'src/app/shared/interfaces/DataI';
+import { I_Data } from 'src/app/shared/interfaces/I_Data';
 
 @Component({
   selector: 'app-training-list',
@@ -19,7 +19,7 @@ export class TrainingListPage implements OnInit {
   protected selected = new FormControl('');
 
    // data
-   protected categories: DataI[] = CategoryArr;
+   protected categories: I_Data[] = CategoryArr;
 
   constructor(
     private _trainingService: TrainingService,

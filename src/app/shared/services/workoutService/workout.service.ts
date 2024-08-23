@@ -5,7 +5,7 @@ import { Observable, take } from 'rxjs';
 
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 // interfcae
-import { WorkoutI } from '../../interfaces/Workout';
+import { I_Workout } from '../../interfaces/I_Workout';
 
 
 
@@ -15,7 +15,7 @@ import { WorkoutI } from '../../interfaces/Workout';
 export class WorkoutService {
 
   private _dbPath: string = '/workouts';
-  private _workoutCollection: AngularFirestoreCollection<WorkoutI>;
+  private _workoutCollection: AngularFirestoreCollection<I_Workout>;
   private _userId: string = '-1';
 
   constructor(
@@ -26,8 +26,8 @@ export class WorkoutService {
     this._constructComponent();
   }
 
-  public fetchAll():Observable<WorkoutI[] | undefined>  {
-    return this._afs.collection<WorkoutI>(this._dbPath, ref => ref
+  public fetchAll():Observable<I_Workout[] | undefined>  {
+    return this._afs.collection<I_Workout>(this._dbPath, ref => ref
       .where('isArchiv', '==', false)
     ).valueChanges();
   }
@@ -39,22 +39,22 @@ export class WorkoutService {
    * @param key from Workout
    * @returns workout Object
    */
-  public fetchByKey(key: string):Observable<WorkoutI | undefined> {
-    return this._afs.doc<WorkoutI>(`${this._dbPath}/${key}`)
+  public fetchByKey(key: string):Observable<I_Workout | undefined> {
+    return this._afs.doc<I_Workout>(`${this._dbPath}/${key}`)
     .valueChanges({idField: 'key'})
     .pipe(
       take(1),
     );
   }
 
-  public create(workout: WorkoutI): string | undefined {
+  public create(workout: I_Workout): string | undefined {
     const key = this._afs.createId();
     workout['key'] = key;
     this._workoutCollection.doc(key).set(workout);
     return key;
   }
 
-  public edit(workout: WorkoutI): Promise<void> {
+  public edit(workout: I_Workout): Promise<void> {
     return this._workoutCollection.doc(workout.key).update(workout);
   }
 

@@ -1,6 +1,6 @@
-import { DataI } from '../interfaces/DataI';
+import { I_Data } from '../interfaces/I_Data';
 
-export const CategoryArr: DataI[] = [
+export const CategoryArr: I_Data[] = [
   {
     de: '',
     en: '',

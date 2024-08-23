@@ -1,6 +1,6 @@
 
 
-export interface WorkoutI {
+export interface I_Workout {
   namespace: string;
   name: string;
   userId: string;
@@ -13,14 +13,14 @@ export interface WorkoutI {
   folder: string;
   LengthOfTrainings: [];
   calorieConsumptions: [];
-  totalValue: TotalValueI;
+  totalValue: I_TotalValue;
   // userIdConsumptions?: string;
   // lastDatesTstamp?: number;
   created: number;
   updated: number;
 }
 
-interface TotalValueI {
+interface I_TotalValue {
   weightsTotal: number;
   repsTotal: number;
   setsTotal: number;

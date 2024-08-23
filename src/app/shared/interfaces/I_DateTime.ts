@@ -1,16 +1,16 @@
-export interface datetimeObj {
+export interface I_DatetimeObj {
   day: string;
   month: string;
   year: string | number;
 }
 
-export interface dateObj {
+export interface I_DateObj {
   day: string;
   month: string;
   year: string | number;
 }
 
-export interface timeObj {
+export interface I_TimeObj {
   day?: string,
   hours: string;
   minutes: string;
@@ -18,7 +18,7 @@ export interface timeObj {
   miliseconds?: string;
 }
 
-export enum ObjType {
+export enum E_ObjType {
   date = 'date',
   time = 'time',
   datetime = 'datetime',

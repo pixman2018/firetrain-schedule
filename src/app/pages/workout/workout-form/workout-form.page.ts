@@ -5,7 +5,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
 // interface
-import { WorkoutI } from 'src/app/shared/interfaces/Workout';
+import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
 
@@ -17,7 +17,7 @@ import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
 export class WorkoutFormPage implements OnInit {
 
   protected workoutForm: FormGroup = this._createWorkoutForm();
-  protected workout: WorkoutI | undefined;
+  protected workout: I_Workout | undefined;
   // flag
   protected isSubmit: boolean = false;
   protected isEdit: boolean = false;
@@ -138,8 +138,8 @@ export class WorkoutFormPage implements OnInit {
    * @returns  WorkoutI
    *
    */
-  private _createWorkoutObj(): WorkoutI {
-    const workout: WorkoutI = {
+  private _createWorkoutObj(): I_Workout {
+    const workout: I_Workout = {
       namespace: 'workout',
       name: this.ucFirstPipe.transform(this.nameCtrl?.value),
       userId: window.sessionStorage.getItem('uid')!,

@@ -1,15 +1,15 @@
-import { DataI } from "./DataI";
+import { I_Data } from "./I_Data";
 
-export interface TrainingI {
+export interface I_Training {
   categoryId: number;
-  category: DataI;
+  category: I_Data;
   created: number;
-  devices: DataI[];
+  devices: I_Data[];
   isGlobal: boolean;
   key?: string;
   namespace: string;
   pic: string;
-  lang?: DataI; // is not from the app
+  lang?: I_Data; // is not from the app
   name?: string; // is from user
   updated: number;
   userId: string;

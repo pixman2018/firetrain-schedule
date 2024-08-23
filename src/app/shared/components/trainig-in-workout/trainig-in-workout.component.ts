@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // service
 import { TrainingInWorkoutService } from '../../services/trainingInWorkout/training-in-workout.service';
 // interface
-import { TrainingInWorkoutI } from '../../interfaces/TrainingInWorkoutI';
+import { I_TrainingInWorkout } from '../../interfaces/I_TrainingInWorkout';
 import { AlertService } from '../../services/alert/alert.service';
 import { first, Subscription } from 'rxjs';
 
@@ -21,7 +21,7 @@ export class TrainigInWorkoutComponent  implements OnInit {
   private _trainingName: string = '';
 
   private _ussrId: string | null = null;
-  protected trainings: TrainingInWorkoutI[] = []
+  protected trainings: I_TrainingInWorkout[] = []
 
   constructor(
     private readonly _router: Router,
@@ -33,13 +33,13 @@ export class TrainigInWorkoutComponent  implements OnInit {
     this._initComponent();
   }
 
-  protected onEditTraining(training: TrainingInWorkoutI){
+  protected onEditTraining(training: I_TrainingInWorkout){
     this._router.navigateByUrl(`/training-in-workout-form/${this.workoutKey}?isEdit=true&trainingKey=${training.key}&url=workoutList&index=${this.countAccordion}`, {
       replaceUrl: true,
     });
   }
 
-  protected onDeleteTraining(training: TrainingInWorkoutI) {
+  protected onDeleteTraining(training: I_TrainingInWorkout) {
     if (training.key) {
       this._trainingKey = training.key;
       this._trainingName = training.name;
