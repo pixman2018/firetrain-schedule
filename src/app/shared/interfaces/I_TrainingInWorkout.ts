@@ -44,6 +44,13 @@ export interface I_TrainingFormResult {
   weights: number;
 }
 
+export interface I_TrainingFormResults {
+  negativeReps: number[];
+  reps: number[];
+  weights: number[];
+  sets: number;
+}
+
 export interface I_ActionSetsCount {
   action: string | null;
   setsCount: number;

@@ -7,6 +7,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 // interface
 import { I_TrainingInWorkout } from '../../interfaces/I_TrainingInWorkout';
 import { I_Workout } from '../../interfaces/I_Workout';
+import { getCountFromServer, getDocs } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'

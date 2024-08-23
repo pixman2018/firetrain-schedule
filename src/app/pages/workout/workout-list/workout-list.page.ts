@@ -9,7 +9,7 @@ import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWork
 import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { IonAccordionGroup } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workout-list',
@@ -23,21 +23,39 @@ export class WorkoutListPage implements OnInit {
   protected workouts: I_Workout[] | undefined;
   private _workoutKey: string = '';
   private _workoutName: string = '';
+  protected trainingsLengths: number[] = [];
   private _isDelWorkout: boolean = false; // Was delete workout pressed
 
   constructor(
     private readonly _router: Router,
     private readonly _route: ActivatedRoute,
     private readonly _workoutService: WorkoutService,
+    private readonly _trainingInWorkoutService: TrainingInWorkoutService,
     private readonly _alertService: AlertService
   ) {}
 
   ngOnInit() {
     this._initComponent();
+
   }
 
   private _fetchAllWorkout() {
-    this._workoutService.fetchAll().subscribe((workout) => {
+    this._workoutService.fetchAll()
+      .pipe(
+        map(workout => {
+          workout?.map(w => {
+            if (w.key) {
+              this._trainingInWorkoutService.fetchAllTrainingInWorkout(w.key)
+                .subscribe((trainings) => {
+                  this.trainingsLengths.push(trainings.length);
+                });
+            }
+            return w;
+          })
+          return workout;
+        })
+      )
+      .subscribe((workout) => {
       this.workouts = workout;
     });
   }
@@ -67,7 +85,6 @@ export class WorkoutListPage implements OnInit {
 
       const workoutConfirm: Subscription = this._alertService.getConfirmResult()
         .subscribe((res) => {
-          console.log(res)
           if (res) {
             workoutConfirm.unsubscribe();
             this._delWorkout();

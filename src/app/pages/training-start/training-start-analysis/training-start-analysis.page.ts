@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize, firstValueFrom, lastValueFrom, Observable } from 'rxjs';
-import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout';
-import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
+import { Observable } from 'rxjs';
+// Services
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
+// interfaces
+import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout';
+import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
+
 
 @Component({
   selector: 'app-training-start-analysis',
@@ -50,17 +53,10 @@ export class TrainingStartAnalysisPage implements OnInit {
   private  _fetchTrainingsByKey(): void {
     if (this._workoutKey) {
       const trainings$: Observable<I_TrainingInWorkout[]> = this._trainingInWorkoutService.fetchAllTrainingInWorkout(this._workoutKey);
-
-      firstValueFrom(trainings$)
-        .then((training) => {
-          this.trainings = training;
-          console.log('training', training[0])
-          // this._calcResult();
-        })
-        .catch((error) => {
-          console.error('Can not fetch all Trainins.', error);
-        });
-      }
+      trainings$.subscribe((training) => {
+        this.trainings = training;
+      });
+    }
   }
 
 

@@ -100,7 +100,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
         .subscribe((training) => {
           const trainingArr = training;
           this._highestOrder = trainingArr.length;
-          console.log('_highestOrder', this._highestOrder);
+          // console.log('_highestOrder', this._highestOrder);
         });
 
     }
