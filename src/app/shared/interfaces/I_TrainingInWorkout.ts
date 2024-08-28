@@ -13,17 +13,20 @@ export interface I_TrainingInWorkout {
   userKey: string;
   isWarmUp: boolean;
   trainingResults: I_TrainingResults[];
-  lessTrainingResults: I_TrainingResults[];
   comparisonResults: I_ComparisonResults[];
   created: number;
   updated: number;
 }
 
 export interface I_ComparisonResults {
+  count: number;
+  currentNgativeRepsAndWeight: number;
   currentRepsAndWeights: number;
-  prevRepsAndWeights: number;
   percentAndWeights: number;
+  prevNgativeRepsAndWeights: number;
+  prevRepsAndWeights: number;
   trainingTmp: number;
+  dateTmp: number;
 }
 
 export interface I_TrainingResults {
@@ -36,6 +39,7 @@ export interface I_TrainingResults {
   negativeReps: number[];
   reps: number[];
   note: string;
+  tmp: number[];
 }
 
 export interface I_TrainingFormResult {

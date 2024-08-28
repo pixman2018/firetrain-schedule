@@ -131,7 +131,6 @@ export class TrainingInWorkoutFormPage implements OnInit {
       userKey: this._userId,
       isWarmUp: false,
       trainingResults: [],
-      lessTrainingResults: [],
       comparisonResults: [],
       created: Date.now(),
       updated: Date.now(),

@@ -1,47 +1,52 @@
 <app-basis-layout headline="Training Auswertung">
   <ion-row>
     <ion-col size="12">
-     @for(training of trainings; track training) {
+      @for(training of trainings; track training) { @if
+      (training.comparisonResults[0]?.dateTmp == getCurrentDate() ) {
       <ion-card>
         <ion-card-header>
-          <ion-card-title>
-            {{ training.name }}
-          </ion-card-title>
+          <ion-card-title> {{ training.name }} </ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <ion-row>
-            <ion-col>Set</ion-col>
-            <ion-col>Result</ion-col>
-            <ion-col>Prev Result</ion-col>
+          <ion-row class="output-result">
+            <ion-col>S</ion-col>
+            <ion-col>C R</ion-col>
+            <ion-col>P R</ion-col>
             <ion-col>P</ion-col>
+            <ion-col>CNR</ion-col>
+            <ion-col>PNR</ion-col>
           </ion-row>
-          @for(comparisonResult of training.comparisonResults; track comparisonResult; let index = $index; let count = $count) {
-            <ion-row>
-              <ion-col>
-                {{ index+1 }}
-              </ion-col>
-              <ion-col>
-                {{ comparisonResult.currentRepsAndWeights}}
-              </ion-col>
-              <ion-col>
-                {{ comparisonResult.prevRepsAndWeights}}
-              </ion-col>
-              <ion-col>
-                {{ comparisonResult.percentAndWeights}}%
-              </ion-col>
-            </ion-row>
-          }
 
+          @for(comparisonResult of training.comparisonResults; track
+          comparisonResult; let index = $index;) {
+          <ion-row class="output-result">
+            <ion-col> {{ index+1 }} </ion-col>
+            <ion-col> {{ comparisonResult.currentRepsAndWeights }} </ion-col>
+            <ion-col> {{ comparisonResult.prevRepsAndWeights }} </ion-col>
+            <ion-col> {{ comparisonResult.percentAndWeights }} </ion-col>
+            <ion-col>
+              {{ comparisonResult.currentNgativeRepsAndWeight }}
+            </ion-col>
+            <ion-col>
+              {{ comparisonResult.prevNgativeRepsAndWeights }}
+            </ion-col>
+          </ion-row>
+          }
         </ion-card-content>
       </ion-card>
-     }
+      } }
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
       <div class="submit-btn-container ion-margin-vertical">
-        <ion-button type="submit" expand="block" color="danger" fill="outline"
-          [routerLink]="['/workout-list']">
+        <ion-button
+          type="submit"
+          expand="block"
+          color="danger"
+          fill="outline"
+          [routerLink]="['/workout-list']"
+        >
           Workout
         </ion-button>
       </div>

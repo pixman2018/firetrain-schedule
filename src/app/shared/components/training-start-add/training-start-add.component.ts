@@ -6,8 +6,18 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { I_TrainingInWorkout, I_TrainingResults } from '../../interfaces/I_TrainingInWorkout';
-import { BehaviorSubject, first, firstValueFrom, map, Observable, Subscription } from 'rxjs';
+import {
+  I_TrainingInWorkout,
+  I_TrainingResults,
+} from '../../interfaces/I_TrainingInWorkout';
+import {
+  BehaviorSubject,
+  first,
+  firstValueFrom,
+  map,
+  Observable,
+  Subscription,
+} from 'rxjs';
 import { TrainingInWorkoutService } from '../../services/trainingInWorkout/training-in-workout.service';
 import { TrainingsInWorkoutListPageRoutingModule } from 'src/app/pages/trainingsInWorkout/trainings-in-workout-list/trainings-in-workout-list-routing.module';
 import { DateService } from '../../services/date/date.service';
@@ -20,7 +30,7 @@ import { Router } from '@angular/router';
 })
 export class TrainingStartAddComponent implements OnInit {
   @Input() trainingKey: string | undefined;
-  @Input() workoutKey: string  | undefined;
+  @Input() workoutKey: string | undefined;
   // @Input() isFirst: boolean = false;
   protected training: I_TrainingInWorkout | null = null;
   private actionCtrlObs$: Subscription | undefined;
@@ -33,35 +43,35 @@ export class TrainingStartAddComponent implements OnInit {
     private _fb: FormBuilder,
     private _router: Router,
     private _dateService: DateService,
-    private _trainingInWorkout: TrainingInWorkoutService,
+    private _trainingInWorkout: TrainingInWorkoutService
   ) {}
 
   ngOnInit() {
     this._initComponent();
   }
 
-
-    /**
+  /**
    *
    * gets all trainings from the current workout
    *
    * @param workoutKey
    *
    */
-    private _fetchTrainingInWorkout() {
-      if (this.trainingKey && this.workoutKey) {
-        this._trainingInWorkout.fetchTrainingByKey(this.workoutKey, this.trainingKey)
+  private _fetchTrainingInWorkout() {
+    if (this.trainingKey && this.workoutKey) {
+      this._trainingInWorkout
+        .fetchTrainingByKey(this.workoutKey, this.trainingKey)
         .pipe(
           first(),
           map((training) => {
             return training[0];
-          }),
+          })
         )
         .subscribe((training) => {
           this.training = training;
         });
-      }
     }
+  }
 
   /**
    *
@@ -78,9 +88,8 @@ export class TrainingStartAddComponent implements OnInit {
   // }
 
   protected onChanceValue(index: number) {
-
     if (this.getWeightCtrl(index)?.valid && this.getRepsCtrl(index)?.valid) {
-      this._updateResult(index);
+      // this._updateResult(index);
     }
   }
 
@@ -92,19 +101,16 @@ export class TrainingStartAddComponent implements OnInit {
     }
   }
 
-  protected _updateResult(index: number) {
+  protected _updateResult(currentIndex: number) {
     if (!this.training) {
       this._router.navigateByUrl(`/workout-list`, {
         replaceUrl: true,
       });
     }
-    for (let i=0; i < this.itemControls.length; i++){
-      console.log('value', this.getWeightCtrl(i)?.value)
-    }
 
-
+    // Fill 'resultObj' with static values
     const resultObj: I_TrainingResults = {
-      trainingsdayTstamp: this._dateService.getNowDatAsTstamp(),
+      trainingsdayTstamp: 0,
       sets: this.sets, // change by finish workout
       goalRepsStart: this.training?.goalRepsStart ?? 8, // goalRepsStart default 8
       goalRepsEnd: this.training?.goalRepsEnd ?? 12, // goalRepsEnd defauilt 12
@@ -112,34 +118,47 @@ export class TrainingStartAddComponent implements OnInit {
       reps: [],
       negativeReps: [],
       note: '',
+      tmp: [],
     };
+    resultObj.trainingsdayTstamp = this._dateService.getNowDatAsTstamp();
+
+    if (this.training?.trainingResults[0]?.tmp) {
+      resultObj.tmp = this.training?.trainingResults[0].tmp;
+    }
+    resultObj.tmp.push(Date.now());
 
     this.itemControls.controls.forEach((value, index) => {
       if (this.getWeightCtrl(index)?.value != '') {
         resultObj.weights.push(this.getWeightCtrl(index)?.value);
         resultObj.reps.push(this.getRepsCtrl(index)?.value);
-        resultObj.negativeReps.push(this.getNRepsCtrl(index)?.value);
+        // If the optional value 'negReps' is not set, it is assigned the value 0 in the database
+        if (this.getNRepsCtrl(index)?.value == '') {
+          resultObj.negativeReps.push(0);
+        } else {
+          resultObj.negativeReps.push(this.getNRepsCtrl(index)?.value);
+        }
         resultObj.sets = index + 1;
       }
     });
 
-    if (this.training?.trainingResults ) {
-      if (this.training?.trainingResults.length && this.training?.trainingResults[0].trainingsdayTstamp == this._dateService.getNowDatAsTstamp()) {
+    // && this.training?.trainingResults[0].trainingsdayTstamp == x this._dateService.getNowDatAsTstamp()
+    if (this.training?.trainingResults) {
+      if (this.training?.trainingResults.length) {
         this.training.trainingResults[0] = resultObj;
       } else {
         this.training?.trainingResults.unshift(resultObj);
       }
     }
-
     if (this.training) {
-      console.log('training', this.training);
-      this._trainingInWorkout.editTrainingInWorkout(this.training)
-      .then(() => {
-          console.log(this.training?.trainingResults);
-      })
-      .catch(error => {
-        console.error('training result not save.', error);
-      });
+      // console.log('training', this.training);
+      this._trainingInWorkout
+        .editTrainingInWorkout(this.training)
+        .then(() => {
+          // console.log(this.training?.trainingResults);
+        })
+        .catch((error) => {
+          console.error('training result not save.', error);
+        });
     }
   }
 
@@ -266,7 +285,7 @@ export class TrainingStartAddComponent implements OnInit {
    *
    */
   private _initComponent() {
-    this._fetchTrainingInWorkout()
+    this._fetchTrainingInWorkout();
 
     for (let i = 0; i < this.sets; i++) {
       this.itemControls.push(this._createFormControls());
