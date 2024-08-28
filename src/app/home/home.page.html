@@ -12,14 +12,28 @@
             <ion-label>Trainings</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
-            <ion-button
-            fill="clear"
-            color="danger"
-            class="cursor"
-            [routerLink]="'/training-list'"
-            >
+            <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/training-list'">
               <ion-text>Trainings</ion-text>
             </ion-button>
+          </div>
+        </ion-accordion>
+        <ion-accordion value="app">
+          <ion-item slot="header">
+            <ion-label>App</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            <ion-list>
+              <ion-item>
+                <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/privacy-policy'">
+                  <ion-text>Datenschutzerklärung</ion-text>
+                </ion-button>
+              </ion-item>
+              <ion-item>
+                <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/imprint'">
+                  <ion-text>Impressum</ion-text>
+                </ion-button>
+              </ion-item>
+            </ion-list>
           </div>
         </ion-accordion>
       </ion-accordion-group>

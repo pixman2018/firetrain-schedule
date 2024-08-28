@@ -112,11 +112,20 @@ const routes: Routes = [
     path: 'training-start-analysis/:key',
     loadChildren: () => import('./pages/training-start/training-start-analysis/training-start-analysis.module').then( m => m.TrainingStartAnalysisPageModule)
   },
-  /*
+    /*
     ****************************************
-    Example
+    App
     ****************************************
   */
+  {
+    path: 'privacy-policy',
+    loadChildren: () => import('./pages/app/privacy-policy/privacy-policy.module').then( m => m.PrivacyPolicyPageModule)
+  },
+  {
+    path: 'imprint',
+    loadChildren: () => import('./pages/app/imprint/imprint.module').then( m => m.ImprintPageModule)
+  },
+
   {
     path: 'example',
     loadChildren: () =>
@@ -140,7 +149,9 @@ const routes: Routes = [
   },
   {
     path: 'pagethree', component: PagethreeComponent,
-  }
+  },
+
+
 ];
 
 @NgModule({
