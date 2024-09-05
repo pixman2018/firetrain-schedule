@@ -20,13 +20,17 @@ export interface I_TrainingInWorkout {
 
 export interface I_ComparisonResults {
   count: number;
-  currentNgativeRepsAndWeight: number;
-  currentRepsAndWeights: number;
-  percentAndWeights: number;
-  prevNgativeRepsAndWeights: number;
-  prevRepsAndWeights: number;
   trainingTmp: number;
   dateTmp: number;
+  currentRepsAndWeights: number[],
+  currentNgativeRepsAndWeight: number[],
+  percentAndWeights: number[],
+  prevNgativeRepsAndWeights: number[],
+  prevRepsAndWeights: number[],
+  currentTotalResult: number,
+  currentTotalResultWithNReps: number,
+  prevTotalResult: number,
+  prevNgativeRepsAndWeightTotalResult: number,
 }
 
 export interface I_TrainingResults {

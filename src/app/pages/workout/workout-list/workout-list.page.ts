@@ -114,6 +114,33 @@ export class WorkoutListPage implements OnInit {
     this._router.navigateByUrl('/workout-add', { replaceUrl: true });
   }
 
+  protected onGoStartWorkout(workout: I_Workout | undefined) {
+    if (workout) {
+      workout.count = workout.count +1;
+      this._setTmp(workout);
+      this._router.navigateByUrl(`training-start-list/${workout.key}`, {
+        replaceUrl: true,
+      });
+    }
+
+
+  }
+
+  private _setTmp(workout: I_Workout) {
+    workout.trainingsdayTstamps.unshift({
+      startDateTmp: Date.now(),
+      endDateTmp: 0,
+      workoutTime: 0,
+    });
+    this._workoutService.edit(workout)
+      .then(() => {
+        console.log('TMP gesetzt', workout.trainingsdayTstamps[0]);
+      })
+      .catch((error) => {
+        console.error('TMP konnte nicht gesetzt werden ', error);
+      });
+  }
+
   private _openCurrentAccorion() {
     const nativeEl = this.accordionGroup;
     const currentAccordion =
@@ -127,17 +154,6 @@ export class WorkoutListPage implements OnInit {
 
   private _initComponent(): void {
     this._fetchAllWorkout();
-    if (this._isDelWorkout) {
-    //   const workoutConfirm: Subscription = this._alertService.getConfirmResult()
-    //   .subscribe((res) => {
-    //     console.log(res)
-    //     if (res) {
-    //       workoutConfirm.unsubscribe();
-    //       this._isDelWorkout = false;
-    //       this._delWorkout();
-    //     }
-    // });
-    }
 
     if (this._route.snapshot.queryParamMap.has('accordion')) {
       // open the current accorion

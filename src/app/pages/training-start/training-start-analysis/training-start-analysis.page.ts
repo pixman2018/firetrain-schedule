@@ -9,8 +9,9 @@ import {
   I_ComparisonResults,
   I_TrainingInWorkout,
 } from 'src/app/shared/interfaces/I_TrainingInWorkout';
-import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
+import { I_TotalValue, I_TrainingsdayTstamps, I_Workout } from 'src/app/shared/interfaces/I_Workout';
 import { DateService } from 'src/app/shared/services/date/date.service';
+import { I_TimeObj } from 'src/app/shared/interfaces/I_DateTime';
 
 @Component({
   selector: 'app-training-start-analysis',
@@ -21,7 +22,9 @@ export class TrainingStartAnalysisPage implements OnInit {
   private _workoutKey: string | null = null;
   protected workout: I_Workout | null = null;
   protected trainings: I_TrainingInWorkout[] | null = null;
-
+  protected totalValue: I_TotalValue | undefined;
+  protected comparisonResults = [];
+  protected workoutTime: I_TimeObj | undefined;
 
   constructor(
     private _route: ActivatedRoute,
@@ -39,12 +42,44 @@ export class TrainingStartAnalysisPage implements OnInit {
     return this._dateService.getNowDatAsTstamp();
   }
 
+
+  protected isPositive(): boolean {
+    if (this.totalValue && (this.totalValue.totalResultAndNReps || this.totalValue.totalResultAndNReps >= 0) && (this.totalValue.prevTotalResultAndNReps || this.totalValue.prevTotalResultAndNReps) >= 0) {
+      return this.totalValue?.totalResultAndNReps - this.totalValue?.prevTotalResultAndNReps >= 0;
+    } else {
+      return false;
+    }
+  }
+
+  protected diffResult(currentResult: number | undefined, prevResult: number | undefined): number {
+    let res: number = 0;
+    if ( typeof currentResult == 'number' && typeof prevResult == 'number' ) {
+      console.log('cu', currentResult, ' ')
+      console.log('pr', prevResult, ' ')
+
+
+      res = currentResult - prevResult;
+    }
+    return res;
+  }
+
   private _fetchWorkoutByKey(): void {
     if (this._workoutKey) {
       this._workoutService.fetchByKey(this._workoutKey).subscribe({
         next: (workout) => {
           if (workout) {
             this.workout = workout;
+            if (workout ) {
+              if (workout.totalValue && workout.totalValue.length) {
+                this.totalValue = workout.totalValue[0];
+              }
+              if ( workout.trainingsdayTstamps &&  workout.trainingsdayTstamps.length) {
+                this.workoutTime = this._dateService.getTimeFromTstamp(workout.trainingsdayTstamps[0].workoutTime);
+              }
+
+            }
+
+            console.log('workout', workout)
           }
         },
         error: (error) => {
@@ -64,21 +99,12 @@ export class TrainingStartAnalysisPage implements OnInit {
           this._workoutKey
         );
       trainings$
-        .pipe(
-          map((t) => {
-            t.map((training) => {
-
-
-              return training;
-            });
-
-            return t;
-          })
-        )
         .subscribe((training) => {
-          this.trainings = training;
+          if (training) {
+            this.trainings = training;
+          }
 
-          console.log('training', training);
+
         });
     }
   }

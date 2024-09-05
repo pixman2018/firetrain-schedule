@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { I_ComparisonResults, I_TrainingFormResult, I_TrainingFormResults, I_TrainingInWorkout, I_TrainingResults } from 'src/app/shared/interfaces/I_TrainingInWorkout';
-import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
+import {
+  I_ComparisonResults,
+  I_TrainingFormResult,
+  I_TrainingFormResults,
+  I_TrainingInWorkout,
+  I_TrainingResults,
+} from 'src/app/shared/interfaces/I_TrainingInWorkout';
+import { I_TotalValue, I_Workout } from 'src/app/shared/interfaces/I_Workout';
 import { DateService } from 'src/app/shared/services/date/date.service';
 
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
-
-
 
 @Component({
   selector: 'app-training-start-list',
@@ -24,7 +28,7 @@ export class TrainingStartListPage implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _workoutService: WorkoutService,
     private _trainingInWorkout: TrainingInWorkoutService,
-    private _dateService: DateService,
+    private _dateService: DateService
   ) {}
 
   ngOnInit() {
@@ -72,115 +76,180 @@ export class TrainingStartListPage implements OnInit, OnDestroy {
   }
 
   protected onFinishWorkout() {
-    this.trainings.forEach(( training) => {
+    const totalValueObj: I_TotalValue = this._createTotalValueDEfaultPbj();
+
+    this.trainings.forEach((training) => {
+
+      const currentResult = training.trainingResults[0];
       if (training.trainingResults[0]) {
-         // currentResult, prevResult
-        // training.comparisonResults.unshift(this._calcResult( training, ));
-        const result: I_ComparisonResults[] = this._calcResult( training, );
-        training.comparisonResults = result;
+
+        const prevResult = training.trainingResults[1];
+        // currentResult, prevResult
+        const comparisonResultsDefaultObj =
+          this._createDefaultComparisonResultsObj();
+        const comparisonResultsObj = this._calcResult(
+          training,
+          comparisonResultsDefaultObj
+        );
+
+        // total Result
+        for (
+          let j = 0;
+          j < comparisonResultsObj.currentNgativeRepsAndWeight.length;
+          j++
+        ) {
+          comparisonResultsObj.currentTotalResult =
+            comparisonResultsObj.currentTotalResult +
+            comparisonResultsObj.currentRepsAndWeights[j];
+          comparisonResultsObj.currentTotalResultWithNReps =
+            comparisonResultsObj.currentTotalResultWithNReps +
+            comparisonResultsObj.currentNgativeRepsAndWeight[j];
+          if (!prevResult) {
+            comparisonResultsObj.prevTotalResult = 0;
+            comparisonResultsObj.prevNgativeRepsAndWeightTotalResult = 0;
+          } else {
+            comparisonResultsObj.prevTotalResult =
+              comparisonResultsObj.prevTotalResult +
+              comparisonResultsObj.prevRepsAndWeights[j];
+            comparisonResultsObj.prevNgativeRepsAndWeightTotalResult =
+              comparisonResultsObj.prevNgativeRepsAndWeightTotalResult +
+              comparisonResultsObj.prevRepsAndWeights[j];
+          }
+        }
+        training.comparisonResults.unshift(comparisonResultsObj);
+
+        this._trainingInWorkout
+          .editTrainingInWorkout(training)
+          .then((res) => {
+            console.log('Edit training in Workout succsessgully');
+            if (this.workout?.key) {
+              this._router.navigateByUrl(
+                `/training-start-analysis/${this.workout.key}`,
+                {
+                  replaceUrl: true,
+                }
+              );
+            }
+          })
+          .catch((error) => {
+            console.error('Error bei edit training in Workout', error);
+          });
+
+      }
+      // workout 144 36 9
+      console.log('comparisonResults', training.comparisonResults[0]);
+      if (training.comparisonResults[0]) {
+      totalValueObj.totalResult =  totalValueObj.totalResult + training.comparisonResults[0].currentTotalResult
+      totalValueObj.totalResultAndNReps = totalValueObj.totalResultAndNReps + training.comparisonResults[0].currentTotalResultWithNReps;
+      totalValueObj.prevTotalResult = totalValueObj.prevTotalResult + training.comparisonResults[0].prevTotalResult;
+      totalValueObj.prevTotalResultAndNReps = totalValueObj.prevTotalResultAndNReps + training.comparisonResults[0].prevNgativeRepsAndWeightTotalResult;
       }
 
-      this._trainingInWorkout.editTrainingInWorkout(training)
-        .then((res) => {
-          console.log('Edit training in Workout succsessgully');
-          if (this.workout?.key) {
-            this._router.navigateByUrl(`/training-start-analysis/${this.workout.key}`, {
-              replaceUrl: true,
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error bei edit training in Workout',error);
-        })
+
     });
+
+    if (this.workout) {
+      this.workout.trainingsdayTstamps[0].endDateTmp = Date.now();
+      this.workout.trainingsdayTstamps[0].workoutTime = this.workout.trainingsdayTstamps[0].endDateTmp- this.workout.trainingsdayTstamps[0].startDateTmp;
+      this.workout?.totalValue.push(totalValueObj);
+      this._workoutService.edit(this.workout);
+    }
   }
 
-  private _calcResult(training: I_TrainingInWorkout, ): I_ComparisonResults[] {
-    const comparisonResultsArr = [];
+  private _createTotalValueDEfaultPbj(): I_TotalValue {
+    return {
+      // repsTotal: 0,
+      // nrepsTotal: 0,
+      // setsTotal: 0,
+      // weightsTotal: 0,
+      totalResult: 0,
+      totalResultAndNReps: 0,
+      prevTotalResult: 0,
+      prevTotalResultAndNReps: 0,
+      stopWorkoutTmp: Date.now(),
+    }
+  }
 
+  private _createDefaultComparisonResultsObj(): I_ComparisonResults {
+    return {
+      count: 0,
+      dateTmp: 0,
+      trainingTmp: 0,
+
+      currentRepsAndWeights: [],
+      currentNgativeRepsAndWeight: [],
+
+      percentAndWeights: [],
+      prevNgativeRepsAndWeights: [],
+      prevRepsAndWeights: [],
+
+      currentTotalResult: 0,
+      currentTotalResultWithNReps: 0,
+      prevTotalResult: 0,
+      prevNgativeRepsAndWeightTotalResult: 0,
+    };
+  }
+
+  private _calcResult(
+    training: I_TrainingInWorkout,
+    comparisonResultsObj: I_ComparisonResults
+  ): I_ComparisonResults {
     const currentResult = training.trainingResults[0];
     const prevResult = training.trainingResults[1];
 
-    for (let j = 0; j < training.trainingResults[0].weights.length; j++ ) {
-      const comparisonResults:I_ComparisonResults = {
-        count: training.trainingResults[0].weights.length,
-        currentRepsAndWeights: 0,
-        currentNgativeRepsAndWeight: 0,
-        percentAndWeights: 0,
-        prevNgativeRepsAndWeights: 0,
-        prevRepsAndWeights: 0,
-        trainingTmp: 0,
-        dateTmp: 0,
-      }
-      comparisonResults.currentRepsAndWeights = currentResult.weights[j] * currentResult.reps[j];
-      comparisonResults.currentNgativeRepsAndWeight = currentResult.weights[j] * currentResult.negativeReps[j];
-      comparisonResults.trainingTmp = currentResult.tmp[j];
-      comparisonResults.dateTmp = this._dateService.getNowDatAsTstamp();
+    comparisonResultsObj.count = comparisonResultsObj.count + 1;
+    comparisonResultsObj.dateTmp = this._dateService.getNowDatAsTstamp();
+    comparisonResultsObj.trainingTmp = currentResult.trainingsdayTstamp;
+    for (let j = 0; j < training.trainingResults[0].weights.length; j++) {
+      const currentRepsAndWeights: number =
+        currentResult.weights[j] * currentResult.reps[j];
+      const currentNgativeRepsAndWeight: number =
+        (currentResult.weights[j] * currentResult.negativeReps[j]) /2;
+
+      comparisonResultsObj.currentRepsAndWeights.push(currentRepsAndWeights);
+      comparisonResultsObj.currentNgativeRepsAndWeight.push(
+        currentNgativeRepsAndWeight + currentRepsAndWeights
+      );
 
       if (!prevResult) {
-        comparisonResults.prevRepsAndWeights = 0;
-        comparisonResults.prevNgativeRepsAndWeights = 0;
-        comparisonResults.percentAndWeights = 0;
+        comparisonResultsObj.percentAndWeights.push(0);
+        comparisonResultsObj.prevRepsAndWeights.push(0);
+        comparisonResultsObj.prevNgativeRepsAndWeights.push(0);
       } else {
-        comparisonResults.prevRepsAndWeights = prevResult.weights[j] * prevResult.reps[j];
-        comparisonResults.prevNgativeRepsAndWeights = prevResult.weights[j] * prevResult.negativeReps[j];
-        comparisonResults.percentAndWeights = this._calcPercent(
-          currentResult.weights[j] * currentResult.reps[j],
-          prevResult.weights[j] * prevResult.reps[j]
+        const prevepsAndWeights: number =
+          prevResult.weights[j] * prevResult.reps[j];
+        const prevNegativeRepsAndWeight: number =
+          (prevResult.weights[j] * prevResult.negativeReps[j]) / 2;
+
+        comparisonResultsObj.currentRepsAndWeights.push(prevepsAndWeights);
+        comparisonResultsObj.prevNgativeRepsAndWeights.push(
+          prevNegativeRepsAndWeight + prevepsAndWeights
+        );
+        comparisonResultsObj.percentAndWeights.push(
+          this._calcPercent(
+            currentNgativeRepsAndWeight,
+            prevNegativeRepsAndWeight
+          )
         );
       }
-
-      comparisonResultsArr.push(comparisonResults);
     }
-   return comparisonResultsArr;
+
+    return comparisonResultsObj;
   }
 
-  // private _calcResult(training: I_TrainingInWorkout, ): I_ComparisonResults {
-  //   const comparisonResults:I_ComparisonResults = {
-  //     currentRepsAndWeights: [],
-  //     prevRepsAndWeights: [],
-  //     percentAndWeights: [],
-  //     currentNgativeRepsAndWeights: [],
-  //     prevNgativeRepsAndWeights: [],
-  //     trainingTmp: [],
-  //     count: training.trainingResults[0].weights.length,
-  //   }
-
-  //     for (let j = 0; j < training.trainingResults[0].weights.length; j++ ) {
-  //       const result = training.trainingResults[0];
-  //        type index = keyof Number;
-  //       comparisonResults.currentRepsAndWeights.push(result.weights[j] * result.reps[j]);
-  //       comparisonResults.trainingTmp.push(result.tmp[j]);
-  //       comparisonResults.currentNgativeRepsAndWeights.push(result.negativeReps[j] * result.weights[j]);
-
-
-  //       if (training.trainingResults[1]?.weights) {
-  //         comparisonResults.prevRepsAndWeights.push(training.trainingResults[1].weights[j] ?? 0 * training.trainingResults[1].reps[j] ?? 0);
-  //         comparisonResults.prevNgativeRepsAndWeights.push(training.trainingResults[1].negativeReps[j] * training.trainingResults[1].weights[j]);
-  //         const weight = training.trainingResults[1].weights[j] + (training.trainingResults[1].negativeReps[j] / 2);
-  //         comparisonResults.percentAndWeights.push(this._calcPercent(
-  //           training.trainingResults[0].weights[j] * training.trainingResults[0].reps[j],
-  //           weight * training.trainingResults[1].reps[j]
-  //         ));
-  //       } else {
-  //         comparisonResults.prevRepsAndWeights.push(0);
-  //         comparisonResults.percentAndWeights.push(0);
-  //       }
-  //     }
-  //     console.log('comparisonResults', comparisonResults)
-  //     return comparisonResults;
-  // }
-
-  private _calcPercent ( currentRepWeight: number, prevRepWeight: number): number {
+  private _calcPercent(
+    currentRepWeight: number,
+    prevRepWeight: number
+  ): number {
     /**
-    * 100% = 200
-    * ? = 50
-    * ? = 50 / 200 * 100 = 25%;
-    */
-    return !prevRepWeight ? 100 : Math.round( (currentRepWeight / prevRepWeight * 100) *100 ) / 100;
+     * 100% = 200
+     * ? = 50
+     * ? = 50 / 200 * 100 = 25%;
+     */
+    return !prevRepWeight
+      ? 100
+      : Math.round((currentRepWeight / prevRepWeight) * 100 * 100) / 100;
   }
-
-
 
   /**
    *

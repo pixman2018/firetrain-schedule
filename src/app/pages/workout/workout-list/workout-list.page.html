@@ -71,7 +71,7 @@
                 @if (trainingsLengths[index]) {
                 <div class="submit-btn-container ion-margin-vertical">
                   <ion-button type="submit" expand="block" color="danger" fill="outline"
-                    [routerLink]="['/training-start-list', workout.key]">
+                    (click)="onGoStartWorkout(workout)">
                     Start Workout
                   </ion-button>
                 </div>

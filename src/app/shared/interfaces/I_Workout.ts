@@ -8,22 +8,33 @@ export interface I_Workout {
   count: number;
   // WorkoutI: number[];
   trainings?: [];
-  trainingsdayTstamps: number[];
+  trainingsdayTstamps: I_TrainingsdayTstamps[];
   isArchiv: boolean;
   folder: string;
   LengthOfTrainings: [];
   calorieConsumptions: [];
-  totalValue: I_TotalValue;
+  totalValue: I_TotalValue[];
   // userIdConsumptions?: string;
   // lastDatesTstamp?: number;
   created: number;
   updated: number;
 }
 
-interface I_TotalValue {
-  weightsTotal: number;
-  repsTotal: number;
-  setsTotal: number;
-  totalValue: number; // weightsTotal * repsTotal
+export interface I_TrainingsdayTstamps {
+  startDateTmp: number;
+  endDateTmp: number;
+  workoutTime: number;
+}
+
+export interface I_TotalValue {
+  // repsTotal: number,
+  // nrepsTotal: number,
+  // setsTotal: number,
+  // weightsTotal: number,
+  totalResult: number,
+  totalResultAndNReps: number,
+  prevTotalResult: number,
+  prevTotalResultAndNReps: number,
+  stopWorkoutTmp: number,
 }
 

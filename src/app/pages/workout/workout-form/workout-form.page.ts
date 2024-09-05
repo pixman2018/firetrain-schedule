@@ -150,12 +150,7 @@ export class WorkoutFormPage implements OnInit {
       folder: '',
       LengthOfTrainings: [],
       calorieConsumptions: [],
-      totalValue: {
-        weightsTotal: 0,
-        repsTotal: 0,
-        setsTotal: 0,
-        totalValue: 0,
-      },
+      totalValue: [],
       created: Date.now(),
       updated: Date.now(),
     };

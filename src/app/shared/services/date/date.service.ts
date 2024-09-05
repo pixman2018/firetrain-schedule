@@ -65,6 +65,7 @@ export class DateService {
    * @returns
    */
   public getTimeFromTstamp(tstamp: number): I_TimeObj {
+    console.log('getTimeFromTstamp', tstamp);
     // example https://blog.axxg.de/zeitdifferenz-konvertieren-mit-modulo/
     const hours: number = Math.floor(tstamp / (1000*60*60));
     tstamp = tstamp % (1000*60*60);

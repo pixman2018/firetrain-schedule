@@ -1,55 +1,111 @@
-<app-basis-layout headline="Training Auswertung">
-  <ion-row>
-    <ion-col size="12">
-      @for(training of trainings; track training) { @if
-      (training.comparisonResults[0]?.dateTmp == getCurrentDate() ) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title> {{ training.name }} </ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-row class="output-result">
-            <ion-col>S</ion-col>
-            <ion-col>C R</ion-col>
-            <ion-col>P R</ion-col>
-            <ion-col>P</ion-col>
-            <ion-col>CNR</ion-col>
-            <ion-col>PNR</ion-col>
-          </ion-row>
+<app-basis-layout [headline]="'&quot;' + workout?.name +  '&quot; Auswertung'">
 
-          @for(comparisonResult of training.comparisonResults; track
-          comparisonResult; let index = $index;) {
-          <ion-row class="output-result">
-            <ion-col> {{ index+1 }} </ion-col>
-            <ion-col> {{ comparisonResult.currentRepsAndWeights }} </ion-col>
-            <ion-col> {{ comparisonResult.prevRepsAndWeights }} </ion-col>
-            <ion-col> {{ comparisonResult.percentAndWeights }} </ion-col>
-            <ion-col>
-              {{ comparisonResult.currentNgativeRepsAndWeight }}
-            </ion-col>
-            <ion-col>
-              {{ comparisonResult.prevNgativeRepsAndWeights }}
-            </ion-col>
-          </ion-row>
-          }
-        </ion-card-content>
+  <ion-row class="workout-result">
+    <ion-col>
+      <ion-card color="">
+        <ion-card-header>
+
+          <ion-label class="ion-text-center">
+            {{ workoutTime?.hours}}: {{ workoutTime?.minutes}}: {{ workoutTime?.seconds}}
+          </ion-label>
+          <ion-icon name="timer-outline" size="large" class="ion-padding-bottom m-hc" color="danger"></ion-icon>
+        </ion-card-header>
+
+
       </ion-card>
-      } }
+    </ion-col>
+    <ion-col>
+      <ion-card color="">
+        <ion-card-header>
+
+          <ion-label class="ion-text-center" [ngClass]="{
+          't-green' : isPositive(),
+          't-red': !isPositive(),
+        }">
+
+            @if (totalValue && totalValue.totalResultAndNReps >= 0 && totalValue.prevTotalResultAndNReps >= 0) {
+            @if (totalValue.totalResultAndNReps > totalValue.prevTotalResultAndNReps) {
+            {{ totalValue.totalResultAndNReps - totalValue.prevTotalResultAndNReps}} KG
+            }
+            }
+            @else {
+            0 KG
+            }
+          </ion-label>
+          <ion-icon name="barbell-outline" size="large" class="ion-padding-bottom m-hc" color="danger"></ion-icon>
+        </ion-card-header>
+      </ion-card>
     </ion-col>
   </ion-row>
   <ion-row>
+    <ion-col size="12">
+
+      @for (training of trainings; track training) {
+      @for (comparisonResults of training.comparisonResults; track comparisonResults; let first = $first) {
+      @if (first) {
+      <ion-card>
+        <ion-card-header color="danger">
+          <ion-label>
+            <h3>
+              {{ training.name }}
+            </h3>
+          </ion-label>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <ion-label>
+                <h3>
+                  <strong>C</strong>
+                </h3>
+              </ion-label>
+              <ion-text>
+                {{ comparisonResults.currentTotalResultWithNReps}}
+              </ion-text>
+            </ion-col>
+            <ion-col class="ion-text-center">
+              <ion-label>
+                <h3>
+                  <strong>P</strong>
+                </h3>
+              </ion-label>
+              <ion-text>
+                {{ comparisonResults?.prevNgativeRepsAndWeightTotalResult}}
+              </ion-text>
+            </ion-col>
+            <ion-col class="ion-text-center">
+              <ion-label>
+                <h3>
+                  <strong>D</strong>
+                </h3>
+              </ion-label>
+              <ion-text [ngClass]="{
+                't-green' : diffResult(comparisonResults?.currentTotalResultWithNReps ,
+                comparisonResults.prevNgativeRepsAndWeightTotalResult) > 0,
+                't-red' : diffResult(comparisonResults?.currentTotalResultWithNReps ,
+                comparisonResults.prevNgativeRepsAndWeightTotalResult) < 0
+              }">
+                {{ diffResult(comparisonResults?.currentTotalResultWithNReps ,
+                comparisonResults.prevNgativeRepsAndWeightTotalResult) }}
+              </ion-text>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+
+      }
+      }
+      }
+
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="ion-margin-bottom">
     <ion-col>
-      <div class="submit-btn-container ion-margin-vertical">
-        <ion-button
-          type="submit"
-          expand="block"
-          color="danger"
-          fill="outline"
-          [routerLink]="['/workout-list']"
-        >
-          Workout
-        </ion-button>
-      </div>
+      <ion-button  expand="block" color="danger" fill="outline" routerLink="/workout-list">
+        Workout Übersicht
+      </ion-button>
     </ion-col>
   </ion-row>
 </app-basis-layout>
+

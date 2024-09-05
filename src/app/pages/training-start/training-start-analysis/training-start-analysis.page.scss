@@ -1,3 +1,24 @@
 // .output-result ion-col {
 //   text-align: center;
 // }
+
+.t-green {
+  color: green;
+}
+
+.t-red {
+  color: red;
+}
+
+  ion-card {
+    border: 1px solid var(--ion-color-danger);
+  }
+
+  ion-card-header{
+    ion-label{
+      h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+    }
+  }
