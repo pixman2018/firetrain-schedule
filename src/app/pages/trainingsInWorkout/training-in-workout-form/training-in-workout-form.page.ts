@@ -82,7 +82,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   }
 
   private _fetchTrainingByKey(trainingKey: string) {
-    this._trainingInWorkoutService.fetchTrainingByKey(this._workoutKey, trainingKey)
+    this._trainingInWorkoutService.fetchTrainingByKey(this._workoutKey, trainingKey, this._userId)
       .pipe(
         take(1)
       )

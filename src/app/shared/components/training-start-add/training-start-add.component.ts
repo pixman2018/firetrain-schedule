@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -6,22 +6,22 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+
+import { Router } from '@angular/router';
+import {
+  first,
+  map,
+} from 'rxjs';
+
+// services
+import { TrainingInWorkoutService } from '../../services/trainingInWorkout/training-in-workout.service';
+import { DateService } from '../../services/date/date.service';
+// interfaces
 import {
   I_TrainingInWorkout,
   I_TrainingResults,
 } from '../../interfaces/I_TrainingInWorkout';
-import {
-  BehaviorSubject,
-  first,
-  firstValueFrom,
-  map,
-  Observable,
-  Subscription,
-} from 'rxjs';
-import { TrainingInWorkoutService } from '../../services/trainingInWorkout/training-in-workout.service';
-import { TrainingsInWorkoutListPageRoutingModule } from 'src/app/pages/trainingsInWorkout/trainings-in-workout-list/trainings-in-workout-list-routing.module';
-import { DateService } from '../../services/date/date.service';
-import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-training-start-add',
@@ -31,9 +31,9 @@ import { Router } from '@angular/router';
 export class TrainingStartAddComponent implements OnInit {
   @Input() trainingKey: string | undefined;
   @Input() workoutKey: string | undefined;
-  // @Input() isFirst: boolean = false;
+
   protected training: I_TrainingInWorkout | null = null;
-  private actionCtrlObs$: Subscription | undefined;
+  protected _userKey: string = '-1';
 
   // form
   protected resultForm: FormGroup = this._createForm();
@@ -60,40 +60,57 @@ export class TrainingStartAddComponent implements OnInit {
   private _fetchTrainingInWorkout() {
     if (this.trainingKey && this.workoutKey) {
       this._trainingInWorkout
-        .fetchTrainingByKey(this.workoutKey, this.trainingKey)
+        .fetchTrainingByKey(this.workoutKey, this.trainingKey, this._userKey)
         .pipe(
           first(),
           map((training) => {
             return training[0];
           })
         )
-        .subscribe((training) => {
-          this.training = training;
+        .subscribe({
+          next: (training) => {
+            this.training = training;
+          },
+          error: (error) => {
+            console.error('Can not loading training', error);
+          },
+          complete: () => {
+            this.training?.trainingResults
+            const resultObj = this._createDefaultResultObj(true);
+            this.training?.trainingResults.unshift(resultObj);
+            if (this.training) {
+              this._trainingInWorkout.editTrainingInWorkout(this.training)
+                .then(() => {
+                  console.log('Set Training Result default value');
+                });
+            }
+          }
         });
     }
   }
 
   /**
    *
-   * get the result from actionCtrl as Observable
-   * from the training start list page
+   * @description
+   * sets the values of the training when changing weight or rep if both are valid
    *
-   * this string sends the result of the add or remove button
-   *
-   * @returns the result from actionCtrl
+   * @param index index from formArray
    *
    */
-  // private _getActionCtrlAsObservable(): Observable<string> {
-  //   return this.actionCtrl$.asObservable();
-  // }
-
   protected onChanceValue(index: number) {
     if (this.getWeightCtrl(index)?.valid && this.getRepsCtrl(index)?.valid) {
       // this._updateResult(index);
     }
   }
 
-  protected onInsertResult(event: any, index: number) {
+  /**
+   * is executed when the “done” checkbox is clicked.
+   * If the form is valid, the “_updateResult” method is called,
+   * otherwise the “done” checkbox is set to false
+   *
+   * @param index index from formArray
+   */
+  protected onInsertResult(index: number) {
     if (this.itemControls.at(index).valid) {
       this._updateResult(index);
     } else {
@@ -101,6 +118,12 @@ export class TrainingStartAddComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   * Sets the values for the “resultObj” object and inserts them into the training
+   *
+   * @param currentIndex index from formArray
+   */
   protected _updateResult(currentIndex: number) {
     if (!this.training) {
       this._router.navigateByUrl(`/workout-list`, {
@@ -109,19 +132,10 @@ export class TrainingStartAddComponent implements OnInit {
     }
 
     // Fill 'resultObj' with static values
-    const resultObj: I_TrainingResults = {
-      trainingsdayTstamp: 0,
-      sets: this.sets, // change by finish workout
-      goalRepsStart: this.training?.goalRepsStart ?? 8, // goalRepsStart default 8
-      goalRepsEnd: this.training?.goalRepsEnd ?? 12, // goalRepsEnd defauilt 12
-      weights: [],
-      reps: [],
-      negativeReps: [],
-      note: '',
-      tmp: [],
-    };
+    const resultObj: I_TrainingResults = this._createDefaultResultObj();
     resultObj.trainingsdayTstamp = this._dateService.getNowDatAsTstamp();
 
+    // if available then copy deb “tmp” from “trainingResults” into the “resultObj” object
     if (this.training?.trainingResults[0]?.tmp) {
       resultObj.tmp = this.training?.trainingResults[0].tmp;
     }
@@ -141,25 +155,55 @@ export class TrainingStartAddComponent implements OnInit {
       }
     });
 
-    // && this.training?.trainingResults[0].trainingsdayTstamp == x this._dateService.getNowDatAsTstamp()
     if (this.training?.trainingResults) {
       if (this.training?.trainingResults.length) {
-        this.training.trainingResults[0] = resultObj;
+
+        if (this._dateService.getNowDatAsTstamp() == this.training?.trainingResults[0].trainingsdayTstamp) {
+          this.training.trainingResults[0] = resultObj;
+        } else {
+          this.training.trainingResults.unshift(resultObj);
+        }
+
       } else {
         this.training?.trainingResults.unshift(resultObj);
       }
     }
+
     if (this.training) {
-      // console.log('training', this.training);
       this._trainingInWorkout
         .editTrainingInWorkout(this.training)
         .then(() => {
-          // console.log(this.training?.trainingResults);
+          console.log(this.training?.trainingResults);
         })
         .catch((error) => {
           console.error('training result not save.', error);
         });
     }
+  }
+
+  private _createDefaultResultObj(isDeafult: boolean = false,): I_TrainingResults {
+
+    const resultObj: I_TrainingResults = {
+      trainingsdayTstamp: 0,
+      sets: this.sets, // change by finish workout
+      goalRepsStart: this.training?.goalRepsStart ?? 8, // goalRepsStart default 8
+      goalRepsEnd: this.training?.goalRepsEnd ?? 12, // goalRepsEnd defauilt 12
+      weights: [],
+      reps: [],
+      negativeReps: [],
+      note: '',
+      tmp: [],
+    };
+
+    if (isDeafult) {
+      for (let i = 0; i < this.sets; i++) {
+        resultObj.weights.push(0);
+        resultObj.reps.push(0);
+        resultObj.negativeReps.push(0);
+      }
+
+    }
+    return resultObj;
   }
 
   /*
@@ -285,10 +329,18 @@ export class TrainingStartAddComponent implements OnInit {
    *
    */
   private _initComponent() {
-    this._fetchTrainingInWorkout();
+    if (sessionStorage.getItem('uid')) {
+      this._userKey = sessionStorage.getItem('uid')!;
+      this._fetchTrainingInWorkout();
 
-    for (let i = 0; i < this.sets; i++) {
-      this.itemControls.push(this._createFormControls());
+      for (let i = 0; i < this.sets; i++) {
+        this.itemControls.push(this._createFormControls());
+      }
+    } else {
+      this._router.navigateByUrl(`/auth`, {
+        replaceUrl: true,
+      });
     }
+
   }
 }

@@ -131,6 +131,12 @@ export class WorkoutListPage implements OnInit {
       startDateTmp: Date.now(),
       endDateTmp: 0,
       workoutTime: 0,
+      workoutTimeObj: {
+        day: '0',
+        hours: '0',
+        minutes: '0',
+        seconds: '0',
+      }
     });
     this._workoutService.edit(workout)
       .then(() => {
@@ -159,5 +165,6 @@ export class WorkoutListPage implements OnInit {
       // open the current accorion
       this._openCurrentAccorion();
     }
+
   }
 }

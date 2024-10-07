@@ -1,3 +1,27 @@
 <ion-app>
+
+ <!-- <form class="form" [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <ion-input formControlName="test" labelPlacement="floating" label="test">
+  </ion-input>
+
+
+  <ion-button type="submit" expand="block">
+    Submit
+  </ion-button>
+
+  <ion-datetime-button datetime="datetime" id="fake-click"></ion-datetime-button>
+
+  <ion-button fill="clear" (click)="openCalendar()">
+    <ion-icon slot="icon-only" name="calendar-outline" color="primary" size="small"></ion-icon>
+  </ion-button>
+
+  <ion-modal [keepContentsMounted]="true" [isOpen]="showCalendar" (didDismiss)="cancelCalendar()">
+    <ng-template>
+      <ion-datetime locale="de-DE" id="datetime" [showDefaultButtons]="true" doneText="Confirm"
+      cancelText="Cancel" (ionChange)="onSelectDatepicker($event)"></ion-datetime>
+    </ng-template>
+  </ion-modal>
+
+ </form > -->
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

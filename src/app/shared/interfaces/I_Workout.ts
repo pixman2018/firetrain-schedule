@@ -1,3 +1,4 @@
+import { I_TimeObj } from "./I_DateTime";
 
 
 export interface I_Workout {
@@ -16,6 +17,7 @@ export interface I_Workout {
   totalValue: I_TotalValue[];
   // userIdConsumptions?: string;
   // lastDatesTstamp?: number;
+  workoutTime?: I_TimeObj;
   created: number;
   updated: number;
 }
@@ -24,6 +26,7 @@ export interface I_TrainingsdayTstamps {
   startDateTmp: number;
   endDateTmp: number;
   workoutTime: number;
+  workoutTimeObj: I_TimeObj;
 }
 
 export interface I_TotalValue {

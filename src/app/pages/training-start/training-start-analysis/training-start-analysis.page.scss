@@ -10,9 +10,20 @@
   color: red;
 }
 
+.workout-complete-timeOrWeights{
   ion-card {
     border: 1px solid var(--ion-color-danger);
   }
+}
+
+.comparison-result {
+  ion-card-header {
+    border: 1px solid var(--ion-color-danger);
+  }
+  ion-col {
+    text-align: center;
+  }
+}
 
   ion-card-header{
     ion-label{
@@ -22,3 +33,4 @@
       }
     }
   }
+

@@ -20,7 +20,7 @@ export class TrainigInWorkoutComponent  implements OnInit {
   private _trainingKey: string = '';
   private _trainingName: string = '';
 
-  private _ussrId: string | null = null;
+  private _userId: string | null = null;
   protected trainings: I_TrainingInWorkout[] = []
 
   constructor(
@@ -85,8 +85,8 @@ export class TrainigInWorkoutComponent  implements OnInit {
   }
 
   private _initComponent(): void {
-    this._ussrId = sessionStorage.getItem('uid');
-    if (!this._ussrId) {
+    this._userId = sessionStorage.getItem('uid');
+    if (!this._userId) {
       this._router.navigateByUrl(`/auth}`, {
         replaceUrl: true,
       });

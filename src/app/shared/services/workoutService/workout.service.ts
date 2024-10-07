@@ -27,8 +27,10 @@ export class WorkoutService {
   }
 
   public fetchAll():Observable<I_Workout[] | undefined>  {
+    const userKey = window.sessionStorage.getItem('uid');
     return this._afs.collection<I_Workout>(this._dbPath, ref => ref
       .where('isArchiv', '==', false)
+      .where('userId', '==', userKey)
     ).valueChanges();
   }
 

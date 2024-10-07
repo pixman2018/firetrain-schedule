@@ -1,28 +1,46 @@
 <app-basis-layout [headline]="'&quot;' + workout?.name +  '&quot; Auswertung'">
-
-  <ion-row class="workout-result">
+  <!--
+    ********************************************************************************
+    *****
+    ***
+    * workout complet time and weiths
+    ***
+    *****
+    ********************************************************************************
+  -->
+  <ion-row class="workout-complete-timeOrWeights">
+    <!--
+      ***
+      * complet time
+      ***
+    -->
     <ion-col>
       <ion-card color="">
         <ion-card-header>
-
-          <ion-label class="ion-text-center">
-            {{ workoutTime?.hours}}: {{ workoutTime?.minutes}}: {{ workoutTime?.seconds}}
-          </ion-label>
           <ion-icon name="timer-outline" size="large" class="ion-padding-bottom m-hc" color="danger"></ion-icon>
+          <ion-label class="ion-text-center">
+            {{ workout?.workoutTime?.hours}}: {{ workout?.workoutTime?.minutes}}: {{ workout?.workoutTime?.seconds}}
+          </ion-label>
         </ion-card-header>
-
-
       </ion-card>
     </ion-col>
+    <!--
+      ***
+      * complet weights
+      ***
+    -->
+
+    <!-- <pre>
+      {{ workout?.totalValue?.[showResultIndex] | json}}
+    </pre> -->
     <ion-col>
       <ion-card color="">
         <ion-card-header>
-
+          <ion-icon name="barbell-outline" size="large" class="ion-padding-bottom m-hc" color="danger"></ion-icon>
           <ion-label class="ion-text-center" [ngClass]="{
-          't-green' : isPositive(),
-          't-red': !isPositive(),
-        }">
-
+            't-green' : isPositive(),
+            't-red': !isPositive(),
+          }">
             @if (totalValue && totalValue.totalResultAndNReps >= 0 && totalValue.prevTotalResultAndNReps >= 0) {
             @if (totalValue.totalResultAndNReps > totalValue.prevTotalResultAndNReps) {
             {{ totalValue.totalResultAndNReps - totalValue.prevTotalResultAndNReps}} KG
@@ -32,80 +50,201 @@
             0 KG
             }
           </ion-label>
-          <ion-icon name="barbell-outline" size="large" class="ion-padding-bottom m-hc" color="danger"></ion-icon>
         </ion-card-header>
       </ion-card>
     </ion-col>
   </ion-row>
-  <ion-row>
-    <ion-col size="12">
 
+  <ion-row class="result-container">
+    <ion-col>
       @for (training of trainings; track training) {
-      @for (comparisonResults of training.comparisonResults; track comparisonResults; let first = $first) {
-      @if (first) {
-      <ion-card>
-        <ion-card-header color="danger">
+      <ion-card class="ion-margin-bottom">
+        <ion-card-header>
           <ion-label>
             <h3>
               {{ training.name }}
             </h3>
           </ion-label>
         </ion-card-header>
-        <ion-card-content>
-          <ion-row>
-            <ion-col class="ion-text-center">
+        <ion-card-content class="ion-margin-top">
+
+          <!--
+          ****************************************
+          trainingResults
+          ****************************************
+          -->
+          <ion-button size="" fill="clear" color="danger" class="cursor" (click)="onShowMore('prev')">
+            <ion-text class="ion-margin-end">Vorheriges Resultat</ion-text>
+            @if (showResultPrev) {
+              <ion-icon name="eye-off-outline" ></ion-icon>
+            }
+            @else {
+              <ion-icon name="eye-outline" ></ion-icon>
+            }
+          </ion-button>
+
+          @if (showResultPrev) {
+          <ng-container [ngTemplateOutlet]="getResultTmp"
+            [ngTemplateOutletContext]="{ training: training, showResultIndex: showResultIndex +1, }">
+          </ng-container>
+          }
+          @if (showResultPrev || showResultNext) {
+          <ion-button size="" fill="clear" color="medium" class="cursor" (click)="onShowMore('next')">
+            Aktuelles Resultat
+          </ion-button>
+          }
+
+          <ng-container [ngTemplateOutlet]="getResultTmp"
+            [ngTemplateOutletContext]="{ training: training, showResultIndex: showResultIndex, }">
+          </ng-container>
+
+          @if (showResultNext) {
+          <ng-container [ngTemplateOutlet]="getResultTmp"
+            [ngTemplateOutletContext]="{  training: training, showResultIndex: showResultIndex -1,  }">
+          </ng-container>
+          }
+
+          @if (training.trainingResults?.[showResultIndex -1]) {
+          <ion-button size="" fill="clear" color="danger" class="cursor" (click)="onShowMore('next')">
+            Nächstes Resultat {{ showResultNext ? 'ausblenden' : 'einblenden' }}
+          </ion-button>
+          }
+
+          <!--
+          ****************************************
+          result total
+          ****************************************
+          -->
+                    <ion-row>
+            <ion-col class="ion-margin-top">
+              <ion-button size="" fill="clear" color="medium" class="cursor" (click)="onShowMore('next')">
+                  Gesamt Resultat
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <!--
+          ****************************************
+          comparison-result-header
+          ****************************************
+          -->
+          <ion-row class="comparison-result-header">
+            <ion-col>
+              <ion-label>
+                <strong>S</strong>
+              </ion-label>
+            </ion-col>
+
+            <ion-col>
               <ion-label>
                 <h3>
                   <strong>C</strong>
                 </h3>
               </ion-label>
-              <ion-text>
-                {{ comparisonResults.currentTotalResultWithNReps}}
-              </ion-text>
             </ion-col>
-            <ion-col class="ion-text-center">
+
+            <ion-col>
               <ion-label>
                 <h3>
                   <strong>P</strong>
                 </h3>
               </ion-label>
-              <ion-text>
-                {{ comparisonResults?.prevNgativeRepsAndWeightTotalResult}}
-              </ion-text>
             </ion-col>
-            <ion-col class="ion-text-center">
+            <ion-col>
               <ion-label>
                 <h3>
                   <strong>D</strong>
                 </h3>
               </ion-label>
-              <ion-text [ngClass]="{
-                't-green' : diffResult(comparisonResults?.currentTotalResultWithNReps ,
-                comparisonResults.prevNgativeRepsAndWeightTotalResult) > 0,
-                't-red' : diffResult(comparisonResults?.currentTotalResultWithNReps ,
-                comparisonResults.prevNgativeRepsAndWeightTotalResult) < 0
-              }">
-                {{ diffResult(comparisonResults?.currentTotalResultWithNReps ,
-                comparisonResults.prevNgativeRepsAndWeightTotalResult) }}
-              </ion-text>
             </ion-col>
           </ion-row>
+           <!--
+          ****************************************
+          result value
+          ****************************************
+          -->
+
+          @for (currentRepsAndWeights of training.comparisonResults?.[showResultIndex]?.currentRepsAndWeights; track currentRepsAndWeights; let index = $index;) {
+            <ion-row class="set-result">
+              <ion-col>
+                {{ index +1 }}
+              </ion-col>
+              <ion-col>
+                {{ currentRepsAndWeights }}
+              </ion-col>
+              <ion-col>
+                {{ training?.comparisonResults?.[showResultIndex]?.prevNgativeRepsAndWeights?.[index] }}
+              </ion-col>
+              <ion-col>
+                {{ getDiff(currentRepsAndWeights, training?.comparisonResults?.[showResultIndex]?.prevNgativeRepsAndWeights?.[index] )}}
+              </ion-col>
+            </ion-row>
+          }
         </ion-card-content>
       </ion-card>
-
       }
-      }
-      }
-
     </ion-col>
   </ion-row>
 
-  <ion-row class="ion-margin-bottom">
-    <ion-col>
-      <ion-button  expand="block" color="danger" fill="outline" routerLink="/workout-list">
-        Workout Übersicht
-      </ion-button>
-    </ion-col>
-  </ion-row>
 </app-basis-layout>
 
+<!--
+********************************************************************************
+*****
+***
+* Templates
+***
+*****
+********************************************************************************
+-->
+<ng-template #getResultTmp let-training="training" let-showResultIndex="showResultIndex">
+<!--
+  ****************************************
+  trainingResult-header
+  ****************************************
+-->
+  <ion-row class="training-result-header">
+    <ion-col>
+      <ion-label>
+        <strong>S</strong>
+      </ion-label>
+    </ion-col>
+    <ion-col>
+      <ion-label>
+        <h3>
+          <strong>W</strong>
+        </h3>
+      </ion-label>
+    </ion-col>
+    <ion-col>
+      <ion-label>
+        <h3>
+          <strong>R</strong>
+        </h3>
+      </ion-label>
+    </ion-col>
+    <ion-col>
+      <ion-label>
+        <h3>
+          <strong>NR</strong>
+        </h3>
+      </ion-label>
+    </ion-col>
+  </ion-row>
+  @for (rep of training.trainingResults?.[showResultIndex]?.reps; track rep; let index = $index;) {
+
+  <ion-row class="training-result-content">
+    <ion-col>
+      {{ index +1 }}
+    </ion-col>
+    <ion-col>
+      {{ training.trainingResults?.[showResultIndex]?.weights?.[index]}}
+    </ion-col>
+    <ion-col>
+      {{ training.trainingResults?.[showResultIndex]?.reps?.[index]}}
+    </ion-col>
+    <ion-col>
+      {{ training.trainingResults?.[showResultIndex]?.negativeReps?.[index]}}
+    </ion-col>
+  </ion-row>
+  }
+</ng-template>
