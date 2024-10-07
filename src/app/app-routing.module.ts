@@ -99,33 +99,71 @@ const routes: Routes = [
         './pages/trainingsInWorkout/training-in-workout-form/training-in-workout-form.module'
       ).then((m) => m.TrainingInWorkoutFormPageModule),
   },
-    /*
+  /*
     ****************************************
     Training start
     ****************************************
   */
-    {
-      path: 'training-start-list/:key',
-      loadChildren: () => import('./pages/training-start/training-start-list/training-start-list.module').then( m => m.TrainingStartListPageModule)
-    },
+  {
+    path: 'training-start-list/:key',
+    loadChildren: () =>
+      import(
+        './pages/training-start/training-start-list/training-start-list.module'
+      ).then((m) => m.TrainingStartListPageModule),
+  },
   {
     path: 'training-start-analysis/:key',
-    loadChildren: () => import('./pages/training-start/training-start-analysis/training-start-analysis.module').then( m => m.TrainingStartAnalysisPageModule)
+    loadChildren: () =>
+      import(
+        './pages/training-start/training-start-analysis/training-start-analysis.module'
+      ).then((m) => m.TrainingStartAnalysisPageModule),
   },
-    /*
+  /*
     ****************************************
     App
     ****************************************
   */
   {
     path: 'privacy-policy',
-    loadChildren: () => import('./pages/app/privacy-policy/privacy-policy.module').then( m => m.PrivacyPolicyPageModule)
+    loadChildren: () =>
+      import('./pages/app/privacy-policy/privacy-policy.module').then(
+        (m) => m.PrivacyPolicyPageModule
+      ),
   },
   {
     path: 'imprint',
-    loadChildren: () => import('./pages/app/imprint/imprint.module').then( m => m.ImprintPageModule)
+    loadChildren: () =>
+      import('./pages/app/imprint/imprint.module').then(
+        (m) => m.ImprintPageModule
+      ),
   },
-
+  // {
+  //   path: 'about',
+  //   loadChildren: () =>
+  //     import('./pages/app/about/about.module').then((m) => m.AboutPageModule),
+  // },
+  /*
+    ****************************************
+    admin
+    ****************************************
+  */
+  {
+    path: 'version-control',
+    loadChildren: () => import('./admin/pages/version-control/version-control.module').then( m => m.VersionControlPageModule)
+  },
+  {
+    path: 'version-control-list',
+    loadChildren: () => import('./admin/pages/version-control-list/version-control-list.module').then( m => m.versionControlistPageModule)
+  },
+  {
+    path: 'logitems-form/:formtype',
+    loadChildren: () => import('./admin/pages/logitems-form/logitems-form.module').then( m => m.LogitemsFormPageModule)
+  },
+  /*
+    ****************************************
+    example
+    ****************************************
+  */
   {
     path: 'example',
     loadChildren: () =>
@@ -139,19 +177,25 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'base', component: BaseComponent,
+    path: 'base',
+    component: BaseComponent,
   },
   {
-    path: 'pageone', component: PageoneComponent,
+    path: 'pageone',
+    component: PageoneComponent,
   },
   {
-    path: 'pagetwo', component: PagetwoComponent,
+    path: 'pagetwo',
+    component: PagetwoComponent,
   },
   {
-    path: 'pagethree', component: PagethreeComponent,
+    path: 'pagethree',
+    component: PagethreeComponent,
   },
-
-
+  {
+    path: 'datepicker',
+    loadChildren: () => import('./example/angular/datepicker/datepicker.module').then( m => m.DatepickerPageModule)
+  },
 ];
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, isDevMode, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 // ionic
 import { LoadingController } from '@ionic/angular';
@@ -8,6 +8,7 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 // validators
 import { MustMatch } from 'src/app/shared/validators/MustMatchValidator';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/shared/services/user/user.service';
 
 @Component({
   selector: 'app-auth',
@@ -40,6 +41,7 @@ export class AuthPage implements OnInit {
     private readonly _loadingCtrl: LoadingController,
     private readonly _authService: AuthService,
     private readonly _alertService: AlertService,
+    private readonly _userService: UserService,
   ) { }
 
   ngOnInit() {
@@ -55,7 +57,7 @@ export class AuthPage implements OnInit {
     await loading.present();
 
     const user = await this._authService.login(this.credentialsForm.value);
-    console.log('user', user)
+
     if (user && user.user.emailVerified) {
       this._alertService.showToast(
         'Du hast Dich angemeldet.',
@@ -77,6 +79,15 @@ export class AuthPage implements OnInit {
         'Bitte versuche es nocheinmal',
         'danger'
       );
+  }
+  this.credentialsForm.reset();
+  if (isDevMode() && user && user.user.uid) {
+    this._userService.getUserByKey(user.user.uid)
+      .subscribe((res) => {
+        if (res?.isAdmin) {
+          window.sessionStorage.setItem('isAdmin', 'true');
+        }
+      });
   }
   await loading.dismiss();
 }

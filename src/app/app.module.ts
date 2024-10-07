@@ -1,4 +1,7 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
@@ -29,8 +32,10 @@ import {
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { ExampleModule } from './example/example.module';
+import { SharedModule } from './shared/shared.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
-
+registerLocaleData(localeDe);
 
 
 @NgModule({
@@ -40,10 +45,13 @@ import { ExampleModule } from './example/example.module';
     IonicModule.forRoot({ innerHTMLTemplatesEnabled: true }),
     AppRoutingModule,
     ExampleModule,
+    SharedModule,
+    ReactiveFormsModule,
   ],
   providers: [
     provideHttpClient(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    {provide: LOCALE_ID, useValue: 'de'},
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
