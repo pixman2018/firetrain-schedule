@@ -15,7 +15,7 @@ ion-app {
 }
 
 ion-grid {
-  margin-bottom: 40px;
+  margin-bottom: 80px;
 }
 
 ion-row {
@@ -55,4 +55,9 @@ ion-row {
 .elem-center {
   display: flex;
   justify-content: center;
+}
+
+.action-btn-container {
+  display: flex;
+  justify-content: space-between;
 }
