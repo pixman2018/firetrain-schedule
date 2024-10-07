@@ -31,3 +31,20 @@ ion-list {
     border: none;
   }
 }
+
+.accordion-content {
+  margin-left: 2rem;
+}
+
+h3 {
+  margin-left: -2rem;
+}
+
+.full-size-btn {
+  ion-item,
+  ion-button {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+  }
+}

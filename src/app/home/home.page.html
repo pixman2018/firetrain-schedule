@@ -4,6 +4,33 @@
       <ion-accordion-group>
         <!--
         ****************************************
+        Workout
+        ****************************************
+        -->
+        <ion-accordion value="trainings">
+          <ion-item slot="header">
+            <ion-label>Auswertung</ion-label>
+          </ion-item>
+          <div class="accordion-content ion-padding-top full-size-btn" slot="content">
+            <ion-label color="">
+              <h3 class="headline">Workouts</h3>
+            </ion-label>
+            @for (workout of workouts; track workout.name) {
+              <ion-item lines="none" class="ion-margin-bottom cursor">
+                <ion-button fill="none" color="danger" expand="block" class="cursor" [routerLink]="['/training-start-analysis', workout.key]">
+                  <ion-text color="danger">{{ workout.name }}</ion-text>
+                </ion-button>
+
+              </ion-item>
+
+            }
+            <!-- <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/training-list'">
+              <ion-text>Workouts</ion-text>
+            </ion-button> -->
+          </div>
+        </ion-accordion>
+        <!--
+        ****************************************
         Trainings
         ****************************************
         -->
@@ -17,12 +44,25 @@
             </ion-button>
           </div>
         </ion-accordion>
+         <!--
+        ****************************************
+        App
+        ****************************************
+        -->
         <ion-accordion value="app">
           <ion-item slot="header">
             <ion-label>App</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
             <ion-list>
+              <ion-item>
+                <!-- <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/about'">
+                  <ion-text>Information über firetrain-schedule</ion-text>
+                </ion-button> -->
+                <ion-button fill="clear" color="danger" class="cursor" (click)="onOpenAboutModal()">
+                  <ion-text>Information über firetrain-schedule</ion-text>
+                </ion-button>
+              </ion-item>
               <ion-item>
                 <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/privacy-policy'">
                   <ion-text>Datenschutzerklärung</ion-text>
