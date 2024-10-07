@@ -1,0 +1,56 @@
+<app-basis-layout [headline]="headline">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="action-container">
+          <ion-button (click)="onClickBack()" color="danger" fill="clear">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="ion-item-form-container">
+
+          <form class="form" (ngSubmit)="onSubmitLogItems()" [formGroup]="logItemsForm">
+            <ion-item class="margin-top">
+              <ion-select aria-label="Type" placeholder="Type" formControlName="type">
+                @for( type of types; track type;) {
+
+                <ion-select-option [value]="type" labelPlacement="floating">
+                  {{ type | titlecase }}
+                </ion-select-option>
+
+                }
+              </ion-select>
+            </ion-item>
+            <div class="error-msg  " *ngIf="type?.invalid  && isSubmit">
+              <ion-text color="danger">
+                Der Type muss angegeben werden.
+              </ion-text>
+            </div>
+
+            <ion-item>
+              <ion-input type="text" label="Logitem" aria-label="Logitem" formControlName="logitem"
+                labelPlacement="floating" [clearInput]="true"></ion-input>
+            </ion-item>
+            <div class="error-msg" *ngIf="logitem?.invalid  && isSubmit">
+              <ion-text color="danger">
+                LogItem muss angegeben werden. </ion-text>
+            </div>
+            <div class="btn-container elem-right ion-margin-top">
+              <ion-button type="submit" expand="" color="danger" fill="outline">
+                @if(formtype == 'edit') { Ändern } @else { Anlegen }
+              </ion-button>
+            </div>
+          </form>
+        </div>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</app-basis-layout>

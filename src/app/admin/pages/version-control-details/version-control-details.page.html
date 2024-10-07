@@ -1,0 +1,111 @@
+<ion-header [translucent]="true" class="main-header">
+  <ion-toolbar color="danger" >
+    <div class="elem-right">
+      <ion-buttons>
+        <ion-button color="medium" (click)="onClose()">
+          <ion-icon name="close-circle-outline" size="large" color="white"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </div>
+    <ion-title>
+      Build Version Details "{{ versionControlPrev?.build?.version}}"
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense" class="main-header">
+    <ion-toolbar color="danger">
+      <div class="elem-right">
+        <ion-buttons>
+          <ion-button color="medium" (click)="onClose()">
+            <ion-icon
+              name="close-circle-outline"
+              size="large"
+              color="white"
+            ></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </div>
+      <ion-title>
+        Build Version Details "{{ versionControlPrev?.build?.version}}"
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-title>
+        <ion-row>
+          <ion-col> Aktuelle Version: </ion-col>
+          <ion-col size="2" class="ion-text-right">
+            {{ currentVersion }}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> Buildversion: </ion-col>
+          <ion-col size="2" class="ion-text-right">
+            {{ versionControlPrev?.build?.version}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> Build Version Nr. </ion-col>
+          <ion-col size="5" class="ion-text-right">
+            {{ versionControlPrev?.build?.VersionNo}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> Build Datum: </ion-col>
+          <ion-col size="2" class="ion-text-right">
+            {{ versionControlPrev?.build?.timeStamp | date :'shortDate' }}
+          </ion-col>
+        </ion-row>
+      </ion-title>
+    </ion-card-header>
+    <ion-card-content> </ion-card-content>
+  </ion-card>
+
+  @if (versionControlPrev && versionControlPrev.items?.feactures?.length ||
+  versionControlPrev && versionControlPrev.items?.bugs?.length) { @if
+  (versionControlPrev && versionControlPrev.items?.feactures?.length) {
+  <ion-card>
+    <ion-card-header color="success">
+      <ion-title> Feactures </ion-title>
+    </ion-card-header>
+    <ion-card-content>
+      @for (feacture of versionControlPrev &&
+      versionControlPrev.items?.feactures; track feacture) {
+      <ion-list>
+        <ion-item>
+          <ion-text slot="start"> {{ feacture.de }} </ion-text>
+          <ion-text slot="end">
+            {{ feacture.timestamp | date: 'shortDate'}}
+          </ion-text>
+        </ion-item>
+      </ion-list>
+      }
+    </ion-card-content>
+  </ion-card>
+  } @if (versionControlPrev && versionControlPrev.items?.bugs?.length) {
+  <ion-card>
+    <ion-card-header color="danger">
+      <ion-title> Bugs </ion-title>
+    </ion-card-header>
+    <ion-card-content>
+      @for (bug of versionControlPrev && versionControlPrev.items?.bugs; track
+      bug) {
+      <ion-list>
+        <ion-item>
+          <ion-text slot="start"> {{ bug.de }} </ion-text>
+          <ion-text slot="end">
+            {{ bug.timestamp | date: 'shortDate'}}
+          </ion-text>
+        </ion-item>
+      </ion-list>
+      }
+    </ion-card-content>
+  </ion-card>
+  } }
+</ion-content>
+
+<app-footer></app-footer>

@@ -1,0 +1,208 @@
+<app-basis-layout headline="Alle Version Controls">
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="elem-center">
+            <ion-button
+              color="danger"
+              fill="outline"
+              routerLink="/version-control"
+            >
+              Aktueller Build Version
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          @if (versionControl) {
+          <ion-card>
+            <ion-card-header>
+              <ion-title>
+                <ion-row>
+                  <ion-col class="ion-text-center">
+                    <h3>Aktuelle Build Version</h3>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col> Aktuelle Version: </ion-col>
+                  <ion-col size="2" class="ion-text-right">
+                    {{ currentVersion }}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col> Buildversion: </ion-col>
+                  <ion-col size="2" class="ion-text-right">
+                    {{ versionControl?.build?.version}}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col> Build Version Nr. </ion-col>
+                  <ion-col size="5" class="ion-text-right">
+                    {{ versionControl?.build?.VersionNo}}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col> Build Datum: </ion-col>
+                  <ion-col size="2" class="ion-text-right">
+                    {{ versionControl?.build?.timeStamp | date :'shortDate' }}
+                  </ion-col>
+                </ion-row>
+              </ion-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <ion-row>
+                <ion-col>
+                  <ion-accordion-group>
+                    @if (versionControl?.items?.feactures?.length) {
+                    <ion-accordion value="Feactures">
+                      <ion-item slot="header" color="">
+                        <ion-label>Feactures</ion-label>
+                      </ion-item>
+                      <div slot="content">
+                        <ion-list>
+                          @for (feacture of versionControl?.items?.feactures;
+                          track feacture) { @if (!versionControl?.isPublished) {
+                          <ion-item-sliding>
+                            <ion-item-options side="start">
+                              <ion-item-option color="transparent">
+                                <ion-icon
+                                  name="trash-outline"
+                                  size="large"
+                                  color="danger"
+                                  (click)="onDelLogItem(versionControl, feacture?.timestamp, 'feactures')"
+                                ></ion-icon>
+                              </ion-item-option>
+                            </ion-item-options>
+
+                            <ion-item> {{ feacture.de }} </ion-item>
+
+                            <ion-item-options side="end">
+                              <ion-item-option
+                                color="transparent"
+                                (click)="onEditLogitem(feacture?.timestamp, 'feactures')"
+                              >
+                                <ion-icon
+                                  name="create-outline"
+                                  size="large"
+                                  color="success"
+                                ></ion-icon>
+                              </ion-item-option>
+                            </ion-item-options>
+                          </ion-item-sliding>
+                          } @else {
+                          <ion-item> {{ feacture.de }} </ion-item>
+                          } }
+                        </ion-list>
+                      </div>
+                    </ion-accordion>
+                    } @if (versionControl?.items?.bugs?.length) {
+                    <ion-accordion value="Bugs">
+                      <ion-item slot="header" color="">
+                        <ion-label>Bugs</ion-label>
+                      </ion-item>
+                      <div slot="content">
+                        <ion-list>
+                          @for (bug of versionControl?.items?.bugs; track bug) {
+                          @if (!versionControl?.isPublished) {
+                          <ion-item-sliding>
+                            <ion-item-options side="start">
+                              <ion-item-option color="transparent">
+                                <ion-icon
+                                  name="trash-outline"
+                                  size="large"
+                                  color="danger"
+                                  (click)="onDelLogItem(versionControl, bug?.timestamp, 'bugs')"
+                                ></ion-icon>
+                              </ion-item-option>
+                            </ion-item-options>
+
+                            <ion-item> {{ bug.de }} </ion-item>
+
+                            <ion-item-options side="end">
+                              <ion-item-option color="transparent">
+                                <ion-icon
+                                  name="create-outline"
+                                  size="large"
+                                  color="success"
+                                  (click)="onEditLogitem(bug?.timestamp, 'bugs')"
+                                ></ion-icon>
+                              </ion-item-option>
+                            </ion-item-options>
+                          </ion-item-sliding>
+                          } @else {
+                          <ion-item> {{ bug.de }} </ion-item>
+                          } }
+                        </ion-list>
+                      </div>
+                    </ion-accordion>
+                    }
+                  </ion-accordion-group>
+                </ion-col>
+              </ion-row>
+              @if (!versionControl?.isPublished) {
+              <ion-row>
+                <ion-col class="elem-right">
+                  <ion-button
+                    type="submit"
+                    expand=""
+                    color="danger"
+                    fill="outline"
+                    (click)="onPublished(versionControl)"
+                  >
+                    Veröffendlichen
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+              }
+            </ion-card-content>
+          </ion-card>
+          }
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-card>
+            <ion-card-header>
+              <ion-title>
+                <h3>Vorherige Build Versions</h3>
+              </ion-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-row>
+                <ion-col>
+                  <ion-list>
+                    @if(versionControlPrevs.length) { @for (versionControlPrev
+                    of versionControlPrevs; track versionControlPrev) {
+
+                    <ion-item>
+                      <ion-text slot="start">
+                        Version {{ versionControlPrev?.build?.version}}
+                      </ion-text>
+
+                      <ion-button
+                        type="submit"
+                        expand=""
+                        color="danger"
+                        fill="outline"
+                        slot="end"
+                        (click)="onOpenDetails(versionControlPrev)"
+                      >
+                        Details
+                      </ion-button>
+                    </ion-item>
+                    } }
+                  </ion-list>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+</app-basis-layout>

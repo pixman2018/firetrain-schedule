@@ -1,0 +1,126 @@
+<app-basis-layout headline="Version Control">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="action-btn-container">
+          <ion-button type="submit" expand="" color="danger" fill="outline" routerLink="/version-control-list">
+            <ion-text color="danger">Alle Versionen</ion-text>
+          </ion-button>
+          <!-- @if (versionControl.isPublished) { -->
+            <ion-button type="submit" expand="" color="danger" fill="outline" (click)="onAddNewVersion()">
+              <ion-text color="danger">Version hinzufügen </ion-text>
+            </ion-button>
+          <!-- } -->
+        </div>
+      </ion-col>
+    </ion-row>
+
+    @if(versionControl) {
+      <ion-row>
+        <ion-col>
+          <ion-item lines="none">
+              <strong>Current-Version</strong>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item lines="none">
+            <strong>Build Version</strong>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item fill="solid">
+          <ion-text slot="start">Current-Version: {{ versionControl?.build?.version }}</ion-text>
+          <ion-text slot="end">Build Datum: {{ versionControl?.build?.timeStamp | date : 'shortDate'
+            }}</ion-text>
+        </ion-item>
+        <ion-item fill="solid">
+          <ion-text slot="start">Build Version: {{ buildVersion }}</ion-text>
+          <ion-text slot="end">Build Datum: {{ buildObj?.timeStamp | date : 'shortDate' }}</ion-text>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="elem-center">
+        <ion-button type="submit" expand="" color="danger" fill="outline" (click)="onAddLogItem()">
+          <ion-icon name="add-outline"></ion-icon>
+          <ion-text color="danger">Logitem hinzufügen </ion-text>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        @if(versionControl?.items?.feactures?.length ||
+        versionControl?.items?.bugs?.length) {
+        @if
+        (versionControl?.items?.feactures?.length) {
+        <ion-card>
+          <ion-card-header color="success">
+            <ion-title> Freactues </ion-title>
+          </ion-card-header>
+          <ion-card-content>
+
+            @for(feacture of versionControl?.items?.feactures; track feacture)
+            {
+            <ion-row>
+              <ion-col>
+                <ion-text> {{ feacture.de}} </ion-text>
+              </ion-col>
+              <ion-col size="2" class="ion-text-right">
+                <ion-text> {{ feacture.timestamp | date: 'shortDate'}} </ion-text>
+              </ion-col>
+            </ion-row>
+
+
+            }
+
+          </ion-card-content>
+        </ion-card>
+        } @if (versionControl?.items?.bugs?.length) {
+        <ion-card>
+          <ion-card-header color="danger" class="ion-margin-top">
+            <ion-title> Bugs </ion-title>
+          </ion-card-header>
+          <ion-card-content>
+
+            @for(bug of versionControl?.items?.bugs; track bug) {
+            <ion-row>
+              <ion-col>
+                <ion-text> {{ bug.de}} </ion-text>
+              </ion-col>
+              <ion-col class="ion-text-right">
+                <ion-text> {{ bug.timestamp | date: 'shortDate' }} </ion-text>
+              </ion-col>
+            </ion-row>
+              }
+          </ion-card-content>
+        </ion-card>
+        } } @else {
+        <div class="ion-text-center">
+          <ion-text color="danger">
+            Keine Logitems in der Version {{  buildVersion}} vorhanden.
+          </ion-text>
+        </div>
+        }
+      </ion-col>
+    </ion-row>
+    } @else {
+    <ion-row>
+      <ion-col>
+        <div class="ion-text-center">
+          <ion-text color="danger">
+            Keine aktuelle Version von der App verfügbar. <br />
+            Bitte lege eine neue Version an.
+          </ion-text>
+        </div>
+      </ion-col>
+    </ion-row>
+    }
+
+  </ion-grid>
+
+</app-basis-layout>
