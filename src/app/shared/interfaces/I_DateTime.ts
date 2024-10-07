@@ -5,8 +5,8 @@ export interface I_DatetimeObj {
 }
 
 export interface I_DateObj {
-  day: string;
-  month: string;
+  day: string | number;
+  month: string | number;
   year: string | number;
 }
 

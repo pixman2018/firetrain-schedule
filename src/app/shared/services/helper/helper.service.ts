@@ -18,7 +18,7 @@ export class HelperService {
    * @returns number[]
    *
    */
-  createRange(number: number): number[]{
+  public createRange(number: number): number[]{
     return new Array(number).fill(0)
       .map((n, index) => index + 1);
   }
@@ -49,5 +49,9 @@ export class HelperService {
     setTimeout(() => {
       return true;
     }, 300);
+  }
+
+  public round2Digits(number: number): number {
+   return Math.round(number * 100) / 100;
   }
 }
