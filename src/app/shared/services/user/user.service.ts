@@ -20,4 +20,9 @@ export class UserService {
     const trainDoc = this._afs.doc<I_User>(`${this._dbPath}/${key}`);
     return trainDoc.valueChanges();
   }
+
+  public edit(user: I_User): Promise<void> {
+    console.log(user);
+    return this._usersCollection.doc(user.uid).update(user);
+  }
 }

@@ -48,3 +48,12 @@ h3 {
     cursor: pointer;
   }
 }
+
+ion-checkbox::part(container) {
+  border-radius: 6px;
+  border: 2px solid var(--ion-color-danger);
+}
+
+ion-checkbox::part(label) {
+  color: var(--ion-color-danger);
+}

@@ -90,7 +90,6 @@ export class TrainingStartAnalysisPage implements OnInit {
       this._workoutService.fetchByKey(this._workoutKey)
         .pipe(
           map(workout => {
-            console.log('map', workout)
             if (workout) {
               workout['workoutTime'] = this._dateService.getTimeFromTstamp(workout.trainingsdayTstamps[this.showResultIndex].workoutTime)
             }
@@ -101,7 +100,6 @@ export class TrainingStartAnalysisPage implements OnInit {
           next: (workout) => {
             if (workout) {
               this.workout = workout;
-              console.log('workout', workout)
               if (workout.totalValue && workout.totalValue.length) {
                 this.totalValue = workout.totalValue[this.showResultIndex];
               }

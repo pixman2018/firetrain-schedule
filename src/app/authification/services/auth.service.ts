@@ -136,7 +136,7 @@ export class AuthService {
     this._currentUser$.next(this._setDefaultUserObj());
     window.sessionStorage.removeItem('isLogged');
     window.sessionStorage.removeItem('uid');
-    this._router.navigateByUrl('/login', { replaceUrl: true });
+    this._router.navigateByUrl('/auth', { replaceUrl: true });
     return signOut(this._auth);
   }
 

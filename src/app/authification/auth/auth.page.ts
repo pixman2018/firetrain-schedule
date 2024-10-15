@@ -87,6 +87,9 @@ export class AuthPage implements OnInit {
         if (res?.isAdmin) {
           window.sessionStorage.setItem('isAdmin', 'true');
         }
+        if (res?.settings) {
+          window.sessionStorage.setItem('settings', JSON.stringify(res.settings));
+        }
       });
   }
   await loading.dismiss();

@@ -46,6 +46,23 @@
         </ion-accordion>
          <!--
         ****************************************
+        Settings
+        ****************************************
+        -->
+        <ion-accordion value="app">
+          <ion-item slot="header">
+            <ion-label>Settings</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            <ion-list>
+              <ion-item>
+                <ion-checkbox labelPlacement="start" color="danger" [formControl]="resultRetainCtrl" (ionChange)="onChangeChackbox( 'resultRetainCtrl')">Ergebnis Übernehmen</ion-checkbox>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-accordion>
+         <!--
+        ****************************************
         App
         ****************************************
         -->
@@ -56,9 +73,6 @@
           <div class="accordion-content" slot="content">
             <ion-list>
               <ion-item>
-                <!-- <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/about'">
-                  <ion-text>Information über firetrain-schedule</ion-text>
-                </ion-button> -->
                 <ion-button fill="clear" color="danger" class="cursor" (click)="onOpenAboutModal()">
                   <ion-text>Information über firetrain-schedule</ion-text>
                 </ion-button>
@@ -71,6 +85,11 @@
               <ion-item>
                 <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/imprint'">
                   <ion-text>Impressum</ion-text>
+                </ion-button>
+              </ion-item>
+              <ion-item>
+                <ion-button fill="clear" color="danger" class="cursor" (click)="onLogout()">
+                  <ion-text>Logout</ion-text>
                 </ion-button>
               </ion-item>
             </ion-list>

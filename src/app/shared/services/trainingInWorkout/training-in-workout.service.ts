@@ -33,7 +33,6 @@ export class TrainingInWorkoutService {
 
    public fetchTrainingByKey(workoutkey: string, trainingKey: string, userKey: string): Observable<I_TrainingInWorkout[]> {
     const userId =  sessionStorage.getItem('uid') ;
-    console.log('userKey', userKey)
     const collection = this._workoutCollection
       .doc(workoutkey)
       .collection<I_TrainingInWorkout>('trainings', ref => ref

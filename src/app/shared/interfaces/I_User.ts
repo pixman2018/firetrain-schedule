@@ -10,4 +10,9 @@ export interface I_User {
   uid: string;
   updated: number;
   verificationEmailTstamp: number;
+  settings: I_Settings,
+}
+
+export interface I_Settings {
+  resultRetain: boolean;
 }

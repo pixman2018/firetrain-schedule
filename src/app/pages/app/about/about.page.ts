@@ -19,7 +19,6 @@ export class AboutPage implements OnInit {
   constructor(private readonly _modalCtrl: ModalController,) { }
 
   ngOnInit() {
-    console.log('build', this.buildObj.buildNo)
   }
 
   protected onCancel() {
