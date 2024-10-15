@@ -21,6 +21,7 @@ import {
   I_TrainingInWorkout,
   I_TrainingResults,
 } from '../../interfaces/I_TrainingInWorkout';
+import { I_Settings, I_User } from '../../interfaces/I_User';
 
 
 @Component({
@@ -130,9 +131,14 @@ export class TrainingStartAddComponent implements OnInit {
         replaceUrl: true,
       });
     }
-
     // Fill 'resultObj' with static values
-    const resultObj: I_TrainingResults = this._createDefaultResultObj();
+    let resultObj: I_TrainingResults | null = null;
+    if (this._dateService.getNowDatAsTstamp() == this.training?.trainingResults[0].trainingsdayTstamp) {
+      resultObj = this.training.trainingResults[0];
+    } else {
+      resultObj = this._createDefaultResultObj();
+    }
+
     resultObj.trainingsdayTstamp = this._dateService.getNowDatAsTstamp();
 
     // if available then copy deb “tmp” from “trainingResults” into the “resultObj” object
@@ -156,24 +162,17 @@ export class TrainingStartAddComponent implements OnInit {
     });
 
     if (this.training?.trainingResults) {
-      if (this.training?.trainingResults.length) {
-
         if (this._dateService.getNowDatAsTstamp() == this.training?.trainingResults[0].trainingsdayTstamp) {
           this.training.trainingResults[0] = resultObj;
         } else {
           this.training.trainingResults.unshift(resultObj);
         }
-
-      } else {
-        this.training?.trainingResults.unshift(resultObj);
-      }
     }
-
     if (this.training) {
       this._trainingInWorkout
         .editTrainingInWorkout(this.training)
         .then(() => {
-          console.log(this.training?.trainingResults);
+          console.log('update trainig result');
         })
         .catch((error) => {
           console.error('training result not save.', error);
@@ -319,6 +318,14 @@ export class TrainingStartAddComponent implements OnInit {
     items.removeAt(this.itemControls.length - 1);
   }
 
+  private _createSets() {
+    const settings: I_Settings = JSON.parse(window.sessionStorage.getItem('settings')!);
+    if (settings.resultRetain) {
+
+    } else {
+
+    }
+  }
   /**
    *
    * Subscribes to the Observable from the "_getActionCtrlAsObservable" method
