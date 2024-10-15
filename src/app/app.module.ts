@@ -1,9 +1,9 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
+import { importProvidersFrom, LOCALE_ID, NgModule } from '@angular/core';
+import { HashLocationStrategy, LocationStrategy, PathLocationStrategy, registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { provideHttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
@@ -34,6 +34,7 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { ExampleModule } from './example/example.module';
 import { SharedModule } from './shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import {provideNgxWebstorage, withLocalStorage, withNgxWebstorageConfig, withSessionStorage} from 'ngx-webstorage';
 
 registerLocaleData(localeDe);
 
@@ -47,11 +48,18 @@ registerLocaleData(localeDe);
     ExampleModule,
     SharedModule,
     ReactiveFormsModule,
+
   ],
   providers: [
+    provideNgxWebstorage(
+    //   withNgxWebstorageConfig({ separator: ':', caseSensitive: true }),
+		// withLocalStorage(),
+		// withSessionStorage()
+    ),
     provideHttpClient(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: LOCALE_ID, useValue: 'de'},
+    {provide: LocationStrategy, useClass: HashLocationStrategy  }, // PathLocationStrategy
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),

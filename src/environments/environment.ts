@@ -2,19 +2,13 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { firebaseConfig } from './firebase.config';
+
 export const environment = {
   production: false,
   appName: require('../../package.json').name,
   appVersion: require('../../package.json').version + '-dev',
-  firebase: { 
-    "projectId": "workout-plan-faeb9", 
-    "appId": "1:173899062442:web:f1a3ca25f01eac329c44d3", 
-    "databaseURL": "https://workout-plan-faeb9-default-rtdb.europe-west1.firebasedatabase.app", 
-    "storageBucket": "workout-plan-faeb9.appspot.com", 
-    "apiKey": "AIzaSyCfnHRZZh1lGG5Yg7KN13hvZuQliyp9CP8", 
-    "authDomain": "workout-plan-faeb9.firebaseapp.com", 
-    "messagingSenderId": "173899062442" 
-  }
+  firebase: firebaseConfig,
 };
 
 /*

@@ -78,3 +78,5 @@ Thumbs.db
 /android
 
 /src/app/example/*
+
+/src/environments/firebase.config.ts

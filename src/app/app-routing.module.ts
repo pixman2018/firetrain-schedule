@@ -196,11 +196,15 @@ const routes: Routes = [
     path: 'datepicker',
     loadChildren: () => import('./example/angular/datepicker/datepicker.module').then( m => m.DatepickerPageModule)
   },
+  {
+    path: 'firebase',
+    loadChildren: () => import('./example/firebase/firebase.module').then( m => m.FirebasePageModule)
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, useHash: true }),
   ],
   exports: [RouterModule],
 })
