@@ -42,13 +42,12 @@ export class HomePage implements OnInit {
     modal.present();
   }
 
-  protected onChangeChackbox( ctrlName: string) {
-    console.log('ctrlName', ctrlName);
-
+  protected onChangeCheckbox( ctrlName: string) {
     switch(ctrlName) {
       case 'resultRetainCtrl':
         if (this.settings != null) {
           this.settings['resultRetain'] = this.resultRetainCtrl.value;
+          window.sessionStorage.setItem('settings', JSON.stringify(this.settings));
         }
         break;
     }

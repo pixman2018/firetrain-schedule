@@ -76,15 +76,15 @@ export class TrainingStartAddComponent implements OnInit {
             console.error('Can not loading training', error);
           },
           complete: () => {
-            this.training?.trainingResults
-            const resultObj = this._createDefaultResultObj(true);
-            this.training?.trainingResults.unshift(resultObj);
-            if (this.training) {
-              this._trainingInWorkout.editTrainingInWorkout(this.training)
-                .then(() => {
-                  console.log('Set Training Result default value');
-                });
-            }
+            // const resultObj = this._createDefaultResultObj(true);
+            // this.training?.trainingResults.unshift(resultObj);
+            // if (this.training) {
+            //   this._trainingInWorkout.editTrainingInWorkout(this.training)
+            //     .then(() => {
+            //       console.log('Set Training Result default value');
+                  this._createSets();
+            //     });
+            // }
           }
         });
     }
@@ -135,6 +135,9 @@ export class TrainingStartAddComponent implements OnInit {
     let resultObj: I_TrainingResults | null = null;
     if (this._dateService.getNowDatAsTstamp() == this.training?.trainingResults[0].trainingsdayTstamp) {
       resultObj = this.training.trainingResults[0];
+      resultObj.weights = [];
+      resultObj.reps = [];
+      resultObj.negativeReps = [];
     } else {
       resultObj = this._createDefaultResultObj();
     }
@@ -322,8 +325,19 @@ export class TrainingStartAddComponent implements OnInit {
     const settings: I_Settings = JSON.parse(window.sessionStorage.getItem('settings')!);
     if (settings.resultRetain) {
 
+      if (this.training) {
+        for (let i =0; i < this.training?.trainingResults?.[0]?.sets; i++) {
+          if (this.training?.trainingResults?.[0]?.weights[i]) {
+            this.itemControls.push(this._createFormControls());
+            this.getWeightCtrl(i)?.setValue( this.training?.trainingResults?.[0]?.weights[i]);
+          }
+        }
+      }
     } else {
-
+      console.log('sets')
+      for (let i = 0; i < this.sets; i++) {
+        this.itemControls.push(this._createFormControls());
+      }
     }
   }
   /**
@@ -332,17 +346,11 @@ export class TrainingStartAddComponent implements OnInit {
    * and executes either the "_addTrainingGoal" or "_removeTrainingGoal" method.
    * Depending on the result of "actionCtrl"
    *
-   * creates the number of formGroups in the formarray, in the size of "sets"
-   *
    */
   private _initComponent() {
     if (sessionStorage.getItem('uid')) {
       this._userKey = sessionStorage.getItem('uid')!;
       this._fetchTrainingInWorkout();
-
-      for (let i = 0; i < this.sets; i++) {
-        this.itemControls.push(this._createFormControls());
-      }
     } else {
       this._router.navigateByUrl(`/auth`, {
         replaceUrl: true,

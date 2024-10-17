@@ -7,7 +7,7 @@
         Workout
         ****************************************
         -->
-        <ion-accordion value="trainings">
+        <ion-accordion value="workout">
           <ion-item slot="header">
             <ion-label>Auswertung</ion-label>
           </ion-item>
@@ -56,7 +56,7 @@
           <div class="accordion-content" slot="content">
             <ion-list>
               <ion-item>
-                <ion-checkbox labelPlacement="start" color="danger" [formControl]="resultRetainCtrl" (ionChange)="onChangeChackbox( 'resultRetainCtrl')">Ergebnis Übernehmen</ion-checkbox>
+                <ion-checkbox labelPlacement="start" color="danger" [formControl]="resultRetainCtrl" (ionChange)="onChangeCheckbox( 'resultRetainCtrl')">Ergebnis Übernehmen</ion-checkbox>
               </ion-item>
             </ion-list>
           </div>
