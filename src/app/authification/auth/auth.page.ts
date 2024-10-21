@@ -1,5 +1,10 @@
 import { Component, isDevMode, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 // ionic
 import { LoadingController } from '@ionic/angular';
 // services
@@ -16,7 +21,6 @@ import { UserService } from 'src/app/shared/services/user/user.service';
   styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage implements OnInit {
-
   // form
   protected credentialsForm: FormGroup = this._createCredentialsForm();
   protected inputValueFormCtrls: {
@@ -41,15 +45,18 @@ export class AuthPage implements OnInit {
     private readonly _loadingCtrl: LoadingController,
     private readonly _authService: AuthService,
     private readonly _alertService: AlertService,
-    private readonly _userService: UserService,
-  ) { }
+    private readonly _userService: UserService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   /**
    *
-   * Login  User
+   * @protected
+   * @memberof AuthPage
+   *
+   * @description
+   * Login user
    *
    */
   protected async onLogin() {
@@ -65,7 +72,7 @@ export class AuthPage implements OnInit {
         'success'
       );
       this._router.navigateByUrl('/workout-list', { replaceUrl: true });
-    } else if (!user){
+    } else if (!user) {
       this._alertService.showAlert(
         'Login fehlgeschlagen.',
         'Bitte versuche es nocheinmal',
@@ -79,25 +86,32 @@ export class AuthPage implements OnInit {
         'Bitte versuche es nocheinmal',
         'danger'
       );
-  }
-  this.credentialsForm.reset();
-  if (isDevMode() && user && user.user.uid) {
-    this._userService.getUserByKey(user.user.uid)
-      .subscribe((res) => {
-        if (res?.isAdmin) {
+    }
+    this.credentialsForm.reset();
+    // is the user a admin
+    if (isDevMode() && user && user.user.uid) {
+      this._userService.getUserByKey(user.user.uid).subscribe((res) => {
+        if (res?.isAdmin && res?.token == 'WTEwYkZOVDVuTWlZaUQxRHJwR2FOMUs1') {
           window.sessionStorage.setItem('isAdmin', 'true');
         }
         if (res?.settings) {
-          window.sessionStorage.setItem('settings', JSON.stringify(res.settings));
+          window.sessionStorage.setItem(
+            'settings',
+            JSON.stringify(res.settings)
+          );
         }
       });
+    }
+    await loading.dismiss();
   }
-  await loading.dismiss();
-}
 
   /**
    *
-   * Register a User
+   * @protected
+   * @memberof AuthPage
+   *
+   * @description
+   * regestry the new user
    *
    */
   protected async onRegister(): Promise<void> {
@@ -131,16 +145,26 @@ export class AuthPage implements OnInit {
   }
 
   /*
-  ********************************************************************************
-  *****
-  ***
-  * Form
-  ***
-  *****
-  ********************************************************************************
-  */
+   ********************************************************************************
+   *****
+   ***
+   * Form
+   ***
+   *****
+   ********************************************************************************
+   */
 
-  public onLeaveFromCtrl(inputCtrl: string) {
+  /**
+   *
+   * @protected
+   * @param inputCtrl
+   * @memberof AuthPage
+   *
+   * @description
+   * is the input control exist
+   *
+   */
+  protected onLeaveFromCtrl(inputCtrl: string) {
     switch (inputCtrl) {
       case 'email':
         this.inputValueFormCtrls.email = true;
@@ -154,14 +178,17 @@ export class AuthPage implements OnInit {
     }
   }
 
-
   /**
- *
- * chance the 'showConfirmPassword' flag
- * This means that the password is visible or invisible
- *
- * @param isConfirmPw
- */
+   *
+   * @protected
+   * @param isConfirmPw
+   * @memberof AuthPage
+   *
+   * @description
+   * chance the 'showConfirmPassword' flag
+   * This means that the password is visible or invisible
+   *
+   */
   protected togglePasswordVisibility(isConfirmPw: boolean = false): void {
     if (isConfirmPw) {
       this.showConfirmPassword = !this.showConfirmPassword;
@@ -172,9 +199,12 @@ export class AuthPage implements OnInit {
 
   /**
    *
-   * get the AbstractControl  "email"
+   * @protected
+   * @memberof AuthPage
+   * @returns AbstractControl<any, any> | null
    *
-   * @return  AbstractControl<any, any> | null
+   * @description
+   * get the AbstractControl  "email"
    *
    */
   protected get email(): AbstractControl<any, any> | null {
@@ -183,9 +213,12 @@ export class AuthPage implements OnInit {
 
   /**
    *
-   * get the AbstractControl  "password"
+   * @protected
+   * @memberof AuthPage
+   * @returns AbstractControl<any, any> | null
    *
-   * @return  AbstractControl<any, any> | null
+   * @description
+   * get the AbstractControl  "password"
    *
    */
   protected get password(): AbstractControl<any, any> | null | undefined {
@@ -194,9 +227,12 @@ export class AuthPage implements OnInit {
 
   /**
    *
-   * get the AbstractControl  "confirmPassword"
+   * @protected
+   * @memberof AuthPage
+   * @returns AbstractControl<any, any> | null
    *
-   * @return  AbstractControl<any, any> | null
+   * @description
+   * get the AbstractControl  "confirmPassword"
    *
    */
   protected get confirmPassword(): AbstractControl<any, any> | null {
@@ -204,12 +240,15 @@ export class AuthPage implements OnInit {
   }
 
   /**
- *
- * create the forms
- *
- * @returns FormGroup
- *
- */
+   *
+   * @private
+   * @returns FormGroup
+   * @memberof AuthPage
+   *
+   * @description
+   * create the forms and set the validators
+   *
+   */
   private _createCredentialsForm(): FormGroup {
     return this._fb.group(
       {
@@ -226,5 +265,4 @@ export class AuthPage implements OnInit {
       }
     );
   }
-
 }

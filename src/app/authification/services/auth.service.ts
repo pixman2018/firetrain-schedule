@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BehaviorSubject, first, map, Observable } from 'rxjs';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -15,11 +16,10 @@ import {
 } from '@angular/fire/auth';
 import { doc, Firestore, setDoc } from '@angular/fire/firestore';
 
+// services
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
 // interfaces
 import { UserI } from '../interfaces/UserI';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { AlertService } from 'src/app/shared/services/alert/alert.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,20 +31,31 @@ export class AuthService {
   );
 
   constructor(
-    private _afs: AngularFirestore,
-    private _router: Router,
-    private _auth: Auth,
-    private _firestore: Firestore,
-    private _alertCtrl: AlertController,
-    private _alertService: AlertService
+    private readonly _afs: AngularFirestore,
+    private readonly _router: Router,
+    private readonly _auth: Auth,
+    private readonly _firestore: Firestore,
+    private readonly _alertService: AlertService
   ) {}
 
   /**
    *
    * Register a new User with password and email
    *
-   * @param { email, password}
+   * @param { email, email}
    * @returns Promise<UserCredential | null>
+   *
+   */
+  /**
+   *
+   * @public
+   * @param email
+   * @param email
+   * @returns  Promise<UserCredential | null>
+   * @memberof AuthService
+   *
+   * @description
+   * register a new user
    *
    */
   public async register({
@@ -78,12 +89,16 @@ export class AuthService {
 
   /**
    *
+   * @public
+   * @param email
+   * @param password
+   * @returns Promise<UserCredential | null>
+   * @memberof AuthService
+   *
+   * @description
    * Log in a user with his email and password.
    * The 'userId' and 'isLogged' are saved in the session.
    * The user's data is loaded from the database and stored in the BejourSubject '_currentUser$'
-   *
-   * @param { email, password}
-   * @returns Promise<UserCredential | null>
    *
    */
   public async login({
@@ -128,24 +143,31 @@ export class AuthService {
 
   /**
    *
-   * Logout the user
+   * @public
+   * @memberof AuthService
    *
-   * @returns
+   * @description
+   * Logout the user and remove all login data from the session storage
+   *
    */
   public logout(): Promise<void> {
     this._currentUser$.next(this._setDefaultUserObj());
     window.sessionStorage.removeItem('isLogged');
     window.sessionStorage.removeItem('uid');
+    window.sessionStorage.removeItem('isAdmin');
     this._router.navigateByUrl('/auth', { replaceUrl: true });
     return signOut(this._auth);
   }
 
   /**
    *
+   * @public
+   * @param email
+   * @memberof AuthService
+   *
+   * @description
    * Send the user a email by forgotten password
    * and redirect to the login page
-   *
-   * @param email
    *
    */
   public forgottenPassword(email: string) {
@@ -160,10 +182,14 @@ export class AuthService {
 
   /**
    *
+   * @public
+   * @returns  Observable<UserI>
+   * @memberof AuthService
+   *
+   * @description
    * fetch the current user from the BejourSubject '_currentUser$'
    * and return this as Observable
    *
-   * @returns Observable<UserI>
    */
   public fetchCurrentUser(): Observable<UserI> {
     return this._currentUser$.asObservable();
@@ -171,10 +197,13 @@ export class AuthService {
 
   /**
    *
-   * fetch a user by email
-   *
+   * @public
    * @param email
-   * @returns Observable<UserI[]>
+   * @returns  Observable<UserI[]>
+   * @memberof AuthService
+   *
+   * @description
+   * fetch a user by this email
    *
    */
   public fetchUserByEmail(email: string): Observable<UserI[]> {
@@ -183,6 +212,17 @@ export class AuthService {
       .valueChanges({ idField: 'key' });
   }
 
+  /**
+   *
+   * @public
+   * @param authService
+   * @returns AsyncValidatorFn
+   * @memberof AuthService
+   *
+   * @description
+   * Checks if the email address already exists in the database
+   *
+   */
   static emailExists(authService: AuthService): AsyncValidatorFn {
     return (control: AbstractControl) => {
       return authService.fetchUserByEmail(control.value).pipe(
@@ -195,7 +235,14 @@ export class AuthService {
   }
 
   /**
+   *
+   * @private
+   * @returns FormGroup
+   * @memberof AuthService
+   *
+   * @description
    * set the 'uid' and the 'isLogged' in the session
+   *
    */
   private _setCurrentUserSettings(): void {
     onAuthStateChanged(this._auth, (user) => {
@@ -210,11 +257,16 @@ export class AuthService {
   }
 
   /**
-   * set the 'userObj' and return this
    *
+   * @private
    * @param userCredential
    * @param email
    * @returns UserI
+   * @memberof AuthService
+   *
+   * @description
+   * fills the user data obkect with the values from the registration
+   *
    */
   private _setUserData(userCredential: UserCredential, email: string): UserI {
     const id: string = this._afs.createId();
@@ -235,9 +287,14 @@ export class AuthService {
   }
 
   /**
-   * fetch the standart UserI
    *
+   * @private
    * @returns UserI
+   * @memberof AuthService
+   *
+   * @description
+   * create a default user object
+   *
    */
   private _setDefaultUserObj(): UserI {
     return {

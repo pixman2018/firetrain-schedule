@@ -3,6 +3,7 @@ export interface I_User {
   email: string;
   isActive: boolean;
   isAdmin: boolean;
+  token?: string;
   isProVersion: boolean;
   isVerification: boolean;
   key: string;
