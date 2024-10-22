@@ -8,10 +8,7 @@ import {
 } from '@angular/forms';
 
 import { Router } from '@angular/router';
-import {
-  first,
-  map,
-} from 'rxjs';
+import { first, map } from 'rxjs';
 
 // services
 import { TrainingInWorkoutService } from '../../services/trainingInWorkout/training-in-workout.service';
@@ -21,8 +18,7 @@ import {
   I_TrainingInWorkout,
   I_TrainingResults,
 } from '../../interfaces/I_TrainingInWorkout';
-import { I_Settings, I_User } from '../../interfaces/I_User';
-
+import { I_Settings } from '../../interfaces/I_User';
 
 @Component({
   selector: 'app-training-start-add',
@@ -41,24 +37,26 @@ export class TrainingStartAddComponent implements OnInit {
   protected sets: number = 3;
 
   constructor(
-    private _fb: FormBuilder,
-    private _router: Router,
-    private _dateService: DateService,
-    private _trainingInWorkout: TrainingInWorkoutService
+    private readonly _fb: FormBuilder,
+    private readonly _router: Router,
+    private readonly _dateService: DateService,
+    private readonly _trainingInWorkout: TrainingInWorkoutService
   ) {}
 
   ngOnInit() {
     this._initComponent();
   }
 
-  /**
+     /**
    *
+   * @protected
+   * @memberof TrainingStartAddComponent
+   *
+   * @description
    * gets all trainings from the current workout
    *
-   * @param workoutKey
-   *
    */
-  private _fetchTrainingInWorkout() {
+  private _fetchTrainingInWorkout():void  {
     if (this.trainingKey && this.workoutKey) {
       this._trainingInWorkout
         .fetchTrainingByKey(this.workoutKey, this.trainingKey, this._userKey)
@@ -76,40 +74,36 @@ export class TrainingStartAddComponent implements OnInit {
             console.error('Can not loading training', error);
           },
           complete: () => {
-            // const resultObj = this._createDefaultResultObj(true);
-            // this.training?.trainingResults.unshift(resultObj);
-            // if (this.training) {
-            //   this._trainingInWorkout.editTrainingInWorkout(this.training)
-            //     .then(() => {
-            //       console.log('Set Training Result default value');
-                  this._createSets();
-            //     });
-            // }
-          }
+            this._createSets();
+          },
         });
     }
   }
 
   /**
    *
+   * @protected
+   * @param index index from formArray
    * @description
    * sets the values of the training when changing weight or rep if both are valid
    *
-   * @param index index from formArray
-   *
    */
+  // TODO: by chance from weight, reps or nreps after isDone
   protected onChanceValue(index: number) {
     if (this.getWeightCtrl(index)?.valid && this.getRepsCtrl(index)?.valid) {
       // this._updateResult(index);
+      //
     }
   }
 
   /**
+   *
+   * @protected
+   * @param index index from formArray
+   * @description
    * is executed when the “done” checkbox is clicked.
    * If the form is valid, the “_updateResult” method is called,
    * otherwise the “done” checkbox is set to false
-   *
-   * @param index index from formArray
    */
   protected onInsertResult(index: number) {
     if (this.itemControls.at(index).valid) {
@@ -119,13 +113,16 @@ export class TrainingStartAddComponent implements OnInit {
     }
   }
 
-  /**
+      /**
    *
+   * @protected
+   * @memberof TrainingStartAddComponent
+   *
+   * @description
    * Sets the values for the “resultObj” object and inserts them into the training
    *
-   * @param currentIndex index from formArray
    */
-  protected _updateResult(currentIndex: number) {
+  protected _updateResult(currentIndex: number): void {
     if (!this.training) {
       this._router.navigateByUrl(`/workout-list`, {
         replaceUrl: true,
@@ -133,7 +130,11 @@ export class TrainingStartAddComponent implements OnInit {
     }
     // Fill 'resultObj' with static values
     let resultObj: I_TrainingResults | null = null;
-    if (this._dateService.getNowDatAsTstamp() == this.training?.trainingResults[0].trainingsdayTstamp) {
+    // create a default result Object
+    if (
+      this._dateService.getNowDatAsTstamp() ==
+      this.training?.trainingResults[0].trainingsdayTstamp
+    ) {
       resultObj = this.training.trainingResults[0];
       resultObj.weights = [];
       resultObj.reps = [];
@@ -150,6 +151,7 @@ export class TrainingStartAddComponent implements OnInit {
     }
     resultObj.tmp.push(Date.now());
 
+    // set the training results
     this.itemControls.controls.forEach((value, index) => {
       if (this.getWeightCtrl(index)?.value != '') {
         resultObj.weights.push(this.getWeightCtrl(index)?.value);
@@ -165,11 +167,14 @@ export class TrainingStartAddComponent implements OnInit {
     });
 
     if (this.training?.trainingResults) {
-        if (this._dateService.getNowDatAsTstamp() == this.training?.trainingResults[0].trainingsdayTstamp) {
-          this.training.trainingResults[0] = resultObj;
-        } else {
-          this.training.trainingResults.unshift(resultObj);
-        }
+      if (
+        this._dateService.getNowDatAsTstamp() ==
+        this.training?.trainingResults[0].trainingsdayTstamp
+      ) {
+        this.training.trainingResults[0] = resultObj;
+      } else {
+        this.training.trainingResults.unshift(resultObj);
+      }
     }
     if (this.training) {
       this._trainingInWorkout
@@ -183,8 +188,18 @@ export class TrainingStartAddComponent implements OnInit {
     }
   }
 
-  private _createDefaultResultObj(isDeafult: boolean = false,): I_TrainingResults {
-
+  /**
+   *
+   * @private
+   * @param isDeafult
+   * @returns resultObj
+   * @description
+   * create a default object for the result object
+   *
+   */
+  private _createDefaultResultObj(
+    isDeafult: boolean = false
+  ): I_TrainingResults {
     const resultObj: I_TrainingResults = {
       trainingsdayTstamp: 0,
       sets: this.sets, // change by finish workout
@@ -203,7 +218,6 @@ export class TrainingStartAddComponent implements OnInit {
         resultObj.reps.push(0);
         resultObj.negativeReps.push(0);
       }
-
     }
     return resultObj;
   }
@@ -220,9 +234,12 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
+   * @private
+   * @returns formgroup
+   *
+   * @description
    * create the from
    *
-   * @returns formgroup
    */
   private _createForm(): FormGroup {
     return this._fb.group({
@@ -232,9 +249,13 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
+   * @private
+   * @param isDeafult
+   * @returns formgroup
+   *
+   * @description
    * create the training result form group
    *
-   * @returns formgroup
    */
   private _createFormControls(): FormGroup {
     return this._fb.group({
@@ -245,18 +266,32 @@ export class TrainingStartAddComponent implements OnInit {
     });
   }
 
-  /**
+  /*
+   ********************************************************************************
    * Helper method to get the 'items' FormArray
+   ********************************************************************************
    */
-  get itemControls(): FormArray {
+
+  /**
+   *
+   * @protected
+   * @returns FormArray
+   *
+   * @description
+   * get the formcontrol "result"
+   *
+   */
+  protected get itemControls(): FormArray {
     return this.resultForm.get('result') as FormArray;
   }
 
   /**
    *
-   * get the FormArray  "weight"
+   * @protected
+   * @returns FormArray
    *
-   * @return  FormArray
+   * @description
+   * get the FormArray  "weight"
    *
    */
   protected getWeightCtrl(index: number): AbstractControl<any, any> | null {
@@ -266,9 +301,11 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
-   * get the FormArray  "reps"
+   * @protected
+   * @returns FormArray
    *
-   * @return  FormArray
+   * @description
+   * get the FormArray  "reps"
    *
    */
   protected getRepsCtrl(index: number): AbstractControl<any, any> | null {
@@ -278,9 +315,11 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
-   * get the FormArray  "negative reps"
+   * @protected
+   * @returns FormArray
    *
-   * @return  FormArray
+   * @description
+   * get the FormArray  "negative reps"
    *
    */
   protected getNRepsCtrl(index: number): AbstractControl<any, any> | null {
@@ -290,9 +329,11 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
-   * get the FormArray  "done"
+   * @protected
+   * @returns FormArray
    *
-   * @return  FormArray
+   * @description
+   * get the FormArray  "done"
    *
    */
   protected getDoneCtrl(index: number): AbstractControl<any, any> | null {
@@ -302,6 +343,9 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
+   * @protected
+   *
+   * @description
    * adds a fromgroup from the "_createFormControls" method to the form
    *
    */
@@ -312,29 +356,45 @@ export class TrainingStartAddComponent implements OnInit {
 
   /**
    *
+   * @protected
+   * @param index
+   * index from form array
+   * @description
    * remove a fromgroup from the "_createFormControls" method to the form
    *
-   * @param index
    */
-  protected removeTrainingGoal() {
+  protected removeTrainingGoal(): void {
     const items = this.itemControls as FormArray;
     items.removeAt(this.itemControls.length - 1);
   }
 
-  private _createSets() {
-    const settings: I_Settings = JSON.parse(window.sessionStorage.getItem('settings')!);
+  /**
+   *
+   * @private
+   *
+   * @description
+   * creates the sets
+   * if “resultRetain” is set,
+   * the previous sets are prefilled with the previous weights
+   *
+   */
+  private _createSets(): void {
+    const settings: I_Settings = JSON.parse(
+      window.sessionStorage.getItem('settings')!
+    );
+    // by set result retain in the settings then set the previous training weigth results
     if (settings.resultRetain) {
-
       if (this.training) {
-        for (let i =0; i < this.training?.trainingResults?.[0]?.sets; i++) {
+        for (let i = 0; i < this.training?.trainingResults?.[0]?.sets; i++) {
           if (this.training?.trainingResults?.[0]?.weights[i]) {
             this.itemControls.push(this._createFormControls());
-            this.getWeightCtrl(i)?.setValue( this.training?.trainingResults?.[0]?.weights[i]);
+            this.getWeightCtrl(i)?.setValue(
+              this.training?.trainingResults?.[0]?.weights[i]
+            );
           }
         }
       }
     } else {
-      console.log('sets')
       for (let i = 0; i < this.sets; i++) {
         this.itemControls.push(this._createFormControls());
       }
@@ -342,6 +402,9 @@ export class TrainingStartAddComponent implements OnInit {
   }
   /**
    *
+   * @private
+   *
+   * @description
    * Subscribes to the Observable from the "_getActionCtrlAsObservable" method
    * and executes either the "_addTrainingGoal" or "_removeTrainingGoal" method.
    * Depending on the result of "actionCtrl"
@@ -356,6 +419,5 @@ export class TrainingStartAddComponent implements OnInit {
         replaceUrl: true,
       });
     }
-
   }
 }

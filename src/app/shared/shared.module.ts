@@ -11,6 +11,7 @@ import { TrainingStartAddComponent } from './components/training-start-add/train
 // pipe
 import { UcfirstPipe } from './pipes/ucFirst/ucfirst.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OrderByPipe } from './pipes/orderBy/orderBy.pipe';
 
 const content = [
   BasisLayoutComponent,
@@ -23,6 +24,7 @@ const component = [
 
 const pipes = [
   UcfirstPipe,
+  OrderByPipe,
 ];
 
 @NgModule({

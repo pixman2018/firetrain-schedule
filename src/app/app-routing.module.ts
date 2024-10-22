@@ -5,6 +5,7 @@ import { PageoneComponent } from './example/angular/extends/pageone/pageone.comp
 import { PagetwoComponent } from './example/angular/extends/pagetwo/pagetwo.component';
 import { PagethreeComponent } from './example/angular/extends/pagethree/pagethree.component';
 import { BaseComponent } from './example/angular/extends/base/base.component';
+import { isAdminGuard } from './admin/services/isAdminGuard/is-admin.guard';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
       import('./authification/change-password/change-password.module').then(
         (m) => m.ChangePasswordPageModule
       ),
+      canActivate: [CanActivateGuard],
   },
   /*
     ****************************************
@@ -46,6 +48,7 @@ const routes: Routes = [
       import('./pages/training/training-list/training-list.module').then(
         (m) => m.TrainingListPageModule
       ),
+      canActivate: [CanActivateGuard, isAdminGuard],
   },
   {
     path: 'training-form',
@@ -53,6 +56,14 @@ const routes: Routes = [
       import('./pages/training/training-form/training-form.module').then(
         (m) => m.TrainingFormPageModule
       ),
+      canActivate: [CanActivateGuard, isAdminGuard],
+  },
+  {
+    path: 'training-edit/:key',
+    loadChildren: () => import('./pages/training/training-form/training-form.module').then(
+      (m) => m.TrainingFormPageModule
+    ),
+    canActivate: [CanActivateGuard, isAdminGuard],
   },
   /*
     ****************************************
@@ -65,6 +76,7 @@ const routes: Routes = [
       import('./pages/workout/workout-list/workout-list.module').then(
         (m) => m.WorkoutListPageModule
       ),
+      canActivate: [CanActivateGuard],
   },
   {
     path: 'workout-add',
@@ -72,6 +84,7 @@ const routes: Routes = [
       import('./pages/workout/workout-form/workout-form.module').then(
         (m) => m.WorkoutFormPageModule
       ),
+      canActivate: [CanActivateGuard],
   },
   {
     path: 'workout-edit/:key',
@@ -79,10 +92,11 @@ const routes: Routes = [
       import('./pages/workout/workout-form/workout-form.module').then(
         (m) => m.WorkoutFormPageModule
       ),
+      canActivate: [CanActivateGuard],
   },
   /*
     ****************************************
-    training-in-workou
+    training-in-workout
     ****************************************
   */
   {
@@ -91,6 +105,7 @@ const routes: Routes = [
       import(
         './pages/trainingsInWorkout/trainings-in-workout-list/trainings-in-workout-list.module'
       ).then((m) => m.TrainingsInWorkoutListPageModule),
+      canActivate: [ CanActivateGuard],
   },
   {
     path: 'training-in-workout-form/:key',
@@ -98,6 +113,7 @@ const routes: Routes = [
       import(
         './pages/trainingsInWorkout/training-in-workout-form/training-in-workout-form.module'
       ).then((m) => m.TrainingInWorkoutFormPageModule),
+      canActivate: [CanActivateGuard],
   },
   /*
     ****************************************
@@ -110,6 +126,7 @@ const routes: Routes = [
       import(
         './pages/training-start/training-start-list/training-start-list.module'
       ).then((m) => m.TrainingStartListPageModule),
+      canActivate: [CanActivateGuard],
   },
   {
     path: 'training-start-analysis/:key',
@@ -117,6 +134,7 @@ const routes: Routes = [
       import(
         './pages/training-start/training-start-analysis/training-start-analysis.module'
       ).then((m) => m.TrainingStartAnalysisPageModule),
+      canActivate: [CanActivateGuard],
   },
   /*
     ****************************************
@@ -129,6 +147,7 @@ const routes: Routes = [
       import('./pages/app/privacy-policy/privacy-policy.module').then(
         (m) => m.PrivacyPolicyPageModule
       ),
+      canActivate: [CanActivateGuard],
   },
   {
     path: 'imprint',
@@ -136,6 +155,7 @@ const routes: Routes = [
       import('./pages/app/imprint/imprint.module').then(
         (m) => m.ImprintPageModule
       ),
+      canActivate: [CanActivateGuard],
   },
   // {
   //   path: 'about',
@@ -149,15 +169,18 @@ const routes: Routes = [
   */
   {
     path: 'version-control',
-    loadChildren: () => import('./admin/pages/version-control/version-control.module').then( m => m.VersionControlPageModule)
+    loadChildren: () => import('./admin/pages/version-control/version-control.module').then( m => m.VersionControlPageModule),
+    canActivate: [CanActivateGuard, isAdminGuard],
   },
   {
     path: 'version-control-list',
-    loadChildren: () => import('./admin/pages/version-control-list/version-control-list.module').then( m => m.versionControlistPageModule)
+    loadChildren: () => import('./admin/pages/version-control-list/version-control-list.module').then( m => m.versionControlistPageModule),
+    canActivate: [CanActivateGuard, isAdminGuard],
   },
   {
     path: 'logitems-form/:formtype',
-    loadChildren: () => import('./admin/pages/logitems-form/logitems-form.module').then( m => m.LogitemsFormPageModule)
+    loadChildren: () => import('./admin/pages/logitems-form/logitems-form.module').then( m => m.LogitemsFormPageModule),
+    canActivate: [CanActivateGuard, isAdminGuard],
   },
   /*
     ****************************************
@@ -194,12 +217,16 @@ const routes: Routes = [
   },
   {
     path: 'datepicker',
-    loadChildren: () => import('./example/angular/datepicker/datepicker.module').then( m => m.DatepickerPageModule)
+    loadChildren: () => import('./example/angular/datepicker/datepicker.module').then( m => m.DatepickerPageModule),
   },
   {
     path: 'firebase',
-    loadChildren: () => import('./example/firebase/firebase.module').then( m => m.FirebasePageModule)
+    loadChildren: () => import('./example/firebase/firebase.module').then( m => m.FirebasePageModule),
   },
+  {
+    path: 'pargination',
+    loadChildren: () => import('./example/firebase/pargination/pargination.module').then(m => m.ParginationPageModule),
+  }
 ];
 
 @NgModule({

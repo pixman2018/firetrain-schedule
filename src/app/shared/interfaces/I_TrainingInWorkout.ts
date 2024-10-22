@@ -12,6 +12,7 @@ export interface I_TrainingInWorkout {
   count: number;
   userKey: string;
   isWarmUp: boolean;
+  isBodyWeight: boolean;
   trainingResults: I_TrainingResults[];
   comparisonResults: I_ComparisonResults[];
   created: number;

@@ -6,6 +6,7 @@ export interface I_Training {
   created: number;
   devices: I_Data[];
   isGlobal: boolean;
+  isBodyWeight: boolean;
   key?: string;
   namespace: string;
   pic: string;
