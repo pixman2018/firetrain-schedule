@@ -1,38 +1,4 @@
 <app-basis-layout headline="Training-List">
-
-  <ion-toolbar class="search-in-toolbar" color="">
-    <ion-searchbar
-      show-clear-button="always"
-      clear-icon="trash-bin"
-      placeholder="Suche..."
-      [debounce]="1000"
-      (ionInput)="onHandleInput($event)">
-    </ion-searchbar>
-  </ion-toolbar>
-
-  <ion-toolbar color="">
-    <ion-item class="filter-container">
-      <div class="filter-select-container">
-        <ion-select aria-label="Categories" label="Filter" [multiple]="true" (ionChange)="onSelected()"
-          (ionCancel)="onCancel()" [formControl]="selected" cancelText="Löschen" okText="Setzen">
-          @for( category of categories; track category; let index =
-          $index) { @if (index !== 0) {
-          <ion-select-option [value]="category.de">
-            {{ category.de | titlecase}}
-          </ion-select-option>
-          }
-          }
-        </ion-select>
-
-      </div>
-      <div class="filter-select-result">
-        @for (selected of selectedCtrl; track selected; let last = $last) {
-        <ion-chip>{{ selected }}{{ last ? '' : ', ' }}</ion-chip>
-        }
-      </div>
-    </ion-item>
-  </ion-toolbar>
-
   <ion-row>
     <ion-col size="12">
       <ion-item lines="none">
@@ -44,9 +10,83 @@
     </ion-col>
   </ion-row>
 
+  <ion-toolbar class="search-in-toolbar" color="">
+    <ion-searchbar
+      show-clear-button="always"
+      clear-icon="trash-bin"
+      placeholder="Suche..."
+      [debounce]="1000"
+      (ionInput)="onSearch($event)"
+      >
+    </ion-searchbar>
+  </ion-toolbar>
+
+  <ion-toolbar color="">
+    <ion-item class="filter-container">
+      <div class="filter-select-container">
+        <ion-select aria-label="Categories" label="Filter" [multiple]="true"
+          (ionCancel)="onCancelFilter()" (ionChange)="onChangeFilter()" [formControl]="selected" cancelText="Löschen" okText="Setzen">
+          @for( category of categories; track category; let index =
+          $index) { @if (index !== 0) {
+          <ion-select-option [value]="index">
+            {{ category.de | titlecase}}
+          </ion-select-option>
+          }
+          }
+        </ion-select>
+
+      </div>
+      <div class="filter-select-result">
+        @for (selected of selectedCtrl; track selected; let last = $last; ) {
+        <ion-chip >{{ getCategory(selected) }}{{ last ? '' : ', ' }}</ion-chip>
+        }
+        <ion-button color="danger" (click)="onCancelFilter()" >
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-toolbar>
+
+
+
   <ion-row>
     <ion-col>
-
+      <ion-list>
+        @for (training of trainings |orderBy: 'name'; track index; let index = $index) {
+        <ion-item>
+          <ion-row>
+            <ion-col size="4">
+              {{ training.category.de}}
+            </ion-col>
+            <ion-col size="7">
+              {{ training.name}}
+            </ion-col>
+            <ion-col size="1">
+              <ion-button size="" fill="clear" color="" class="cursor" slot="" [id]="'trigger' + index">
+                <ion-icon slot="" name="ellipsis-vertical-outline" color="danger"></ion-icon>
+              </ion-button>
+              <ion-popover [trigger]="'trigger' + index" [dismissOnSelect]="true" triggerAction="click">
+                <ng-template>
+                  <ion-content>
+                    <ion-list>
+                      <ion-item [button]="true" [detail]="false" (click)="onEdit(training)">
+                        <ion-text color="danger">Bearbeiten</ion-text>
+                      </ion-item>
+                      <ion-item [button]="true" [detail]="false" (click)="onDelete(training)">
+                        <ion-text color="danger">Loschen</ion-text>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+        }
+      </ion-list>
     </ion-col>
   </ion-row>
+
 </app-basis-layout>
+
+

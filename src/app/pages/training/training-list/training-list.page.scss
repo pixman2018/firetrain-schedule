@@ -16,3 +16,9 @@ ion-toolbar.search-in-toolbar {
     margin-right: 1rem;
   }
 }
+
+.filter-select-result {
+  display: flex;
+  justify-content: right;
+  width: 100%;
+}
