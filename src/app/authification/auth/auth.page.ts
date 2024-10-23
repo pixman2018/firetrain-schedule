@@ -102,6 +102,7 @@ export class AuthPage implements OnInit {
         }
       });
     }
+
     await loading.dismiss();
   }
 

@@ -1,9 +1,11 @@
 export interface I_TrainingInWorkout {
   namespace: string;
   key: string;
-  workoutkey: string;
+  workoutKey: string;
   workoutName: string;
   name: string;
+  categoryId: number;
+  trainingsRefKey: string;
   isNegativeWeight: boolean;
   order: number;
   goalRepsStart: number;

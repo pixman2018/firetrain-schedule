@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 
 // service
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
@@ -15,7 +20,6 @@ import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
   styleUrls: ['./workout-form.page.scss'],
 })
 export class WorkoutFormPage implements OnInit {
-
   protected workoutForm: FormGroup = this._createWorkoutForm();
   protected workout: I_Workout | undefined;
   // flag
@@ -28,7 +32,7 @@ export class WorkoutFormPage implements OnInit {
     private readonly _route: ActivatedRoute,
     private readonly _router: Router,
     private readonly _alertService: AlertService,
-    private readonly _workoutService: WorkoutService,
+    private readonly _workoutService: WorkoutService
   ) {}
 
   ngOnInit() {
@@ -37,38 +41,47 @@ export class WorkoutFormPage implements OnInit {
 
   /**
    *
-   * Go to the workout-list
+   * @protected
+   * @memberof WorkoutFormPage
+   *
+   * @description
+   * redirect to 'workout-list
    *
    */
   protected onToWorkout(): void {
-    this._router.navigateByUrl(
-      `workout-list`,
-      {
-        replaceUrl: true,
-      }
-    );
+    this._router.navigateByUrl(`workout-list`, {
+      replaceUrl: true,
+    });
   }
 
-    /**
+  /**
    *
+   * @protected
+   * @memberof WorkoutFormPage
+   *
+   * @description
    * Receives the sent form
    * Checks whether the form is valid
    * continues with edit or add to the respective methods
    *
    */
-    protected async onSubmitWorkout(): Promise<void> {
-      this.isSubmit = true;
-      if (this.workoutForm.valid) {
-        if (this.isEdit) {
-          this._submitEdit();
-        } else {
-          this._submitAdd();
-        }
+  protected async onSubmitWorkout(): Promise<void> {
+    this.isSubmit = true;
+    if (this.workoutForm.valid) {
+      if (this.isEdit) {
+        this._submitEdit();
+      } else {
+        this._submitAdd();
       }
     }
+  }
 
-    /**
+      /**
    *
+   * @private
+   * @memberof WorkoutService
+   *
+   * @description
    * if 'isEdit' is not set, the method 'onSubmitWorkout()' is redirected here
    * Creates the "Workout Object" and set this in the db
    * redirect to the "trainingsInWorkoutForm"
@@ -79,24 +92,46 @@ export class WorkoutFormPage implements OnInit {
     const workout = this._createWorkoutObj();
     const newWorkoutId = this._workoutService.create(workout);
     if (newWorkoutId) {
-      this._alertService.showToast('Neues Workout angelegt.', 'middle', 'success');
-      this._router.navigateByUrl(`/trainings-in-workout-list/${newWorkoutId}?workoutName=${workout.name}`, {
-        replaceUrl: true,
-      });
-      // this._workoutService.createTrainingInWorkout(newWorkoutId);
+      this._alertService.showToast(
+        'Neues Workout angelegt.',
+        'middle',
+        'success'
+      );
+      this._router.navigateByUrl(
+        `/trainings-in-workout-list/${newWorkoutId}?workoutName=${workout.name}`,
+        {
+          replaceUrl: true,
+        }
+      );
     } else {
-      this._alertService.showToast('Workout konnt nicht angelegt werden.', 'middle', 'danger');
+      this._alertService.showToast(
+        'Workout konnt nicht angelegt werden.',
+        'middle',
+        'danger'
+      );
     }
   }
 
+      /**
+   *
+   * @private
+   * @memberof WorkoutFormPage
+   *
+   * @description
+   * send the edit training in workout to the db
+   *
+   */
   private _submitEdit() {
     const workout = this.workout;
     if (workout) {
       workout['name'] = this.ucFirstPipe.transform(this.nameCtrl?.value);
-      this._workoutService.edit(workout)
+      this._workoutService
+        .edit(workout)
         .then(() => {
           this._alertService.showToast(
-            `Workout "${this.workout?.name}" geändert`, 'middle', 'success'
+            `Workout "${this.workout?.name}" geändert`,
+            'middle',
+            'success'
           );
           this._router.navigateByUrl(`workout-list`, {
             replaceUrl: true,
@@ -104,15 +139,19 @@ export class WorkoutFormPage implements OnInit {
         })
         .catch((error) => {
           console.error('Error', 'by edit workout');
-        })
+        });
     }
   }
 
-      /**
+    /**
    *
-   * create the form "workoutForm"
-   *
+   * @private
    * @returns FormGroup
+   * @memberof WorkoutFormPage
+   *
+   * @description
+   * create the forms and set the validators
+   *
    */
   private _createWorkoutForm(): FormGroup {
     return this._fb.group({
@@ -122,20 +161,26 @@ export class WorkoutFormPage implements OnInit {
 
   /**
    *
+   * @protected
+   * @memberof WorkoutFormPage
+   * @returns AbstractControl<any, any> | null
+   *
+   * @description
    * get the AbstractControl  "name"
    *
-   * @return  AbstractControl<any, any> | null
-   *
    */
-    protected get nameCtrl(): AbstractControl<any, any> | null {
-      return this.workoutForm.get('name');
-    }
+  protected get nameCtrl(): AbstractControl<any, any> | null {
+    return this.workoutForm.get('name');
+  }
 
-  /**
+    /**
    *
-   * creates the object "WorkoutI" and returns it
+   * @protected
+   * @returns I_Workout
+   * @memberof WorkoutFormPage
    *
-   * @returns  WorkoutI
+   * @description
+   * create the workout object and return this
    *
    */
   private _createWorkoutObj(): I_Workout {
@@ -144,7 +189,6 @@ export class WorkoutFormPage implements OnInit {
       name: this.ucFirstPipe.transform(this.nameCtrl?.value),
       userId: window.sessionStorage.getItem('uid')!,
       count: 0,
-      // trainings: [],
       trainingsdayTstamps: [],
       isArchiv: false,
       folder: '',
@@ -157,20 +201,37 @@ export class WorkoutFormPage implements OnInit {
     return workout;
   }
 
+      /**
+   *
+   * @private
+   * @memberof WorkoutFormPage
+   *
+   * @description
+   * checks whether the parameter 'key' is present
+   * checks whether the queryParamter 'isEdit' exists
+   * fetch the workout by 'key'
+   * sets the previous value in the 'name' input field
+   *
+   */
   private _initComponent(): void {
-    const isEdit: boolean | null = Boolean(this._route.snapshot.queryParamMap.get('isEdit'));
+    const isEdit: boolean | null = Boolean(
+      this._route.snapshot.queryParamMap.get('isEdit')
+    );
+    // checks whether the queryParamter 'isEdit' exists
     if (this._route.snapshot.queryParamMap.has('isEdit')) {
-        if (isEdit) {
-          this.isEdit = isEdit;
-        }
-        const key: string | null  = this._route.snapshot.paramMap.get('key');
-        if (key) {
-          this._workoutService.fetchByKey(key)
-            .subscribe((workout) => {
-              this.workout = workout;
-              this.nameCtrl?.setValue(workout?.name);
-            });
-        }
+      if (isEdit) {
+        this.isEdit = isEdit;
+      }
+      // workout key in the URL
+      const key: string | null = this._route.snapshot.paramMap.get('key');
+      if (key) {
+        this._workoutService.fetchByKey(key).subscribe((workout) => {
+          if (workout) {
+            this.workout = workout[0];
+            this.nameCtrl?.setValue(this.workout?.name);
+          }
+        });
+      }
     }
   }
 }

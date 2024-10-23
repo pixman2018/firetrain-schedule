@@ -72,7 +72,7 @@ export class TrainingListPage implements OnInit {
         break;
       case 'filter':
         if (filterIds) {
-          request$ = this._trainingService.filter(filterIds);
+          request$ = this._trainingService.fetchTrainingByCategories(filterIds);
         }
         break;
       default:

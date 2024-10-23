@@ -237,7 +237,7 @@ export class TrainingFormPage implements OnInit {
       trainObj['category'] = this.categories[categoryIndex];
     }
     trainObj['namespace'] = 'trainings';
-    trainObj['isBodyWeight'] = this.bodyWeightCtrl?.value;
+    trainObj['isBodyWeight'] = this.bodyWeightCtrl?.value ?? false;
     trainObj['isGlobal'] = this.globalCtrl?.value;
     trainObj['userId'] = trainObj['isGlobal']
       ? ''
@@ -249,6 +249,7 @@ export class TrainingFormPage implements OnInit {
       trainObj['created'] = this.training?.created;
     }
     trainObj['updated'] = Date.now();
+    console.log('trainObj', trainObj);
     return trainObj;
   }
 

@@ -1,102 +1,176 @@
 <app-basis-layout [headline]="headline">
-
-  <div class="form-container">
-    <form class="form" [formGroup]="trainingsInWorkoutFrom" (ngSubmit)="onSubmitTrainingsInWorkout()">
-      <!--
-      ****************************************
-      training
-      ****************************************
-      -->
-      <ion-row>
-        <ion-col>
-          <ion-item fill="fill">
-            <ion-input type="text" label="Übung" aria-label="Übung" labelPlacement="floating" formControlName="training"
-              [clearInput]="true">
-            </ion-input>
-          </ion-item>
+  <ion-row>
+    <ion-col>
+      <div class="form-container">
+        <form class="form" [formGroup]="trainingsInWorkoutFrom" (ngSubmit)="onSubmitTrainingsInWorkout()">
           <!--
+      ********************************************************************************
+      *****
+      ***
+      * write training
+      ***
+      *****
+      ********************************************************************************
+      -->
+          @if (!isProCVersion) {
+          <ion-row>
+            <!--
+          ****************************************
+          training
+          ****************************************
+          -->
+            <ion-col>
+              <ion-item fill="fill">
+                <ion-input type="text" label="Übung" aria-label="Übung" labelPlacement="floating"
+                  formControlName="training" [clearInput]="true">
+                </ion-input>
+              </ion-item>
+              <!--
             Error Message
           -->
-          <div class="error-msg" *ngIf="trainingCtrl?.invalid  &&  isSubmit">
-            <ion-text color="danger" *ngIf="trainingCtrl?.hasError('required')">
-              Bitte gebe die Übung ein.
-            </ion-text>
-          </div>
-        </ion-col>
-      </ion-row>
+              <div class="error-msg" *ngIf="trainingCtrl?.invalid  &&  isSubmit">
+                <ion-text color="danger" *ngIf="trainingCtrl?.hasError('required')">
+                  Bitte gebe die Übung ein.
+                </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+          }
+          <!--
+      ********************************************************************************
+      *****
+      ***
+      * get training
+      ***
+      *****
+      ********************************************************************************
+      -->
+          @if(isProCVersion) {
+          <!--
+      ****************************************
+       category ID
+      ****************************************
+      -->
+          <ion-row>
+            <ion-col size="5">
+              <ion-item fill="fill">
+                <ion-select aria-label="Categories" label="Kategorie" labelPlacement="floating"
+                  [formControl]="categoryIdCtrl" (ionChange)="onFetchTrainingsByCategoryId()">
+                  @for( category of categories; track category; let index =
+                  $index) { @if (index !== 0) {
+                  <ion-select-option [value]="index">
+                    {{ category.de | titlecase}}
+                  </ion-select-option>
+                  }
+                  }
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            <!--
+          ****************************************
+          training
+          ****************************************
+          -->
+            <ion-col size="5" offset="2">
+              <ion-item fill="fill">
+                <ion-select aria-label="Categories" label="Training" labelPlacement="floating"
+                  [formControl]="trainingSelectCtrl" (ionChange)="onSelectTraining()">
+                  @for( training of trainingList; track training; let index =
+                  $index) {
+                  <ion-select-option [value]="training.key">
+                    {{ training.name | titlecase}}
+                  </ion-select-option>
+                  }
 
-      <!--
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          }
+          <!--
       ****************************************
       goal Reps start
       ****************************************
       -->
-      <ion-row>
-        <ion-col size="5">
-          <ion-item fill="fill">
-            <ion-input type="number" label="Reps start" aria-label="Reps start" labelPlacement="floating"
-              formControlName="goalRepsStart" [clearInput]="true">
-            </ion-input>
-          </ion-item>
-        </ion-col>
+          <ion-row>
+            <ion-col size="5">
+              <ion-item fill="fill">
+                <ion-input type="number" label="Reps start" aria-label="Reps start" labelPlacement="floating"
+                  formControlName="goalRepsStart" [clearInput]="true">
+                </ion-input>
+              </ion-item>
+            </ion-col>
 
-        <!--
+            <!--
       ****************************************
       goal Reps end
       ****************************************
       -->
 
-        <ion-col size="5" offset="2">
-          <ion-item fill="fill">
-            <ion-input type="number" label="Reps end" aria-label="Reps end" labelPlacement="floating"
-              formControlName="goalRepsEnd" [clearInput]="true">
-            </ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
+            <ion-col size="5" offset="2">
+              <ion-item fill="fill">
+                <ion-input type="number" label="Reps end" aria-label="Reps end" labelPlacement="floating"
+                  formControlName="goalRepsEnd" [clearInput]="true">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
 
-      <ion-row>
-        <ion-col size="5">
-          <ion-item fill="fill">
-            <ion-checkbox labelPlacement="floating"  formControlName="bodyweight" >Bodyweight</ion-checkbox>
-          </ion-item>
-        </ion-col>
-        <ion-col size="5" offset="2">
-          <ion-item fill="fill">
-            <ion-checkbox labelPlacement="floating"  formControlName="warmup" >Warm up</ion-checkbox>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col>
-           <!--
+          <ion-row>
+            <ion-col>
+              <!--
             Error Message
           -->
-          <div class="error-msg" *ngIf="goalRepsEndCtrl?.invalid  &&  isSubmit">
-            <ion-text color="danger" *ngIf="goalRepsEndCtrl?.hasError('required')">
-              Bitte gebe die Ziel Reps an.
-            </ion-text>
-          </div>
-        </ion-col>
-      </ion-row>
+              <div class="error-msg" *ngIf="goalRepsEndCtrl?.invalid  &&  isSubmit">
+                <ion-text color="danger" *ngIf="goalRepsEndCtrl?.hasError('required')">
+                  Bitte gebe die Ziel Reps an.
+                </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
 
-      <!--
+          <!--
+      ****************************************
+      warmup
+      ****************************************
+      -->
+          <ion-row>
+            <ion-col size="5">
+              <ion-item fill="fill">
+                <ion-checkbox labelPlacement="floating" formControlName="warmup">Warm up</ion-checkbox>
+              </ion-item>
+            </ion-col>
+            <!--
+      ****************************************
+      bodyweight
+      ****************************************
+      -->
+            @if (!isProCVersion) {
+            <ion-col size="5" offset="2">
+              <ion-item fill="fill">
+                <ion-checkbox labelPlacement="floating" formControlName="bodyweight">Bodyweight</ion-checkbox>
+              </ion-item>
+            </ion-col>
+            }
+          </ion-row>
+
+          <!--
           ****************************************
           Submit
           ****************************************
           -->
-      <ion-row>
-        <ion-col>
-          <div class="elem-right submit-btn-container">
-            <ion-button type="submit" expand="" color="danger" fill="outline">
-              @if (isEdit) { Ändern } @else { Anlegen }
-            </ion-button>
-          </div>
-        </ion-col>
-      </ion-row>
-    </form>
-  </div>
+          <ion-row>
+            <ion-col>
+              <div class="elem-right submit-btn-container">
+                <ion-button type="submit" expand="" color="danger" fill="outline">
+                  @if (isEdit) { Ändern } @else { Anlegen }
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </form>
+      </div>
+    </ion-col>
+  </ion-row>
 
 </app-basis-layout>
-
-

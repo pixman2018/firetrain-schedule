@@ -74,15 +74,32 @@ export class TrainingService {
    * @returns Observable<I_Training[]
    *
    * @description
-   * fetch trainings by "category"
+   * fetch trainings by "categories"
    */
-  public filter(categoryId: string): Observable<I_Training[]> {
+  public fetchTrainingByCategories(categoryId: string): Observable<I_Training[]> {
     const request = this._afs.collection<I_Training>(this._dbPath, (ref) =>
       ref.orderBy('name').where('categoryId', 'in', categoryId)
     );
 
     return request.valueChanges();
   }
+
+    /**
+   *
+   * @public
+   * @param categoryId
+   * @returns Observable<I_Training[]
+   *
+   * @description
+   * fetch trainings by "category"
+   */
+    public fetchTrainingByCategory(categoryId: string): Observable<I_Training[]> {
+      const request = this._afs.collection<I_Training>(this._dbPath, (ref) =>
+        ref.orderBy('name').where('categoryId', '==', categoryId)
+      );
+
+      return request.valueChanges();
+    }
 
   /**
    *

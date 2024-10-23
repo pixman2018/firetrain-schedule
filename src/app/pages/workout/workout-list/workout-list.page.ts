@@ -10,7 +10,6 @@ import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWork
 // interface
 import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
 
-
 @Component({
   selector: 'app-workout-list',
   templateUrl: './workout-list.page.html',
@@ -38,7 +37,7 @@ export class WorkoutListPage implements OnInit {
     this._initComponent();
   }
 
-      /**
+  /**
    *
    * @protected
    * @memberof WorkoutListPage
@@ -48,27 +47,29 @@ export class WorkoutListPage implements OnInit {
    *
    */
   private _fetchAllWorkout(): void {
-    this._workoutService.fetchAll()
+    this._workoutService
+      .fetchAll()
       .pipe(
-        map(workout => {
-          workout?.map(w => {
+        map((workout) => {
+          workout?.map((w) => {
             if (w.key) {
-              this._trainingInWorkoutService.fetchAllTrainingInWorkout(w.key)
+              this._trainingInWorkoutService
+                .fetchAllTrainingInWorkout(w.key)
                 .subscribe((trainings) => {
                   this.trainingsLengths.push(trainings.length);
                 });
             }
             return w;
-          })
+          });
           return workout;
         })
       )
       .subscribe((workout) => {
-      this.workouts = workout;
-    });
+        this.workouts = workout;
+      });
   }
 
-      /**
+  /**
    *
    * @protected
    * @param workout
@@ -84,7 +85,7 @@ export class WorkoutListPage implements OnInit {
     });
   }
 
-      /**
+  /**
    *
    * @protected
    * @param workout
@@ -100,7 +101,7 @@ export class WorkoutListPage implements OnInit {
     });
   }
 
-      /**
+  /**
    *
    * @protected
    * @param workout
@@ -121,17 +122,18 @@ export class WorkoutListPage implements OnInit {
         'warning'
       );
 
-      const workoutConfirm: Subscription = this._alertService.getConfirmResult()
+      const workoutConfirm: Subscription = this._alertService
+        .getConfirmResult()
         .subscribe((res) => {
           if (res) {
             workoutConfirm.unsubscribe();
             this._delWorkout();
           }
-      });
+        });
     }
   }
 
-      /**
+  /**
    *
    * @private
    * @memberof WorkoutListPage
@@ -141,18 +143,20 @@ export class WorkoutListPage implements OnInit {
    *
    */
   private _delWorkout(): void {
-    this._workoutService.del(this._workoutKey).then(() => {
-      this._workoutKey = '';
-      this._alertService.showToast(
-        `Das Workout "${this._workoutName}" wurde gelöscht`
-      );
-    })
-    .catch((error) => {
-      console.error('Error', 'Workout konnte nicht gelöscht werden');
-    });
+    this._workoutService
+      .del(this._workoutKey)
+      .then(() => {
+        this._workoutKey = '';
+        this._alertService.showToast(
+          `Das Workout "${this._workoutName}" wurde gelöscht`
+        );
+      })
+      .catch((error) => {
+        console.error('Error', 'Workout konnte nicht gelöscht werden');
+      });
   }
 
-      /**
+  /**
    *
    * @protected
    * @memberof WorkoutListPage
@@ -165,7 +169,7 @@ export class WorkoutListPage implements OnInit {
     this._router.navigateByUrl('/workout-add', { replaceUrl: true });
   }
 
-      /**
+  /**
    *
    * @protected
    * @param workout
@@ -179,7 +183,7 @@ export class WorkoutListPage implements OnInit {
    */
   protected onGoStartWorkout(workout: I_Workout | undefined): void {
     if (workout) {
-      workout.count = workout.count +1;
+      workout.count = workout.count + 1;
       this._setTmp(workout);
       this._router.navigateByUrl(`training-start-list/${workout.key}`, {
         replaceUrl: true,
@@ -187,7 +191,7 @@ export class WorkoutListPage implements OnInit {
     }
   }
 
-      /**
+  /**
    *
    * @private
    * @param workout
@@ -196,7 +200,7 @@ export class WorkoutListPage implements OnInit {
    * @description
    * set the 'trainingsdayTstamps' from workout
    * edit the workout in the db
-    *
+   *
    */
   private _setTmp(workout: I_Workout): void {
     workout.trainingsdayTstamps.unshift({
@@ -208,9 +212,10 @@ export class WorkoutListPage implements OnInit {
         hours: '0',
         minutes: '0',
         seconds: '0',
-      }
+      },
     });
-    this._workoutService.edit(workout)
+    this._workoutService
+      .edit(workout)
       .then(() => {
         console.log('TMP gesetzt', workout.trainingsdayTstamps[0]);
       })
@@ -219,7 +224,7 @@ export class WorkoutListPage implements OnInit {
       });
   }
 
-      /**
+  /**
    *
    * @protected
    * @memberof WorkoutListPage
@@ -239,7 +244,7 @@ export class WorkoutListPage implements OnInit {
     }
   }
 
-      /**
+  /**
    *
    * @protected
    * @memberof WorkoutListPage
@@ -258,6 +263,5 @@ export class WorkoutListPage implements OnInit {
       // open the current accorion
       this._openCurrentAccorion();
     }
-
   }
 }

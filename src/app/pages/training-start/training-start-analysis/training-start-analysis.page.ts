@@ -90,8 +90,8 @@ export class TrainingStartAnalysisPage implements OnInit {
       this._workoutService.fetchByKey(this._workoutKey)
         .pipe(
           map(workout => {
-            if (workout) {
-              workout['workoutTime'] = this._dateService.getTimeFromTstamp(workout.trainingsdayTstamps[this.showResultIndex].workoutTime)
+            if (workout && workout.length) {
+              workout[0]['workoutTime'] = this._dateService.getTimeFromTstamp(workout[0].trainingsdayTstamps[this.showResultIndex].workoutTime)
             }
             return workout;
           })
@@ -99,9 +99,9 @@ export class TrainingStartAnalysisPage implements OnInit {
         .subscribe({
           next: (workout) => {
             if (workout) {
-              this.workout = workout;
-              if (workout.totalValue && workout.totalValue.length) {
-                this.totalValue = workout.totalValue[this.showResultIndex];
+              this.workout = workout[0];
+              if (workout[0].totalValue && workout[0].totalValue.length) {
+                this.totalValue = workout[0].totalValue[this.showResultIndex];
               }
             }
           },

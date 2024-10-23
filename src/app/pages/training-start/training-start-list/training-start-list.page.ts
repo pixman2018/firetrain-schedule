@@ -48,7 +48,9 @@ export class TrainingStartListPage implements OnInit {
   private _fetchWorkout(workoutKey: string) {
     this._workoutService.fetchByKey(workoutKey).subscribe({
       next: (workout) => {
-        this.workout = workout;
+        if (workout) {
+          this.workout = workout[0];
+        }
       },
       error: (error) => console.error('ERROR, Workout not found', error),
       complete: () => {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
+  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
@@ -11,13 +12,19 @@ import { take } from 'rxjs';
 
 // pipe
 import { UcfirstPipe } from 'src/app/shared/pipes/ucFirst/ucfirst.pipe';
+// data
+import { CategoryArr } from 'src/app/shared/data/category';
 // services
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { WorkoutService } from 'src/app/shared/services/workoutService/workout.service';
 import { TrainingInWorkoutService } from 'src/app/shared/services/trainingInWorkout/training-in-workout.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
+import { TrainingService } from 'src/app/shared/services/trainingService/training.service';
 // interfaces
 import { I_TrainingInWorkout } from 'src/app/shared/interfaces/I_TrainingInWorkout';
 import { I_Workout } from 'src/app/shared/interfaces/I_Workout';
+import { I_Data } from 'src/app/shared/interfaces/I_Data';
+import { I_Training } from 'src/app/shared/interfaces/I_Training';
 
 @Component({
   selector: 'app-training-in-workout-form',
@@ -29,7 +36,11 @@ export class TrainingInWorkoutFormPage implements OnInit {
   protected workout: I_Workout | undefined;
   private _workoutKey: string = '-1';
   private training: I_TrainingInWorkout | undefined;
+  protected trainingList: I_Training[] = [];
   protected headline: string = '';
+
+  // data
+  protected categories: I_Data[] = CategoryArr;
 
   private _userId: string = window.sessionStorage.getItem('uid') ?? '-1';
   private _highestOrder: number = 0;
@@ -37,11 +48,14 @@ export class TrainingInWorkoutFormPage implements OnInit {
 
   // form
   protected trainingsInWorkoutFrom: FormGroup = this._trainingsInWorkoutForm();
+  protected categoryIdCtrl: FormControl = new FormControl();
+  protected trainingSelectCtrl: FormControl = new FormControl();
 
   // flag
   protected isShowForm: boolean = false;
   protected isSubmit: boolean = false;
   protected isEdit: boolean = false;
+  protected isProCVersion: boolean = false;
 
   constructor(
     private readonly _fb: FormBuilder,
@@ -49,15 +63,16 @@ export class TrainingInWorkoutFormPage implements OnInit {
     private readonly _router: Router,
     private readonly _alertService: AlertService,
     private readonly _workoutService: WorkoutService,
-    private readonly _trainingInWorkoutService: TrainingInWorkoutService
+    private readonly _trainingInWorkoutService: TrainingInWorkoutService,
+    private readonly _userService: UserService,
+    private readonly _training: TrainingService
   ) {}
 
   ngOnInit() {
     this._initComponent();
   }
 
-
-      /**
+  /**
    *
    * @protected
    * @memberof TrainingInWorkoutFormPage
@@ -68,11 +83,13 @@ export class TrainingInWorkoutFormPage implements OnInit {
    */
   private _fetchWorkoutByKey(): void {
     this._workoutService
-      .fetchByKey(this._workoutKey)
+      .fetchByKey(this._route.snapshot.params['key'])
       .pipe(take(1))
       .subscribe({
         next: (workout) => {
-          this.workout = workout;
+          if (workout) {
+            this.workout = workout[0];
+          }
         },
         error: (error) => {
           console.error('ERROR by fetchWorkoutByKey', error);
@@ -86,6 +103,47 @@ export class TrainingInWorkoutFormPage implements OnInit {
           }
         },
       });
+  }
+
+  /**
+   *
+   * @protected
+   * @memberof TrainingInWorkoutFormPage
+   *
+   * @description
+   * fetch training by category
+   *
+   */
+  protected onFetchTrainingsByCategoryId(): void {
+    const categoryId: string = this.categoryIdCtrl.value;
+    this._training.fetchTrainingByCategory(categoryId).subscribe({
+      next: (trainings) => {
+        this.trainingList = trainings;
+      },
+      complete: () => {},
+      error: (error) => {
+        console.error('Error by fetch training by category Key', error);
+      },
+    });
+  }
+
+  /**
+   *
+   * @protected
+   * @memberof TrainingInWorkoutFormPage
+   *
+   * @description
+   * sets the values of the selected training in the select box “trainingSelectCtrl”
+   *
+   */
+  protected onSelectTraining(): void {
+    const trainingKey: string = this.trainingSelectCtrl.value;
+    this.trainingList.forEach((training) => {
+      if (training.key == trainingKey) {
+        this.trainingCtrl?.setValue(training.name);
+        this.bodyweightCtrl?.setValue(training.isBodyWeight);
+      }
+    });
   }
 
   /**
@@ -115,10 +173,15 @@ export class TrainingInWorkoutFormPage implements OnInit {
         this.goalRepsEndCtrl?.setValue(this.training.goalRepsEnd);
         this.bodyweightCtrl?.setValue(this.training.isBodyWeight);
         this.warmupCtrl?.setValue(this.training.isWarmUp);
+
+        if (this.isProCVersion) {
+          this.categoryIdCtrl.setValue(this.training.categoryId);
+          this.onFetchTrainingsByCategoryId();
+        }
       });
   }
 
-      /**
+  /**
    *
    * @protected
    * @memberof TrainingInWorkoutFormPage
@@ -139,7 +202,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
     }
   }
 
-      /**
+  /**
    *
    * @protected
    * @returns I_TrainingInWorkout
@@ -154,7 +217,9 @@ export class TrainingInWorkoutFormPage implements OnInit {
     return {
       namespace: 'trainingInWorkout',
       key: '',
-      workoutkey: this._workoutKey,
+      categoryId: this.categoryIdCtrl.value ?? '',
+      trainingsRefKey: this.trainingSelectCtrl.value ?? '',
+      workoutKey: this._workoutKey,
       workoutName: this.workoutName,
       isNegativeWeight: false,
       name: ucFirst.transform(this.trainingCtrl?.value),
@@ -219,6 +284,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   private _addTrainingsInWorkout(): void {
     const training = this._createTrainingInWorkout();
     if (this._trainingInWorkoutService.createTrainingInWorkout(training)) {
+      this._resetForm();
       this._alertService.showToast(
         `Training "${training.name}" wurde hinzugefügt.`,
         'middle',
@@ -258,11 +324,13 @@ export class TrainingInWorkoutFormPage implements OnInit {
       this._trainingInWorkoutService
         .editTrainingInWorkout(this.training)
         .then(() => {
+          this._resetForm();
           this._alertService.showToast(
             `Training "${this.training?.name}" wurde geändert.`,
             'middle',
             'success'
           );
+
           if (
             this._route.snapshot.queryParamMap.has('url') &&
             this._route.snapshot.queryParamMap.get('url') == 'workoutList'
@@ -294,8 +362,25 @@ export class TrainingInWorkoutFormPage implements OnInit {
 
   /**
    *
+   * @private
+   * @memberof TrainingInWorkoutFormPage
+   *
+   * @description
+   * reset the form and
+   * - trainingSelectCtrl
+   * - categoryIdCtrl
+   *
+   */
+  private _resetForm(): void {
+    this.trainingsInWorkoutFrom.reset();
+    this.trainingSelectCtrl.setValue('');
+    this.categoryIdCtrl.setValue('');
+  }
+
+  /**
+   *
    * @protected
-   * @memberof AuthPage
+   * @memberof TrainingInWorkoutFormPage
    * @returns AbstractControl<any, any> | null
    *
    * @description
@@ -309,7 +394,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   /**
    *
    * @protected
-   * @memberof AuthPage
+   * @memberof TrainingInWorkoutFormPage
    * @returns AbstractControl<any, any> | null
    *
    * @description
@@ -323,7 +408,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   /**
    *
    * @protected
-   * @memberof AuthPage
+   * @memberof TrainingInWorkoutFormPage
    * @returns AbstractControl<any, any> | null
    *
    * @description
@@ -337,7 +422,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   /**
    *
    * @protected
-   * @memberof AuthPage
+   * @memberof TrainingInWorkoutFormPage
    * @returns AbstractControl<any, any> | null
    *
    * @description
@@ -351,7 +436,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   /**
    *
    * @protected
-   * @memberof AuthPage
+   * @memberof TrainingInWorkoutFormPage
    * @returns AbstractControl<any, any> | null
    *
    * @description
@@ -393,17 +478,6 @@ export class TrainingInWorkoutFormPage implements OnInit {
    *
    */
   private _initComponent(): void {
-    this._workoutKey = this._route.snapshot.params['key'] ?? null;
-    // if (this._route.snapshot.queryParamMap.has('trainingsLenth')) {
-    //   this._highestOrder = this._route.snapshot.queryParams['trainingsLenth'];
-    // } else {
-    this._getTrainingsByWorkoutKey();
-    // }
-
-    if (this._route.snapshot.queryParamMap.has('isEdit')) {
-      this.isEdit = true;
-      this._fetchTrainingByKey(this._route.snapshot.queryParams['trainingKey']);
-    }
     /*
     ****************************************
     is userId exist
@@ -413,8 +487,26 @@ export class TrainingInWorkoutFormPage implements OnInit {
       this._router.navigateByUrl(`/'auth}`, {
         replaceUrl: true,
       });
-    } else {
-      this._fetchWorkoutByKey();
+    }
+    // get workout by key
+    this._fetchWorkoutByKey();
+
+    // isPro
+    this._userService.getUserByKey(this._userId).subscribe((user) => {
+      this.isProCVersion = Boolean(user?.isProVersion);
+    });
+
+    this._workoutKey = this._route.snapshot.params['key'] ?? null;
+    console.log('init', this._workoutKey);
+    // if (this._route.snapshot.queryParamMap.has('trainingsLenth')) {
+    //   this._highestOrder = this._route.snapshot.queryParams['trainingsLenth'];
+    // } else {
+    this._getTrainingsByWorkoutKey();
+    // }
+
+    if (this._route.snapshot.queryParamMap.has('isEdit')) {
+      this.isEdit = true;
+      this._fetchTrainingByKey(this._route.snapshot.queryParams['trainingKey']);
     }
   }
 }
