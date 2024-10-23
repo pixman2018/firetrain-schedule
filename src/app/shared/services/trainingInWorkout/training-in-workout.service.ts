@@ -69,7 +69,6 @@ export class TrainingInWorkoutService {
     trainingKey: string,
     userKey: string
   ): Observable<I_TrainingInWorkout[]> {
-    console.log('workoutkey', workoutkey, 'trainingKey', trainingKey, 'userKey', userKey)
     const collection = this._userCollection
       .doc(userKey)
       .collection<I_TrainingInWorkout>(this._trainingsInWorkoutPath, (ref) =>

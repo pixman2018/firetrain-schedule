@@ -162,7 +162,17 @@ export class TrainingInWorkoutFormPage implements OnInit {
     }
   }
 
-  private _isTrainingExists(trainingName: string) {
+    /**
+   *
+   * @protected
+   * @param fitrainingNameter
+   * @memberof TrainigInWorkoutComponent
+   *
+   * @description
+   * sets the flags whether a workout already exists in the workouts in workout
+   *
+   */
+  private _isTrainingExists(trainingName: string): void {
     this._trainingInWorkoutService.fetchTrainingByName(trainingName).subscribe({
       next: (training) => {
         if (training && training.length > 0) {
@@ -314,6 +324,9 @@ export class TrainingInWorkoutFormPage implements OnInit {
    * @description
    * create a new training in the db from form
    * and get the resault as message
+   *
+   * If a workout is already in a workout,
+   * the current workout id is saved in workoutKeys
    *
    */
   private _addTrainingsInWorkout(): void {
