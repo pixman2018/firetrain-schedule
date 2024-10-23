@@ -40,17 +40,9 @@ export class AuthService {
 
   /**
    *
-   * Register a new User with password and email
-   *
-   * @param { email, email}
-   * @returns Promise<UserCredential | null>
-   *
-   */
-  /**
-   *
    * @public
    * @param email
-   * @param email
+   * @param password
    * @returns  Promise<UserCredential | null>
    * @memberof AuthService
    *
@@ -215,6 +207,7 @@ export class AuthService {
   /**
    *
    * @public
+   * @static
    * @param authService
    * @returns AsyncValidatorFn
    * @memberof AuthService
@@ -223,7 +216,7 @@ export class AuthService {
    * Checks if the email address already exists in the database
    *
    */
-  static emailExists(authService: AuthService): AsyncValidatorFn {
+  public static emailExists(authService: AuthService): AsyncValidatorFn {
     return (control: AbstractControl) => {
       return authService.fetchUserByEmail(control.value).pipe(
         map((user) => {

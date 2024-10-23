@@ -1,7 +1,7 @@
 export interface I_TrainingInWorkout {
   namespace: string;
   key: string;
-  workoutKey: string;
+  workoutKeys: string[];
   workoutName: string;
   name: string;
   categoryId: number;

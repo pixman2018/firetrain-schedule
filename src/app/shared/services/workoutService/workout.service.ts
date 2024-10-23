@@ -62,7 +62,6 @@ export class WorkoutService {
    */
   public fetchByKey(key: string):Observable<I_Workout[] | undefined> {
     const userKey: string  = window.sessionStorage.getItem('uid')!;
-    console.log('key', key, ' userKey ', userKey)
     return this._userCollection
       .doc(userKey)
       .collection<I_Workout>(this._workoutDbPath, ref => ref

@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { first, map, Observable } from 'rxjs';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
 
+// pipe
+import { UcfirstPipe } from '../../pipes/ucFirst/ucfirst.pipe';
 // interface
 import { I_TrainingInWorkout } from '../../interfaces/I_TrainingInWorkout';
 import { I_Workout } from '../../interfaces/I_Workout';
+import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +45,7 @@ export class TrainingInWorkoutService {
       .doc(userKey)
       .collection<I_TrainingInWorkout>(this._trainingsInWorkoutPath, (ref) =>
         ref.where('userKey', '==', userKey)
-        .where('workoutKey', '==', workoutkey)
+        .where('workoutKeys', 'array-contains', workoutkey)
         .orderBy('created')
       )
       .valueChanges();
@@ -65,15 +69,43 @@ export class TrainingInWorkoutService {
     trainingKey: string,
     userKey: string
   ): Observable<I_TrainingInWorkout[]> {
+    console.log('workoutkey', workoutkey, 'trainingKey', trainingKey, 'userKey', userKey)
     const collection = this._userCollection
       .doc(userKey)
       .collection<I_TrainingInWorkout>(this._trainingsInWorkoutPath, (ref) =>
         ref.where('userKey', '==', userKey)
         .where('key', '==', trainingKey)
-        .where('workoutKey', '==', workoutkey)
+        .where('workoutKeys', 'array-contains', workoutkey)
       )
       .valueChanges();
     return collection;
+  }
+
+  /**
+   *
+   * @protected
+   * @param name
+   * @returns Observable<I_TrainingInWorkout[]>
+   * @memberof TrainingInWorkoutService
+   *
+   * @description
+   * fetch a training in workout from this user and by name
+   *
+   */
+  public fetchTrainingByName(name: string): Observable<I_TrainingInWorkout[]> {
+    const userKey: string = window.sessionStorage.getItem('uid')!;
+    const ucFirst = new UcfirstPipe();
+    const collection = this._userCollection
+      .doc(userKey)
+      .collection<I_TrainingInWorkout>(this._trainingsInWorkoutPath, (ref) =>
+        ref.where('name', '==', ucFirst.transform(name, true))
+      ).valueChanges()
+        .pipe(
+          first()
+        );
+        collection.subscribe((t) => {
+        });
+      return collection;
   }
 
   /**
@@ -143,5 +175,29 @@ export class TrainingInWorkoutService {
       .collection<I_TrainingInWorkout>(this._trainingsInWorkoutPath)
       .doc(trainingKey)
       .delete();
+  }
+
+   /**
+   *
+   * @public
+   * @static
+   * @param authService
+   * @returns AsyncValidatorFn
+   * @memberof AuthService
+   *
+   * @description
+   * Checks if the training name already exists in the database
+   *
+   */
+   public static trainingExists(trainingInWorkoutService: TrainingInWorkoutService): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      return trainingInWorkoutService.fetchTrainingByName(control.value).pipe(
+        map((training) => {
+          console.log('validator', training.length > 0 ? { trainingExists: true } : null);
+          return training.length > 0 ? { trainingExists: true } : null;
+        }),
+        first()
+      );
+    };
   }
 }

@@ -37,6 +37,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   private _workoutKey: string = '-1';
   private training: I_TrainingInWorkout | undefined;
   protected trainingList: I_Training[] = [];
+  protected trainingExistsObj: I_TrainingInWorkout | null = null;
   protected headline: string = '';
 
   // data
@@ -56,6 +57,7 @@ export class TrainingInWorkoutFormPage implements OnInit {
   protected isSubmit: boolean = false;
   protected isEdit: boolean = false;
   protected isProCVersion: boolean = false;
+  protected isTrainingExist: boolean = false;
 
   constructor(
     private readonly _fb: FormBuilder,
@@ -119,6 +121,13 @@ export class TrainingInWorkoutFormPage implements OnInit {
     this._training.fetchTrainingByCategory(categoryId).subscribe({
       next: (trainings) => {
         this.trainingList = trainings;
+        const trainingName: string = this.trainingCtrl?.value;
+
+        this.trainingList.forEach((train) => {
+          if (train.name && train.name?.toLowerCase() == trainingName.toLowerCase()) {
+            this.trainingSelectCtrl.setValue(train.key);
+          }
+        });
       },
       complete: () => {},
       error: (error) => {
@@ -138,11 +147,35 @@ export class TrainingInWorkoutFormPage implements OnInit {
    */
   protected onSelectTraining(): void {
     const trainingKey: string = this.trainingSelectCtrl.value;
-    this.trainingList.forEach((training) => {
-      if (training.key == trainingKey) {
-        this.trainingCtrl?.setValue(training.name);
-        this.bodyweightCtrl?.setValue(training.isBodyWeight);
-      }
+    if (trainingKey) {
+      this.trainingList.forEach((training) => {
+        if (training.key == trainingKey) {
+          if (training) {
+            if (training.name) {
+              this._isTrainingExists(training.name);
+            }
+            this.trainingCtrl?.setValue(training.name);
+            this.bodyweightCtrl?.setValue(training.isBodyWeight);
+          }
+        }
+      });
+    }
+  }
+
+  private _isTrainingExists(trainingName: string) {
+    this._trainingInWorkoutService.fetchTrainingByName(trainingName).subscribe({
+      next: (training) => {
+        if (training && training.length > 0) {
+          this.isTrainingExist = true;
+        } else {
+          this.isTrainingExist = false;
+        }
+        this.trainingExistsObj = training[0];
+      },
+      complete: () => {},
+      error: (error) => {
+        console.error('Error by loading from trainining by name');
+      },
     });
   }
 
@@ -214,15 +247,15 @@ export class TrainingInWorkoutFormPage implements OnInit {
    */
   private _createTrainingInWorkout(): I_TrainingInWorkout {
     const ucFirst = new UcfirstPipe();
-    return {
+    const trainingObj: I_TrainingInWorkout = {
       namespace: 'trainingInWorkout',
       key: '',
       categoryId: this.categoryIdCtrl.value ?? '',
       trainingsRefKey: this.trainingSelectCtrl.value ?? '',
-      workoutKey: this._workoutKey,
+      workoutKeys: [],
       workoutName: this.workoutName,
       isNegativeWeight: false,
-      name: ucFirst.transform(this.trainingCtrl?.value),
+      name: ucFirst.transform(this.trainingCtrl?.value, true),
       order: ++this._highestOrder,
       goalRepsStart: this.goalRepsStartCtrl?.value,
       goalRepsEnd: this.goalRepsEndCtrl?.value,
@@ -236,6 +269,8 @@ export class TrainingInWorkoutFormPage implements OnInit {
       created: Date.now(),
       updated: Date.now(),
     };
+    trainingObj.workoutKeys.push(this._workoutKey);
+    return trainingObj;
   }
 
   /*
@@ -282,27 +317,74 @@ export class TrainingInWorkoutFormPage implements OnInit {
    *
    */
   private _addTrainingsInWorkout(): void {
-    const training = this._createTrainingInWorkout();
-    if (this._trainingInWorkoutService.createTrainingInWorkout(training)) {
-      this._resetForm();
-      this._alertService.showToast(
-        `Training "${training.name}" wurde hinzugefügt.`,
-        'middle',
-        'success'
-      );
-      this._router.navigateByUrl(
-        `${this._backUrl}/${this._workoutKey}?workoutName=${this.workoutName}`,
-        {
-          replaceUrl: true,
-        }
-      );
+    let training: I_TrainingInWorkout | null = null;
+    if (this.isTrainingExist) {
+      training = this.trainingExistsObj;
+      training?.workoutKeys.push(this._workoutKey);
+      if (training) {
+        this._trainingInWorkoutService.editTrainingInWorkout(training)
+          .then(() => {
+            if (training) {
+              this._successfullyAddTraining(training);
+            }
+          })
+          .catch((error) => {
+            this._errorAddTraining();
+          })
+      }
+
     } else {
-      this._alertService.showAlert(
-        'Error',
-        `Training konnte nicht hinzugefügt werden`,
-        'danger'
-      );
+      training = this._createTrainingInWorkout();
+      if (training) {
+        if (this._trainingInWorkoutService.createTrainingInWorkout(training)) {
+          this._successfullyAddTraining(training);
+        } else {
+          this._errorAddTraining();
+        }
+      }
     }
+  }
+
+  /**
+   *
+   * @protected
+   * @param training
+   * @memberof TrainigInWorkoutComponent
+   *
+   * @description
+   * output from successfully add trainig in workout
+   *
+   */
+  private _successfullyAddTraining(training: I_TrainingInWorkout) {
+    this._resetForm();
+    this._alertService.showToast(
+      `Training "${training.name}" wurde hinzugefügt.`,
+      'middle',
+      'success'
+    );
+    this._router.navigateByUrl(
+      `${this._backUrl}/${this._workoutKey}?workoutName=${this.workoutName}`,
+      {
+        replaceUrl: true,
+      }
+    );
+  }
+
+  /**
+   *
+   * @protected
+   * @memberof TrainigInWorkoutComponent
+   *
+   * @description
+   * output from error add trainig in workout
+   *
+   */
+  private _errorAddTraining() {
+    this._alertService.showAlert(
+      'Error',
+      `Training konnte nicht hinzugefügt werden`,
+      'danger'
+    );
   }
 
   /**
@@ -497,7 +579,6 @@ export class TrainingInWorkoutFormPage implements OnInit {
     });
 
     this._workoutKey = this._route.snapshot.params['key'] ?? null;
-    console.log('init', this._workoutKey);
     // if (this._route.snapshot.queryParamMap.has('trainingsLenth')) {
     //   this._highestOrder = this._route.snapshot.queryParams['trainingsLenth'];
     // } else {
@@ -508,5 +589,11 @@ export class TrainingInWorkoutFormPage implements OnInit {
       this.isEdit = true;
       this._fetchTrainingByKey(this._route.snapshot.queryParams['trainingKey']);
     }
+
+    this._trainingInWorkoutService
+      .fetchTrainingByName('Push Ups')
+      .subscribe((t) => {
+        console.log('t', t);
+      });
   }
 }
