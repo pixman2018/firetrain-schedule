@@ -11,7 +11,7 @@ import {
 })
 export class DateService {
   private _date: Date = new Date();
-  private _currentMonth: number[] = [
+  private _DaysInMonths: number[] = [
     0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
   ];
   private _leapYear = 1904;
@@ -21,15 +21,19 @@ export class DateService {
 
   /**
    *
+   * @protected
+   * @param tstamp
+   * @param objType
+   * @returns  I_DateObj | I_TimeObj | I_DatetimeObj | {}
+   * @memberof DateService
+   *
+   * @description
    * Converts a current date to an object of type “Datetime”.
    *
    * The parameter “objType” is used to specify which object type
    * the date is converted to (date, time or datetime)
    * and return this Object
    *
-   * @param tstamp
-   * @param objType is date, time oor datetime
-   * @returns
    */
   public getDatetimeObjFromtstamp(
     tstamp: number,
@@ -76,10 +80,15 @@ export class DateService {
   }
 
   /**
+   *
+   * @protected
+   * @param tstamp
+   * @returns I_TimeObj
+   * @memberof DateService
+   *
+   * @description
    * converts a timestamp into a "date object" of type Time
    *
-   * @param tstamp
-   * @returns
    */
   public getTimeFromTstamp(tstamp: number): I_TimeObj {
     // example https://blog.axxg.de/zeitdifferenz-konvertieren-mit-modulo/
@@ -96,12 +105,83 @@ export class DateService {
       miliseconds: this.zeroPad(tstamp),
     };
   }
+  /**
+   *
+   * @protected
+   * @param timeObj
+   * @returns number
+   * @memberof DateService
+   *
+   * @description
+   * converts a timeObj in a timestamp only time not date
+   *
+   */
+  public getTmpFromTimeObj(timeObj: I_TimeObj): number {
+    console.log(timeObj);
+    let tmp =
+      this._getTmpFromHours(parseInt(timeObj.hours)) +
+      this._getTmpFromMinutes(parseInt(timeObj.minutes)) +
+      this._getTmpFromSeconds(parseInt(timeObj.seconds));
+    if (timeObj.miliseconds) {
+      tmp += parseInt(timeObj.miliseconds);
+    }
+    return tmp;
+  }
 
   /**
    *
-   * get a now timestamp by year month and day
+   * @protected
+   * @param hours
+   * @returns number
+   * @memberof DateService
    *
-   * @returns number timestamp
+   * @description
+   * calc hours from timeObj in millisecons
+   *
+   */
+  private _getTmpFromHours(hours: number): number {
+    return Math.floor(hours * 60 * 60 * 1000);
+  }
+
+  /**
+   *
+   * @protected
+   * @param hours
+   * @returns number
+   * @memberof DateService
+   *
+   * @description
+   * calc minutes from timeObj in millisecons
+   *
+   */
+  private _getTmpFromMinutes(minutes: number): number {
+    return Math.floor(minutes * 60 * 1000);
+  }
+
+  /**
+   *
+   * @protected
+   * @param hours
+   * @returns number
+   * @memberof DateService
+   *
+   * @description
+   * calc seconds from timeObj in millisecons
+   *
+   */
+  private _getTmpFromSeconds(seconds: number): number {
+    return Math.floor(seconds * 1000);
+  }
+
+  /**
+   *
+   * @protected
+   * @returns number
+   * @memberof DateService
+   *
+   * @description
+   *  get a now timestamp by year month and day
+   *
    */
   public getNowDatAsTstamp(): number {
     const dateTime: Date = new Date();
@@ -115,9 +195,13 @@ export class DateService {
 
   /**
    *
-   * get the current date as string
+   * @protected
+   * @returns number
+   * @memberof DateService
    *
-   * @returns datestring
+   * @description
+   *  get the current date as string
+   *
    */
   public getNowDateasString(): string {
     const dateTime: Date = new Date();
@@ -150,12 +234,35 @@ export class DateService {
     return time.getTime();
   }
 
-  public getDayOfMonth(month: number, year: number, debug: boolean = false): number {
-    this._currentMonth = [
-      0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-    ];
+  /**
+   *
+   * @protected
+   * @param month
+   * @param year
+   * @param debug
+   * @returns number
+   * @memberof DateService
+   *
+   * @description
+   * creates a calendar with the consideration of leap years
+   *
+   * with the flag debug you can enable a log output
+   *
+   */
+  public getDayOfMonth(
+    month: number,
+    year: number,
+    debug: boolean = false
+  ): number {
     if (debug) {
-      console.log('start', month, ' - y ', year,  ' -- current Month', this._currentMonth[2])
+      console.log(
+        'start',
+        month,
+        ' - y ',
+        year,
+        ' -- current Month',
+        this._DaysInMonths[2]
+      );
     }
     if (!month) {
       console.error('The smallest number is 1');
@@ -166,20 +273,32 @@ export class DateService {
         if (y == year) {
           if (debug) {
             alert();
-            console.log('y', y, 'year', year)
+            console.log('y', y, 'year', year);
           }
-          this._currentMonth[2] = 29;
+          this._DaysInMonths[2] = 29;
         }
       }
     }
     if (debug) {
-      console.log('m', this._currentMonth[month]);
-      console.log(year)
+      console.log('m', this._DaysInMonths[month]);
+      console.log(year);
     }
 
-    return this._currentMonth[month];
+    return this._DaysInMonths[month];
   }
 
+  /**
+   *
+   * @protected
+   * @param number
+   * @returns string
+   * @memberof DateService
+   *
+   * @description
+   * converts a number into a string
+   * whose character length is set to two
+   *
+   */
   public zeroPad(number: number): string {
     return number.toString().padStart(2, '0');
   }

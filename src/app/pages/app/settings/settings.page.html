@@ -1,0 +1,43 @@
+<app-basis-layout headline="Settings">
+  <ion-row>
+    <ion-col>
+      <ion-accordion-group>
+        <ion-accordion value="workout">
+          <ion-item slot="header">
+            <ion-label>Grundeinstellungen</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            <!--
+              ********************************************************************************
+              * result retain
+              ********************************************************************************
+              -->
+            <ion-item>
+              <ion-checkbox labelPlacement="start" color="danger" [formControl]="resultRetainCtrl"
+                (ionChange)="onChangeCheckbox( 'resultRetainCtrl')">Ergebnis Übernehmen</ion-checkbox>
+            </ion-item>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion>
+          <ion-item slot="header">
+            <ion-label>Pausenzeit</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            <!--
+              ********************************************************************************
+              * breaktime
+              ********************************************************************************
+              -->
+
+            <ion-item>
+              <app-breaktime-form></app-breaktime-form>
+            </ion-item>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-col>
+  </ion-row>
+
+
+</app-basis-layout>

@@ -16,12 +16,13 @@
               <h3 class="headline">Workouts</h3>
             </ion-label>
             @for (workout of workouts; track workout.name) {
-              <ion-item lines="none" class="ion-margin-bottom cursor">
-                <ion-button fill="none" color="danger" expand="block" class="cursor" [routerLink]="['/training-start-analysis', workout.key]">
-                  <ion-text color="danger">{{ workout.name }}</ion-text>
-                </ion-button>
+            <ion-item lines="none" class="ion-margin-bottom cursor">
+              <ion-button fill="none" color="danger" expand="block" class="cursor"
+                [routerLink]="['/training-start-analysis', workout.key]">
+                <ion-text color="danger">{{ workout.name }}</ion-text>
+              </ion-button>
 
-              </ion-item>
+            </ion-item>
 
             }
             <!-- <ion-button fill="clear" color="danger" class="cursor" [routerLink]="'/training-list'">
@@ -46,24 +47,30 @@
           </div>
         </ion-accordion>
         }
-         <!--
-        ****************************************
-        Settings
-        ****************************************
+        <!--
+        ********************************************************************************
+        *****
+        ***
+        * Settings
+        ***
+        *****
+        ********************************************************************************
         -->
         <ion-accordion value="app">
           <ion-item slot="header">
             <ion-label>Settings</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
-            <ion-list>
-              <ion-item>
-                <ion-checkbox labelPlacement="start" color="danger" [formControl]="resultRetainCtrl" (ionChange)="onChangeCheckbox( 'resultRetainCtrl')">Ergebnis Übernehmen</ion-checkbox>
-              </ion-item>
-            </ion-list>
+
+
+
+
+
+
+
           </div>
         </ion-accordion>
-         <!--
+        <!--
         ****************************************
         App
         ****************************************

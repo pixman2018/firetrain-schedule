@@ -157,6 +157,10 @@ const routes: Routes = [
       ),
       canActivate: [CanActivateGuard],
   },
+  {
+    path: 'settings',
+    loadChildren: () => import('./pages/app/settings/settings.module').then( m => m.SettingsPageModule)
+  },
   // {
   //   path: 'about',
   //   loadChildren: () =>
@@ -226,7 +230,7 @@ const routes: Routes = [
   {
     path: 'pargination',
     loadChildren: () => import('./example/firebase/pargination/pargination.module').then(m => m.ParginationPageModule),
-  }
+  },
 ];
 
 @NgModule({

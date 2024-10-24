@@ -16,4 +16,5 @@ export interface I_User {
 
 export interface I_Settings {
   resultRetain: boolean;
+  breaktime: number;
 }

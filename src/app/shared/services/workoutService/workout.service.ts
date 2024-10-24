@@ -3,18 +3,18 @@ import { Router } from '@angular/router';
 
 import { Observable, take } from 'rxjs';
 
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+} from '@angular/fire/compat/firestore';
 
 // interfcae
 import { I_Workout } from '../../interfaces/I_Workout';
 
-
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WorkoutService {
-
   private _usersDbPath: string = '/users';
   private _workoutDbPath: string = '/workouts';
 
@@ -22,7 +22,7 @@ export class WorkoutService {
 
   constructor(
     private readonly _router: Router,
-    private readonly _afs: AngularFirestore,
+    private readonly _afs: AngularFirestore
   ) {
     this._userCollection = _afs.collection<I_Workout>(this._usersDbPath);
 
@@ -39,14 +39,14 @@ export class WorkoutService {
    * fetch all workout from the user by user ID
    *
    */
-  public fetchAll():Observable<I_Workout[] | undefined>  {
-    const userKey: string  = window.sessionStorage.getItem('uid')!;
+  public fetchAll(): Observable<I_Workout[] | undefined> {
+    const userKey: string = window.sessionStorage.getItem('uid')!;
     return this._userCollection
       .doc(userKey)
-      .collection<I_Workout>(this._workoutDbPath, ref => ref
-        .where('isArchiv', '==', false)
-        .where('userId', '==', userKey)
-      ).valueChanges();
+      .collection<I_Workout>(this._workoutDbPath, (ref) =>
+        ref.where('isArchiv', '==', false).where('userId', '==', userKey)
+      )
+      .valueChanges();
   }
 
   /**
@@ -60,16 +60,15 @@ export class WorkoutService {
    * fetch a training in workout from the current user
    *
    */
-  public fetchByKey(key: string):Observable<I_Workout[] | undefined> {
-    const userKey: string  = window.sessionStorage.getItem('uid')!;
+  public fetchByKey(key: string): Observable<I_Workout[] | undefined> {
+    const userKey: string = window.sessionStorage.getItem('uid')!;
     return this._userCollection
       .doc(userKey)
-      .collection<I_Workout>(this._workoutDbPath, ref => ref
-        .where('key', '==', key)
-      ).valueChanges()
-      .pipe(
-        take(1),
-      );
+      .collection<I_Workout>(this._workoutDbPath, (ref) =>
+        ref.where('key', '==', key)
+      )
+      .valueChanges()
+      .pipe(take(1));
   }
 
   /**
@@ -86,7 +85,7 @@ export class WorkoutService {
   public create(workout: I_Workout): string | undefined {
     const key = this._afs.createId();
     workout['key'] = key;
-    const userKey: string  = window.sessionStorage.getItem('uid')!;
+    const userKey: string = window.sessionStorage.getItem('uid')!;
     this._userCollection
       .doc(userKey)
       .collection<I_Workout>(this._workoutDbPath)
@@ -95,7 +94,7 @@ export class WorkoutService {
     return key;
   }
 
-    /**
+  /**
    *
    * @public
    * @param workout
@@ -106,7 +105,7 @@ export class WorkoutService {
    *
    */
   public edit(workout: I_Workout): Promise<void> {
-    const userKey: string  = window.sessionStorage.getItem('uid')!;
+    const userKey: string = window.sessionStorage.getItem('uid')!;
     return this._userCollection
       .doc(userKey)
       .collection<I_Workout>(this._workoutDbPath)
@@ -114,7 +113,7 @@ export class WorkoutService {
       .update(workout);
   }
 
-      /**
+  /**
    *
    * @public
    * @param key from Workout
@@ -125,7 +124,7 @@ export class WorkoutService {
    *
    */
   public del(key: string): Promise<void> {
-    const userKey: string  = window.sessionStorage.getItem('uid')!;
+    const userKey: string = window.sessionStorage.getItem('uid')!;
     return this._userCollection
       .doc(userKey)
       .collection<I_Workout>(this._workoutDbPath)
@@ -133,7 +132,7 @@ export class WorkoutService {
       .delete();
   }
 
-        /**
+  /**
    *
    * @public
    * @memberof WorkoutService
@@ -143,7 +142,7 @@ export class WorkoutService {
    *
    */
   private async _constructComponent() {
-    const userId =  sessionStorage.getItem('uid') ;
+    const userId = sessionStorage.getItem('uid');
     if (!userId) {
       this._router.navigateByUrl('/auth', { replaceUrl: true });
     }
