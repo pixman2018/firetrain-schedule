@@ -9,7 +9,7 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 // ionic
 import {
   IonicRouteStrategy,
@@ -28,7 +28,7 @@ import { firebaseConfig } from './db/db-config';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideZoneChangeDetection(),{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideBrowserGlobalErrorListeners(),

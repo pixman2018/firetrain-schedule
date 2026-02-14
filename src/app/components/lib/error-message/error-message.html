@@ -1,0 +1,9 @@
+@if (control()().touched() && control()().invalid()) {
+@for(error of this.control()().errors(); track error) {
+@if(error.message) {
+<ion-list class="error-list">
+  <ion-item>{{error.message}}</ion-item>
+</ion-list>
+}
+}
+}

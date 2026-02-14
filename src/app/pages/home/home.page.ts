@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+
 import {
   IonButton,
   IonContent,
@@ -10,6 +9,7 @@ import {
 } from '@ionic/angular/standalone';
 import { PracticeStore } from 'src/app/services/practice-store/practice-store';
 import { InitPractice } from 'src/db/initPractice';
+import { TrainingsListPage } from '../trainings/trainings-list/trainings-list.page';
 
 @Component({
   selector: 'app-home',
@@ -22,8 +22,7 @@ import { InitPractice } from 'src/db/initPractice';
     IonTitle,
     IonToolbar,
     IonButton,
-    CommonModule,
-    FormsModule,
+    TrainingsListPage,
   ],
   providers: [InitPractice],
 })
