@@ -12,40 +12,40 @@ import {
 } from '@angular/fire/firestore';
 import { convertSnaps, convertSnap } from 'src/db/db-until';
 // service models
-import { I_Practic } from 'src/app/models/practic.model';
 import { HttpBasesAbstractClass } from 'src/db/http-basis-abstract-class';
+import { I_Training } from 'src/app/models/trainings.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PracticeStore extends HttpBasesAbstractClass {
+export class TrainingsStore extends HttpBasesAbstractClass {
   private _practice = signal<any[]>([]);
 
   constructor() {
     super();
-    this.dbPath = 'practices';
+    this.dbPath = 'trainings';
     this.colRef = collection(this.firestore, this.dbPath);
   }
 
-  public get practice(): Signal<Required<I_Practic[]>> {
+  public get practice(): Signal<Required<I_Training[]>> {
     return this._practice.asReadonly();
   }
 
-  public override async getAll(): Promise<Required<I_Practic[] | []>> {
+  public override async getAll(): Promise<Required<I_Training[] | []>> {
     try {
       const snapshot = await getDocs(this.colRef);
       const data: any[] = convertSnaps(snapshot);
       this._practice.set(data);
       return data;
     } catch (error) {
-      console.error('Error by load from all practices');
+      console.error('Error by load from all trainings');
       return [];
     }
   }
 
   public override async getById(
     id: string,
-  ): Promise<Required<I_Practic | null>> {
+  ): Promise<Required<I_Training | null>> {
     try {
       const practicRef = doc(this.firestore, `${this.dbPath}/${id}`);
       const snapshot = await getDoc(practicRef);
@@ -54,7 +54,7 @@ export class PracticeStore extends HttpBasesAbstractClass {
         return null;
       }
 
-      const data = convertSnap<Required<I_Practic>>(snapshot);
+      const data = convertSnap<Required<I_Training>>(snapshot);
       return data;
     } catch (error) {
       console.error(`Error by get pratic by ID: "${id}"`);
@@ -62,7 +62,7 @@ export class PracticeStore extends HttpBasesAbstractClass {
     }
   }
 
-  public override async create(practice: I_Practic): Promise<string> {
+  public override async create(practice: I_Training): Promise<string> {
     try {
       const docRef = await addDoc(this.colRef, practice);
       const practiceWithId: any = {
@@ -72,33 +72,33 @@ export class PracticeStore extends HttpBasesAbstractClass {
       this._setPractice(practiceWithId);
       return docRef.id;
     } catch (error) {
-      console.error('Error by create a new practice', error);
+      console.error('Error by create a new training', error);
       throw error;
     }
   }
 
-  public override edit(practice: I_Practic, id: string): Promise<void> {
+  public override edit(training: I_Training, id: string): Promise<void> {
     try {
-      this._setPractice(practice);
+      this._setPractice(training);
       const practicRef = doc(this.firestore, `${this.dbPath}/${id}`);
-      return updateDoc(practicRef, { ...practice });
+      return updateDoc(practicRef, { ...training });
     } catch (error) {
-      console.error('Error by create a new practive:', error);
+      console.error('Error by create a new training:', error);
       throw error;
     }
   }
 
   public override async delete(id: string): Promise<void> {
     try {
-      const practicRef = doc(this.firestore, `${this.dbPath}/${id}`);
-      return await deleteDoc(practicRef);
+      const trainingRef = doc(this.firestore, `${this.dbPath}/${id}`);
+      return await deleteDoc(trainingRef);
     } catch (error) {
-      console.error('Error by del practive:', error);
+      console.error('Error by del training:', error);
       throw error;
     }
   }
 
-  private _setPractice(practice: I_Practic) {
-    this._practice.update((currentPractice) => [...currentPractice, practice]);
+  private _setPractice(training: I_Training) {
+    this._practice.update((currenttraining) => [...currenttraining, training]);
   }
 }
