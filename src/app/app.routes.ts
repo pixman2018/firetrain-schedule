@@ -26,13 +26,13 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: 'training-form',
-    loadComponent: () =>
-      import('./pages/trainings/training-form/training-form.page').then(
-        (m) => m.TrainingFormPage,
-      ),
-  },
+  // {
+  //   path: 'training-form',
+  //   loadComponent: () =>
+  //     import('./pages/trainings/training-form/training-form.page').then(
+  //       (m) => m.TrainingFormPage,
+  //     ),
+  // },
 
   {
     path: 'login',
@@ -47,6 +47,9 @@ export const routes: Routes = [
   },
   {
     path: 'trainings-list',
-    loadComponent: () => import('./pages/trainings/trainings-list/trainings-list.page').then( m => m.TrainingsListPage)
+    loadComponent: () =>
+      import('./pages/trainings/trainings-list/trainings-list.page').then(
+        (m) => m.TrainingsListPage,
+      ),
   },
 ];

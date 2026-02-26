@@ -9,7 +9,10 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import {
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 // ionic
 import {
   IonicRouteStrategy,
@@ -28,7 +31,8 @@ import { firebaseConfig } from './db/db-config';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideZoneChangeDetection(),
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideBrowserGlobalErrorListeners(),
@@ -50,9 +54,9 @@ bootstrapApplication(AppComponent, {
     }),
     provideFirestore(() => {
       const firestore = getFirestore();
-      console.log(environment);
+      // console.log(environment);
       if (environment.useEmulators) {
-        console.log('Emulator');
+        // console.log('Emulator');
         connectFirestoreEmulator(firestore, 'localhost', 8080);
       }
       return firestore;

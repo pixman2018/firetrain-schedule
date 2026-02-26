@@ -39,8 +39,8 @@ export class LoginPage implements OnInit {
   protected errorMessage = signal<string | null>(null);
 
   private _loginModel = signal<I_Auth>({
-    email: '',
-    password: '',
+    email: 'user@example.com',
+    password: '123456',
   });
 
   protected loginForm = form(this._loginModel);

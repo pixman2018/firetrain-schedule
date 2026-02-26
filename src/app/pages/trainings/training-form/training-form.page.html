@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<!-- <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Training</ion-title>
   </ion-toolbar>
@@ -9,14 +9,16 @@
     <ion-toolbar>
       <ion-title size="large">Training</ion-title>
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
 
-  <form>
-    <ion-item>
-      <ion-input [formField]="trainingForm.name" label="Training"
-        placeholder="Bitte geben den Namen des Trainings ein."></ion-input>
-    </ion-item>
-
+<form>
+  <ion-item>
+    <ion-input [formField]="trainingForm.name" label="Training"
+      placeholder="Bitte geben den Namen des Trainings ein."></ion-input>
+  </ion-item>
+  <div class="content-right">
     <ion-button fill="outline" (click)="onSubmit()">Anlegen</ion-button>
-  </form>
-</ion-content>
+  </div>
+
+</form>
+<!-- </ion-content> -->

@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>trainings-list</ion-title>
+    <ion-title>{{ header }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,4 +10,41 @@
       <ion-title size="large">trainings-list</ion-title>
     </ion-toolbar>
   </ion-header>
+  @if (!showTrainingForm) {
+  <div class="ion-padding ion-text-center">
+    <ion-button shape="round" class="vertical-c" (click)="addTraining()">
+      <ion-icon slot="icon-only" name="add-outline" size="large"></ion-icon>
+    </ion-button>
+  </div>
+  }
+  @if (showTrainingForm) {
+  <app-training-form (newTraining)="onNewTraining($event)" />
+  }
+
+  @if(!showTrainingForm) {
+  <ion-accordion-group>
+    @for(training of trainings(); track training.id) {
+    <ion-accordion [value]="training.id">
+      <ion-item slot="header" color="light">
+        <ion-label>{{ training.name }}</ion-label>
+      </ion-item>
+      <div class="" slot="content">
+        <div class="content-right">
+          <ion-button size="">
+            <ion-icon slot="start" name="add-outline"></ion-icon> Übung
+          </ion-button>
+        </div>
+        <div class="exercisess-container">
+          <app-exercises-form />
+          <app-exercises-list />
+        </div>
+      </div>
+
+    </ion-accordion>
+    }
+
+  </ion-accordion-group>
+  }
+
+
 </ion-content>

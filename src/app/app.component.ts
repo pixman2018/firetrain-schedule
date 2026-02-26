@@ -21,7 +21,6 @@ export class AppComponent {
         console.log('No login, redirect to login');
         this._router.navigateByUrl('/login');
       } else {
-        console.log('login user', user?.email);
         if (this._router.url === '/login') {
           this._router.navigateByUrl('/home');
         }

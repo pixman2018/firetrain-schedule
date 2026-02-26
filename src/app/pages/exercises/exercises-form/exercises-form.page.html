@@ -1,0 +1,37 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>exercises-form</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">exercises-form</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content> -->
+
+<div class="container">
+  <ion-item>
+    <ion-select label="Übung Kategory" placeholder="Bitte Auswählen" (ionChange)="omSelectCategory($event)">
+      @for (exercisesCategoryOptiom of exercisesCategoryOptioms; track exercisesCategoryOptiom) {
+      <ion-select-option [value]="exercisesCategoryOptiom">{{exercisesCategoryOptiom}}</ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+
+  @if (exercisess.length > 0) {
+  <ion-item>
+    <ion-select label="Übung" placeholder="Bitte Auswählen" (ionChange)="omSelectexercises($event)">
+      @for (exercises of exercisess; track exercises) {
+      <ion-select-option [value]="exercises">{{exercises.name}}</ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+  }
+</div>
+
+<pre>
+  {{ exercisess | json}}
+</pre>

@@ -1,12 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, Query } from '@angular/fire/firestore';
 import {
   doc,
   DocumentData,
   getDoc,
   getDocs,
   writeBatch,
-} from 'firebase/firestore';
+  collection,
+  Firestore,
+  query,
+  Query,
+} from '@angular/fire/firestore';
+
 import { convertSnap } from 'src/db/db-until';
 
 @Injectable({
@@ -43,13 +47,17 @@ export class DbUpdate {
       throw error;
     }
   }
-  public async clearCollection(
-    collectionPath: string,
-    colRef: Query<unknown, DocumentData>,
-  ): Promise<void> {
+  public async clearCollection(collectionPath: string): Promise<void> {
     try {
-      const snapshot = await getDocs(colRef);
       const batch = writeBatch(this._firestore);
+
+      const collectionRef = collection(this._firestore, collectionPath);
+      const snapshot = await getDocs(collectionRef);
+
+      if (snapshot.empty) {
+        console.log('No entries delete.');
+        return;
+      }
 
       snapshot.docs.forEach((document) => {
         const docRef = doc(this._firestore, `${collectionPath}/${document.id}`);
@@ -57,9 +65,9 @@ export class DbUpdate {
       });
 
       await batch.commit();
-      console.log(`delete all ${colRef} in ${collectionPath}.`);
+      console.log(`delete all ${collectionPath} in ${collectionPath}.`);
     } catch (error) {
-      console.log('Error by delete all practice.');
+      console.log('Error by delete all exercises.');
       throw error;
     }
   }

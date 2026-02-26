@@ -7,9 +7,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { PracticeStore } from 'src/app/services/practice-store/practice-store';
-import { InitPractice } from 'src/db/initPractice';
+import { Initexercises } from 'src/db/initExercises';
 import { TrainingsListPage } from '../trainings/trainings-list/trainings-list.page';
+import { exercisesCategoryOptiomsProvider } from 'src/app/models/I_exercisesCategory.model';
 
 @Component({
   selector: 'app-home',
@@ -24,16 +24,16 @@ import { TrainingsListPage } from '../trainings/trainings-list/trainings-list.pa
     IonButton,
     TrainingsListPage,
   ],
-  providers: [InitPractice],
+  providers: [Initexercises, exercisesCategoryOptiomsProvider],
 })
 export class HomePage implements OnInit {
-  private _praticeStore = inject(PracticeStore);
-  private _initPractice = inject(InitPractice);
+  private _initexercises = inject(Initexercises);
+
   constructor() {}
 
   ngOnInit() {}
 
   protected async add() {
-    this._initPractice._addAllPractices();
+    this._initexercises._addAllexercisess();
   }
 }

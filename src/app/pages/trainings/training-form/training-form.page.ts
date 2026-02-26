@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, output, signal } from '@angular/core';
 
 import {
   form,
@@ -20,8 +20,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { I_Training } from 'src/app/models/trainings.model';
+import { I_Training } from 'src/app/models/I_trainings.model';
 import { TrainingsStore } from 'src/app/services/trainings-store/trainings-store';
+import { AuthService } from '../../auth/services/auth-service';
 
 const ionicModule = [
   IonContent,
@@ -42,9 +43,17 @@ const ionicModule = [
 })
 export class TrainingFormPage implements OnInit {
   private _trainingStore = inject(TrainingsStore);
-  private _trainingModel = signal<I_Training>(this._defaultFormObj());
+  private _authService = inject(AuthService);
 
-  private _defaultFormObj(): I_Training {
+  public newTraining = output<string>();
+  private _trainingModel = signal<
+    Omit<I_Training, 'createdAt' | 'updatedAt' | 'uid'>
+  >(this._defaultFormObj());
+
+  private _defaultFormObj(): Omit<
+    I_Training,
+    'createdAt' | 'updatedAt' | 'uid'
+  > {
     return {
       name: '',
     };
@@ -59,9 +68,18 @@ export class TrainingFormPage implements OnInit {
 
   ngOnInit() {}
 
-  protected onSubmit() {
-    if (this.trainingForm().valid()) {
-      const res = this._trainingStore.create(this.trainingForm().value());
+  protected async onSubmit() {
+    const user = this._authService.currentUser();
+
+    if (user && user.uid && this.trainingForm().valid()) {
+      const newTraining: I_Training = {
+        ...this.trainingForm().value(),
+        uid: user.uid,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+      const res = await this._trainingStore.create(newTraining);
+      this.newTraining.emit(res);
     }
   }
 }

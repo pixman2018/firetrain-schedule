@@ -13,13 +13,13 @@ import {
 import { convertSnaps, convertSnap } from 'src/db/db-until';
 // service models
 import { HttpBasesAbstractClass } from 'src/db/http-basis-abstract-class';
-import { I_Training } from 'src/app/models/trainings.model';
+import { I_Training } from 'src/app/models/I_trainings.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TrainingsStore extends HttpBasesAbstractClass {
-  private _practice = signal<any[]>([]);
+  private _exercises = signal<any[]>([]);
 
   constructor() {
     super();
@@ -27,15 +27,15 @@ export class TrainingsStore extends HttpBasesAbstractClass {
     this.colRef = collection(this.firestore, this.dbPath);
   }
 
-  public get practice(): Signal<Required<I_Training[]>> {
-    return this._practice.asReadonly();
+  public get exercises(): Signal<Required<I_Training[]>> {
+    return this._exercises.asReadonly();
   }
 
   public override async getAll(): Promise<Required<I_Training[] | []>> {
     try {
       const snapshot = await getDocs(this.colRef);
       const data: any[] = convertSnaps(snapshot);
-      this._practice.set(data);
+      this._exercises.set(data);
       return data;
     } catch (error) {
       console.error('Error by load from all trainings');
@@ -62,14 +62,14 @@ export class TrainingsStore extends HttpBasesAbstractClass {
     }
   }
 
-  public override async create(practice: I_Training): Promise<string> {
+  public override async create(exercises: I_Training): Promise<string> {
     try {
-      const docRef = await addDoc(this.colRef, practice);
-      const practiceWithId: any = {
-        ...practice,
+      const docRef = await addDoc(this.colRef, exercises);
+      const exercisesWithId: any = {
+        ...exercises,
         id: docRef.id,
       };
-      this._setPractice(practiceWithId);
+      this._setexercises(exercisesWithId);
       return docRef.id;
     } catch (error) {
       console.error('Error by create a new training', error);
@@ -79,7 +79,7 @@ export class TrainingsStore extends HttpBasesAbstractClass {
 
   public override edit(training: I_Training, id: string): Promise<void> {
     try {
-      this._setPractice(training);
+      this._setexercises(training);
       const practicRef = doc(this.firestore, `${this.dbPath}/${id}`);
       return updateDoc(practicRef, { ...training });
     } catch (error) {
@@ -98,7 +98,7 @@ export class TrainingsStore extends HttpBasesAbstractClass {
     }
   }
 
-  private _setPractice(training: I_Training) {
-    this._practice.update((currenttraining) => [...currenttraining, training]);
+  private _setexercises(training: I_Training) {
+    this._exercises.update((currenttraining) => [...currenttraining, training]);
   }
 }

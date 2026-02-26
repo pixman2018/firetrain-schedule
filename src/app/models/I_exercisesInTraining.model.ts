@@ -1,6 +1,8 @@
 export interface I_PractivesInTraining {
   name: string;
   practiveId: string;
+  createdAt: number;
+  updatedAt: number;
   results: [
     {
       reps: number;
@@ -9,9 +11,4 @@ export interface I_PractivesInTraining {
       weight: number;
     },
   ];
-}
-
-export interface I_PractivesInTrainingForm extends I_PractivesInTraining {
-  createdAt: number;
-  updatedAt: number;
 }

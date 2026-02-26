@@ -18,7 +18,12 @@ export class AuthService {
   public currentUser = toSignal<User | null>(user(this._auth));
 
   public async login(email: string, password: string): Promise<UserCredential> {
-    return signInWithEmailAndPassword(this._auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      this._auth,
+      email,
+      password,
+    );
+    return userCredential;
   }
 
   public async logout() {
